@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Quiz {
+  id                    String          @id @default(cuid())
+    title                 String
+    userId                String
+    user                  User            @relation(fields: [userId], references: [id])
+    codeLanguageId        Int
+    codeLanguage          CodeLanguage    @relation(fields: [codeLanguageId], references: [id])
+    createdAt             DateTime        @default(now())
+    updatedAt             DateTime        @updatedAt
+    instruction           String          @default("")
+    answer                String          @default("")
+    submissionCachedCount Int             @default(0)
+    //submissions           Submission[]
+    defaultCode           String          @default("")
+    difficultyLevelId     Int             @default(0)
+    difficultyLevel       DifficultyLevel @relation(fields: [difficultyLevelId], references: [id])
+    //solutions             Solution[]
+    locale String @default("")
+    status QuizStatus @default(DRAFT)
+    //challenges Challenge[]
+    //assessmentQuizzes AssessmentQuiz[]
+    //assessmentResults AssessmentResult[]
+    //quizPointCollection QuizPointCollection[]
+}
+
+enum QuizStatus {
+  DRAFT
+    PENDING
+    PUBLISHED_PROTECT
+    PUBLISHED_PUBLIC
+    REJECTED
+    DELETED
+}
+
+
+model DifficultyLevel {
+  id      Int    @id @default(autoincrement())
+    name    String @unique
+    quizzes Quiz[]
+    //courses Course[]
+}
+
+model CodeLanguage {
+  id         Int    @id @default(autoincrement())
+    name       String @unique
+    prettyName String @default("")
+    quizzes    Quiz[]
+    //courses    Course[]
+}
+
+model User {
+  id String @id @default(cuid())
+    name String?
+        quizzes       Quiz[]
+
+}
+
