@@ -19,3 +19,10 @@ export interface ICreateQuizSolutionProps {
   importDirectives: string;
   testRunner: string;
 }
+
+export interface ICreateQuizTestCaseProps {
+  solutionId: string;
+  input: string;
+  output: string;
+  sequence: number;
+}
