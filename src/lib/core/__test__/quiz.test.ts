@@ -1,4 +1,8 @@
-import { createQuiz, createQuizSolution } from "@/lib/core/quiz";
+import {
+  createQuiz,
+  createQuizSolution,
+  createQuizTestCases,
+} from "@/lib/core/quiz";
 import { faker } from "@faker-js/faker";
 import { prismaMock } from "@/lib/db/prisma-mock-singleton";
 
@@ -50,5 +54,25 @@ describe("Quiz module", () => {
     prismaMock.solution.create.mockResolvedValue(solutionData);
     const savedQuizSolution = await createQuizSolution(solutionData);
     expect(savedQuizSolution).toEqual(solutionData);
+  });
+
+  test("createQuizTestCases fn should save and return test cases", async () => {
+    const testCaseData = [
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        sequence: 0,
+      },
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        sequence: 1,
+      },
+    ];
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData);
+    const saveQuizTestCases = await createQuizTestCases(testCaseData);
+    expect(saveQuizTestCases).toEqual(testCaseData);
   });
 });
