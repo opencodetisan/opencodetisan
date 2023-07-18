@@ -74,8 +74,19 @@ model Solution {
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt
     importDirectives String @default("")
-    //testRunner String @default("")
-    //testCases     TestCase[]
+    testRunner String @default("")
+    testCases     TestCase[]
     quizId        String
     quiz          Quiz       @relation(fields: [quizId], references: [id])
+}
+
+model TestCase {
+    id         String   @id @default(cuid())
+    input      String
+    output     String
+    sequence   Int      @default(0)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    solutionId String   @default("")
+    solution   Solution @relation(fields: [solutionId], references: [id])
 }
