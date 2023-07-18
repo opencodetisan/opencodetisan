@@ -10,7 +10,7 @@ export interface ICreateQuizProps {
   locale: string
 }
 
-export interface ICreateSolutionProps {
+export interface ICreateQuizSolutionProps {
   quizId: string;
   code: string;
   //entryFunction: mainFunction,
