@@ -1,4 +1,4 @@
-import { ICreateQuizProps } from "@/types/index";
+import { ICreateQuizProps, ICreateQuizSolutionProps } from "@/types/index";
 import prisma from "@/lib/db/client";
 
 export const createQuiz = async (quizData: ICreateQuizProps) => {
@@ -21,4 +21,18 @@ export const createQuiz = async (quizData: ICreateQuizProps) => {
   }
   const quiz = await prisma.quiz.create({ data: quizData });
   return quiz;
+};
+
+export const createQuizSolution = async (
+  solutionData: ICreateQuizSolutionProps,
+) => {
+  if (!solutionData.quizId) {
+    throw new Error("missing quiz id");
+  } else if (!solutionData.code) {
+    throw new Error("missing code");
+  }
+  const solution = await prisma.solution.create({
+    data: solutionData,
+  });
+  return solution;
 };
