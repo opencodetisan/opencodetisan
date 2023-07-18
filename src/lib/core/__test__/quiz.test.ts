@@ -1,4 +1,4 @@
-import { createQuiz } from "@/lib/core/quiz";
+import { createQuiz, createQuizSolution } from "@/lib/core/quiz";
 import { faker } from "@faker-js/faker";
 import { prismaMock } from "@/lib/db/prisma-mock-singleton";
 
@@ -39,4 +39,16 @@ describe("Quiz module", () => {
   });
 
   //Continue to test remaining missing mandatory input parameter for createQuiz function
+  test("createQuizSolution fn should save and return quiz solution", async () => {
+    const solutionData = {
+      quizId: faker.string.uuid(),
+      code: faker.lorem.paragraphs(),
+      sequence: 0,
+      importDirectives: faker.lorem.paragraphs(),
+      testRunner: faker.lorem.paragraphs(),
+    };
+    prismaMock.solution.create.mockResolvedValue(solutionData);
+    const savedQuizSolution = await createQuizSolution(solutionData);
+    expect(savedQuizSolution).toEqual(solutionData);
+  });
 });
