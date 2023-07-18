@@ -1,4 +1,8 @@
-import { ICreateQuizProps, ICreateQuizSolutionProps } from "@/types/index";
+import {
+  ICreateQuizProps,
+  ICreateQuizSolutionProps,
+  ICreateQuizTestCaseProps,
+} from "@/types/index";
 import prisma from "@/lib/db/client";
 
 export const createQuiz = async (quizData: ICreateQuizProps) => {
@@ -35,4 +39,14 @@ export const createQuizSolution = async (
     data: solutionData,
   });
   return solution;
+};
+
+export const createQuizTestCases = async (
+  testCaseData: ICreateQuizTestCaseProps[],
+) => {
+  if (testCaseData.length === 0) {
+    throw new Error("test case not found");
+  }
+  const testCases = await prisma.testCase.createMany({ data: testCaseData });
+  return testCases;
 };
