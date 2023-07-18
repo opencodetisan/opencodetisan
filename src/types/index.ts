@@ -9,3 +9,13 @@ export interface ICreateQuizProps {
   defaultCode: string
   locale: string
 }
+
+export interface ICreateSolutionProps {
+  quizId: string;
+  code: string;
+  //entryFunction: mainFunction,
+  //appendCode,
+  sequence: number;
+  importDirectives: string;
+  testRunner: string;
+}
