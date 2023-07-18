@@ -1,9 +1,11 @@
 import {
+  ICreateQuizOGImageProps,
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
 } from "@/types/index";
 import prisma from "@/lib/db/client";
+import fetch from "node-fetch";
 
 export const createQuiz = async (quizData: ICreateQuizProps) => {
   if (!quizData.title) {
@@ -49,4 +51,15 @@ export const createQuizTestCases = async (
   }
   const testCases = await prisma.testCase.createMany({ data: testCaseData });
   return testCases;
+};
+
+export const createQuizOGImage = async (data: ICreateQuizOGImageProps) => {
+  const result = await fetch(`${process.env.NEXTAUTH_URL}/api/og-generator`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  return result;
 };
