@@ -238,6 +238,20 @@ describe("Quiz module", () => {
     );
   });
 
+  test("Missing testRunner parameter should raise a missing test runner error", async () => {
+    const solutionData = {
+      quizId: faker.string.uuid(),
+      code: faker.lorem.paragraphs(),
+      sequence: 1,
+      importDirectives: faker.lorem.paragraphs(),
+      // testRunner: faker.lorem.paragraphs(),
+    };
+    prismaMock.solution.create.mockResolvedValue(solutionData);
+    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
+      "missing test runner",
+    );
+  });
+
   test("createQuizTestCases fn should save and return test cases", async () => {
     const testCaseData = [
       {
