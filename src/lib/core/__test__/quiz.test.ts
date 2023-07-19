@@ -210,6 +210,20 @@ describe("Quiz module", () => {
     );
   });
 
+  test("Missing sequence parameter should raise a missing sequence error", async () => {
+    const solutionData = {
+      quizId: faker.string.uuid(),
+      code: faker.lorem.paragraphs(),
+      // sequence: 1,
+      importDirectives: faker.lorem.paragraphs(),
+      testRunner: faker.lorem.paragraphs(),
+    };
+    prismaMock.solution.create.mockResolvedValue(solutionData);
+    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
+      "missing sequence",
+    );
+  });
+
   test("Missing importDirectives parameter should raise a missing import directives error", async () => {
     const solutionData = {
       quizId: faker.string.uuid(),
