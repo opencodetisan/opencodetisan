@@ -173,7 +173,7 @@ describe("Quiz module", () => {
     const solutionData = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
-      sequence: 0,
+      sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     };
@@ -186,7 +186,7 @@ describe("Quiz module", () => {
     const solutionData = {
       // quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
-      sequence: 0,
+      sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     };
@@ -200,7 +200,7 @@ describe("Quiz module", () => {
     const solutionData = {
       quizId: faker.string.uuid(),
       // code: faker.lorem.paragraphs(),
-      sequence: 0,
+      sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     };
@@ -216,7 +216,7 @@ describe("Quiz module", () => {
         solutionId: faker.string.uuid(),
         input: faker.lorem.text(),
         output: faker.lorem.text(),
-        sequence: 0,
+        sequence: 1,
       },
       {
         solutionId: faker.string.uuid(),
