@@ -196,6 +196,20 @@ describe("Quiz module", () => {
     );
   });
 
+  test("Missing code parameter should raise a missing code error", async () => {
+    const solutionData = {
+      quizId: faker.string.uuid(),
+      // code: faker.lorem.paragraphs(),
+      sequence: 0,
+      importDirectives: faker.lorem.paragraphs(),
+      testRunner: faker.lorem.paragraphs(),
+    };
+    prismaMock.solution.create.mockResolvedValue(solutionData);
+    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
+      "missing code",
+    );
+  });
+
   test("createQuizTestCases fn should save and return test cases", async () => {
     const testCaseData = [
       {
