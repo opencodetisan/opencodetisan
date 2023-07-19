@@ -133,6 +133,24 @@ describe("Quiz module", () => {
     );
   });
 
+  test("Missing default code parameter should raise a missing default code error", async () => {
+    const quizData = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      title: faker.lorem.text(),
+      codeLanguageId: 1,
+      difficultyLevelId: 1,
+      instruction: faker.lorem.paragraphs(),
+      answer: faker.lorem.paragraphs(),
+      // defaultCode: faker.lorem.paragraphs(),
+      locale: "en",
+    };
+    prismaMock.quiz.create.mockResolvedValue(quizData);
+    expect(async () => await createQuiz(quizData)).rejects.toThrow(
+      "missing default code",
+    );
+  });
+
   test("createQuizSolution fn should save and return quiz solution", async () => {
     const solutionData = {
       quizId: faker.string.uuid(),
