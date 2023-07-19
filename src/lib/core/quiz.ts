@@ -34,6 +34,12 @@ export const createQuizSolution = async (
     throw new Error("missing quiz id");
   } else if (!solutionData.code) {
     throw new Error("missing code");
+  } else if (!solutionData.sequence) {
+    throw new Error("missing sequence");
+  } else if (!solutionData.importDirectives) {
+    throw new Error("missing import directives");
+  } else if (!solutionData.testRunner) {
+    throw new Error("missing test runner");
   }
   const solution = await prisma.solution.create({
     data: solutionData,
