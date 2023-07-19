@@ -97,6 +97,24 @@ describe("Quiz module", () => {
     );
   });
 
+  test("Missing instruction parameter should raise a missing instruction error", async () => {
+    const quizData = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      title: faker.lorem.text(),
+      codeLanguageId: 1,
+      difficultyLevelId: 1,
+      // instruction: faker.lorem.paragraphs(),
+      answer: faker.lorem.paragraphs(),
+      defaultCode: faker.lorem.paragraphs(),
+      locale: "en",
+    };
+    prismaMock.quiz.create.mockResolvedValue(quizData);
+    expect(async () => await createQuiz(quizData)).rejects.toThrow(
+      "missing instruction",
+    );
+  });
+
   test("createQuizSolution fn should save and return quiz solution", async () => {
     const solutionData = {
       quizId: faker.string.uuid(),
