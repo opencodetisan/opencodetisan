@@ -26,12 +26,3 @@ export interface ICreateQuizTestCaseProps {
   output: string;
   sequence: number;
 }
-
-export interface ICreateQuizOGImageProps {
-  title: string;
-  codeLanguageId: number;
-  locale: string;
-  quizId: string;
-  difficultyLevelTrans: string;
-  ogImageTextTranslation: string;
-}
