@@ -321,4 +321,15 @@ describe("Quiz module", () => {
       "missing quiz id",
     );
   });
+
+  test("Missing user id parameter should raise a missing user id error", async () => {
+    const quizData = {
+      // userId: faker.string.uuid(),
+      id: faker.string.uuid(),
+    };
+    prismaMock.quiz.updateMany.mockResolvedValue(quizData);
+    expect(async () => await updateQuizData(quizData)).rejects.toThrow(
+      "missing user id",
+    );
+  });
 });
