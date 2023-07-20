@@ -292,4 +292,12 @@ describe("Quiz module", () => {
       "test case missing attributes",
     );
   });
+
+  test("Undefined testCaseData should raise a test case not found error", async () => {
+    const testCaseData = undefined;
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData);
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
+      "test case not found",
+    );
+  });
 });
