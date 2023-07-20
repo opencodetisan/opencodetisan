@@ -53,6 +53,14 @@ export const createQuizTestCases = async (
   if (testCaseData.length === 0) {
     throw new Error("test case not found");
   }
+  const hasAllProps = testCaseData.every((testCase) => {
+    return ["solutionId", "input", "output", "sequence"].every((prop) =>
+      testCase.hasOwnProperty(prop),
+    );
+  });
+  if (!hasAllProps) {
+    throw new Error("test cases missing values");
+  }
   const testCases = await prisma.testCase.createMany({ data: testCaseData });
   return testCases;
 };
