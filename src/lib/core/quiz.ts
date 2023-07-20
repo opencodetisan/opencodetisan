@@ -59,7 +59,7 @@ export const createQuizTestCases = async (
     );
   });
   if (!hasAllProps) {
-    throw new Error("test cases missing values");
+    throw new Error("test case missing attributes");
   }
   const testCases = await prisma.testCase.createMany({ data: testCaseData });
   return testCases;
