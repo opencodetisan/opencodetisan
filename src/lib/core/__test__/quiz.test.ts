@@ -310,4 +310,15 @@ describe("Quiz module", () => {
     prismaMock.quiz.updateMany.mockResolvedValue(quizData);
     expect(await updateQuizData(quizData)).toEqual(quizData);
   });
+
+  test("Missing quiz id parameter should raise a missing quiz id error", async () => {
+    const quizData = {
+      userId: faker.string.uuid(),
+      // id: faker.string.uuid(),
+    };
+    prismaMock.quiz.updateMany.mockResolvedValue(quizData);
+    expect(async () => await updateQuizData(quizData)).rejects.toThrow(
+      "missing quiz id",
+    );
+  });
 });
