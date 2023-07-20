@@ -50,7 +50,7 @@ export const createQuizSolution = async (
 export const createQuizTestCases = async (
   testCaseData: ICreateQuizTestCaseProps[],
 ) => {
-  if (testCaseData.length === 0) {
+  if (!testCaseData || testCaseData.length === 0) {
     throw new Error("test case not found");
   }
   const hasAllProps = testCaseData.every((testCase) => {
