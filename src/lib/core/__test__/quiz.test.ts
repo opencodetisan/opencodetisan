@@ -2,6 +2,7 @@ import {
   createQuiz,
   createQuizSolution,
   createQuizTestCases,
+  updateQuizData,
 } from "@/lib/core/quiz";
 import { faker } from "@faker-js/faker";
 import { prismaMock } from "@/lib/db/prisma-mock-singleton";
@@ -299,5 +300,14 @@ describe("Quiz module", () => {
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
       "test case not found",
     );
+  });
+
+  test("updateQuizData fn should update and return updated quiz data", async () => {
+    const quizData = {
+      userId: faker.string.uuid(),
+      id: faker.string.uuid(),
+    };
+    prismaMock.quiz.updateMany.mockResolvedValue(quizData);
+    expect(await updateQuizData(quizData)).toEqual(quizData);
   });
 });
