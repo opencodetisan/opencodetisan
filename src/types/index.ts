@@ -36,3 +36,12 @@ export interface IUpdateQuizDataProps {
   difficultyLevelId?: number;
   postUrl?: string;
 }
+
+export interface IUpdateQuizSolutionProps {
+  solutionId?: string;
+  quizId: string;
+  code: string;
+  importDirectives?: string;
+  testRunner?: string;
+  defaultCode?: string;
+}
