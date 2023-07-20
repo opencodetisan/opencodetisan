@@ -3,6 +3,7 @@ import {
   createQuizSolution,
   createQuizTestCases,
   updateQuizData,
+  updateQuizSolution,
 } from "@/lib/core/quiz";
 import { faker } from "@faker-js/faker";
 import { prismaMock } from "@/lib/db/prisma-mock-singleton";
@@ -331,5 +332,18 @@ describe("Quiz module", () => {
     expect(async () => await updateQuizData(quizData)).rejects.toThrow(
       "missing user id",
     );
+  });
+
+  test("updateQuizSolution fn should update and return updated quiz solution", async () => {
+    const solutionData = {
+      solutionId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+      code: faker.lorem.paragraphs(),
+      importDirectives: faker.lorem.paragraphs(),
+      testRunner: faker.lorem.paragraphs(),
+      // defaultCode: faker.lorem.paragraph()
+    };
+    prismaMock.solution.upsert.mockResolvedValue(solutionData);
+    expect(await updateQuizSolution(solutionData)).toEqual(solutionData);
   });
 });
