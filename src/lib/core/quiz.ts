@@ -2,6 +2,8 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
+  IUpdateQuizDataProps,
+  UpdateQuizWhereConditionType,
 } from "@/types/index";
 import prisma from "@/lib/db/client";
 
@@ -63,4 +65,29 @@ export const createQuizTestCases = async (
   }
   const testCases = await prisma.testCase.createMany({ data: testCaseData });
   return testCases;
+};
+
+export const updateQuizData = async ({
+  id,
+  userId,
+  instruction,
+  title,
+  codeLanguageId,
+  difficultyLevelId,
+}: IUpdateQuizDataProps) => {
+  if (!id) {
+    throw new Error("missing quiz id");
+  } else if (!userId) {
+    throw new Error("missing user id");
+  }
+  const updatedQuiz = await prisma.quiz.updateMany({
+    where: { id, userId },
+    data: {
+      instruction,
+      title,
+      codeLanguageId,
+      difficultyLevelId,
+    },
+  });
+  return updatedQuiz;
 };
