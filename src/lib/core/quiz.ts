@@ -3,6 +3,7 @@ import {
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
   IUpdateQuizDataProps,
+  IUpdateQuizSolutionProps,
   UpdateQuizWhereConditionType,
 } from "@/types/index";
 import prisma from "@/lib/db/client";
@@ -90,4 +91,45 @@ export const updateQuizData = async ({
     },
   });
   return updatedQuiz;
+};
+
+export const updateQuizSolution = async ({
+  solutionId,
+  quizId,
+  code,
+  importDirectives,
+  testRunner,
+  defaultCode,
+}: IUpdateQuizSolutionProps) => {
+  if (!quizId) {
+    throw new Error("missing quiz id");
+  } else if (!code) {
+    throw new Error("missing code");
+  }
+  const updatedSolution = await prisma.solution.upsert({
+    where: {
+      id: solutionId ?? "",
+    },
+    create: {
+      quizId,
+      code,
+      //entryFunction,
+      //appendCode,
+      importDirectives,
+      testRunner,
+    },
+    update: {
+      code,
+      //entryFunction,
+      //appendCode,
+      importDirectives,
+      testRunner,
+      quiz: {
+        update: {
+          defaultCode,
+        },
+      },
+    },
+  });
+  return updatedSolution;
 };
