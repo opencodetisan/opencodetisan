@@ -26,3 +26,13 @@ export interface ICreateQuizTestCaseProps {
   output: string;
   sequence: number;
 }
+
+export interface IUpdateQuizDataProps {
+  id: string;
+  userId: string;
+  instruction?: string;
+  title?: string;
+  codeLanguageId?: number;
+  difficultyLevelId?: number;
+  postUrl?: string;
+}
