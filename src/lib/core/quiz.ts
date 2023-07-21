@@ -159,3 +159,15 @@ export const updateQuizTestCases = async ({
   );
   return txn;
 };
+
+export const deleteQuizTestCases = async ({
+  solutionId,
+}: {
+  solutionId: string;
+}) => {
+  if (!solutionId) {
+    throw new Error("missing solutionId");
+  }
+  const result = await prisma.testCase.deleteMany({ where: { solutionId } });
+  return result;
+};
