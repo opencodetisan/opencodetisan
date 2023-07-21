@@ -7,6 +7,7 @@ import {
   UpdateQuizWhereConditionType,
 } from "@/types/index";
 import prisma from "@/lib/db/client";
+import { TestCase } from "@prisma/client";
 
 export const createQuiz = async (quizData: ICreateQuizProps) => {
   if (!quizData.title) {
@@ -132,4 +133,34 @@ export const updateQuizSolution = async ({
     },
   });
   return updatedSolution;
+};
+
+export const updateQuizTestCases = async ({
+  existingTests,
+  tests,
+}: {
+  existingTests: TestCase[];
+  tests: any;
+}) => {
+  if (!existingTests || existingTests.length === 0) {
+    throw new Error("missing existing test cases");
+  } else if (!tests) {
+    throw new Error("missing new test cases");
+  }
+  let i = -1;
+  const txn = await prisma.$transaction(
+    existingTests.map((test) => {
+      i++;
+      return prisma.testCase.update({
+        where: {
+          id: test.id,
+        },
+        data: {
+          input: tests.input[i],
+          output: tests.output[i],
+        },
+      });
+    }),
+  );
+  return txn;
 };
