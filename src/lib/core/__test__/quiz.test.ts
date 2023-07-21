@@ -6,6 +6,7 @@ import {
   deleteQuizSolution,
   deleteQuizTestCases,
   getAllUserQuizzes,
+  getQuiz,
   getQuizSolutionIds,
   updateQuizData,
   updateQuizSolution,
@@ -484,5 +485,11 @@ describe("Quiz module", () => {
           userId: faker.lorem.text(),
         }),
     ).rejects.toThrow("missing locale");
+  });
+
+  test("getQuiz fn should return quiz", async () => {
+    const quiz: any = { id: 1 };
+    prismaMock.quiz.findFirst.mockResolvedValue(quiz);
+    expect(await getQuiz({})).toEqual(quiz);
   });
 });
