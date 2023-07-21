@@ -411,4 +411,12 @@ describe("Quiz module", () => {
       count: 4,
     });
   });
+
+  test("Missing quizId parameter should raise a missing quizId error", async () => {
+    const quizId: any = undefined;
+    prismaMock.solution.deleteMany.mockResolvedValue({ count: 4 });
+    expect(async () => await deleteQuizSolution({ quizId })).rejects.toThrow(
+      "missing quizId",
+    );
+  });
 });
