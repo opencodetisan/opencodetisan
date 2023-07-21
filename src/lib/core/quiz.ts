@@ -241,3 +241,54 @@ export const getAllUserQuizzes = async ({
   });
   return quizzes;
 };
+
+export const getQuiz = async ({
+  userId,
+  quizId,
+}: {
+  userId?: string;
+  quizId?: string;
+}) => {
+  const quiz = await prisma.quiz.findFirst({
+    where: {
+      userId,
+      id: quizId,
+    },
+    select: {
+      id: true,
+      title: true,
+      instruction: true,
+      submissionCachedCount: true,
+      difficultyLevelId: true,
+      codeLanguageId: true,
+      codeLanguage: {
+        select: {
+          id: true,
+          prettyName: true,
+        },
+      },
+      status: true,
+      locale: true,
+      createdAt: true,
+      updatedAt: true,
+      defaultCode: true,
+      solutions: {
+        select: {
+          id: true,
+          code: true,
+          //entryFunction: true,
+          testCases: {
+            select: {
+              id: true,
+              input: true,
+              output: true,
+            },
+          },
+          importDirectives: true,
+          testRunner: true,
+        },
+      },
+    },
+  });
+  return quiz;
+};
