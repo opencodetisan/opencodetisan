@@ -1,5 +1,5 @@
 export interface ICreateQuizProps {
-  id?: string;
+  id: string;
   title: string;
   codeLanguageId: number;
   difficultyLevelId: number;
