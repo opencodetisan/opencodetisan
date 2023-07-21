@@ -179,3 +179,11 @@ export const deleteQuizSolution = async ({ quizId }: { quizId: string }) => {
   const result = await prisma.solution.deleteMany({ where: { quizId } });
   return result;
 };
+
+export const deleteQuiz = async ({ quizId }: { quizId: string }) => {
+  if (!quizId) {
+    throw new Error("missing quizId");
+  }
+  const result = await prisma.quiz.delete({ where: { id: quizId } });
+  return result;
+};
