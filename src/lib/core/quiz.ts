@@ -187,3 +187,14 @@ export const deleteQuiz = async ({ quizId }: { quizId: string }) => {
   const result = await prisma.quiz.delete({ where: { id: quizId } });
   return result;
 };
+
+export const getQuizSolutionIds = async ({ quizId }: { quizId: string }) => {
+  if (!quizId) {
+    throw new Error("missing quizId");
+  }
+  const solutionIds = await prisma.quiz.findUnique({
+    where: { id: quizId },
+    select: { solutions: { select: { id: true } } },
+  });
+  return solutionIds;
+};
