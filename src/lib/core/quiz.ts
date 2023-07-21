@@ -4,7 +4,6 @@ import {
   ICreateQuizTestCaseProps,
   IUpdateQuizDataProps,
   IUpdateQuizSolutionProps,
-  UpdateQuizWhereConditionType,
 } from "@/types/index";
 import prisma from "@/lib/db/client";
 import { TestCase } from "@prisma/client";
@@ -114,15 +113,11 @@ export const updateQuizSolution = async ({
     create: {
       quizId,
       code,
-      //entryFunction,
-      //appendCode,
       importDirectives,
       testRunner,
     },
     update: {
       code,
-      //entryFunction,
-      //appendCode,
       importDirectives,
       testRunner,
       quiz: {
