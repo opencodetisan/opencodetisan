@@ -474,4 +474,15 @@ describe("Quiz module", () => {
         }),
     ).rejects.toThrow("missing userId");
   });
+
+  test("Missing locale parameter should raise a missing locale error", async () => {
+    const locale: any = undefined;
+    expect(
+      async () =>
+        await getAllUserQuizzes({
+          locale,
+          userId: faker.lorem.text(),
+        }),
+    ).rejects.toThrow("missing locale");
+  });
 });
