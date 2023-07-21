@@ -11,7 +11,7 @@ import { prismaMock } from "@/lib/db/prisma-mock-singleton";
 
 describe("Quiz module", () => {
   test("createQuiz function should save the quiz data and return the saved data", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -28,7 +28,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing title parameter should raise an missing title error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       //title: faker.lorem.text(),
@@ -47,7 +47,7 @@ describe("Quiz module", () => {
 
   //Continue to test remaining missing mandatory input parameter for createQuiz function
   test("Missing codeLanguageId parameter should raise an missing code language error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -65,7 +65,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing userId parameter should raise an missing user id error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       // userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -83,7 +83,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing difficultyLevelId parameter should raise a missing difficulty level id error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -101,7 +101,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing instruction parameter should raise a missing instruction error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -119,7 +119,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing answer parameter should raise a missing answer error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -137,7 +137,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing default code parameter should raise a missing default code error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -155,7 +155,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing locale parameter should raise a missing locale error", async () => {
-    const quizData = {
+    const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
@@ -173,7 +173,7 @@ describe("Quiz module", () => {
   });
 
   test("createQuizSolution fn should save and return quiz solution", async () => {
-    const solutionData = {
+    const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
@@ -186,7 +186,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing quizId parameter should raise a missing quiz id error", async () => {
-    const solutionData = {
+    const solutionData: any = {
       // quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
@@ -200,7 +200,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing code parameter should raise a missing code error", async () => {
-    const solutionData = {
+    const solutionData: any = {
       quizId: faker.string.uuid(),
       // code: faker.lorem.paragraphs(),
       sequence: 1,
@@ -214,7 +214,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing sequence parameter should raise a missing sequence error", async () => {
-    const solutionData = {
+    const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       // sequence: 1,
@@ -228,7 +228,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing importDirectives parameter should raise a missing import directives error", async () => {
-    const solutionData = {
+    const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
@@ -242,7 +242,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing testRunner parameter should raise a missing test runner error", async () => {
-    const solutionData = {
+    const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
@@ -256,7 +256,7 @@ describe("Quiz module", () => {
   });
 
   test("createQuizTestCases fn should save and return test cases", async () => {
-    const testCaseData = [
+    const testCaseData: any = [
       {
         solutionId: faker.string.uuid(),
         input: faker.lorem.text(),
@@ -276,7 +276,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing test case attributes should raise a test case missing attributes error", async () => {
-    const testCaseData = [
+    const testCaseData: any = [
       {
         // solutionId: faker.string.uuid(),
         input: faker.lorem.text(),
@@ -297,7 +297,7 @@ describe("Quiz module", () => {
   });
 
   test("Undefined testCaseData should raise a test case not found error", async () => {
-    const testCaseData = undefined;
+    const testCaseData: any = undefined;
     prismaMock.testCase.createMany.mockResolvedValue(testCaseData);
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
       "test case not found",
@@ -305,7 +305,7 @@ describe("Quiz module", () => {
   });
 
   test("updateQuizData fn should update and return updated quiz data", async () => {
-    const quizData = {
+    const quizData: any = {
       userId: faker.string.uuid(),
       id: faker.string.uuid(),
     };
@@ -314,7 +314,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing quiz id parameter should raise a missing quiz id error", async () => {
-    const quizData = {
+    const quizData: any = {
       userId: faker.string.uuid(),
       // id: faker.string.uuid(),
     };
@@ -325,7 +325,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing user id parameter should raise a missing user id error", async () => {
-    const quizData = {
+    const quizData: any = {
       // userId: faker.string.uuid(),
       id: faker.string.uuid(),
     };
@@ -336,7 +336,7 @@ describe("Quiz module", () => {
   });
 
   test("updateQuizSolution fn should update and return updated quiz solution", async () => {
-    const solutionData = {
+    const solutionData: any = {
       solutionId: faker.string.uuid(),
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
@@ -349,7 +349,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing quizId parameter should raise a missing quiz id error", async () => {
-    const solutionData = {
+    const solutionData: any = {
       solutionId: faker.string.uuid(),
       // quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
@@ -364,7 +364,7 @@ describe("Quiz module", () => {
   });
 
   test("Missing code parameter should raise a missing code id error", async () => {
-    const solutionData = {
+    const solutionData: any = {
       solutionId: faker.string.uuid(),
       quizId: faker.string.uuid(),
       // code: faker.lorem.paragraphs(),
@@ -379,7 +379,7 @@ describe("Quiz module", () => {
   });
 
   test("updateQuizTestCases fn should update and return updated quiz test cases", async () => {
-    const testCaseData = {
+    const testCaseData: any = {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
       tests: { input: [faker.lorem.text], output: [faker.lorem.text()] },
     };
