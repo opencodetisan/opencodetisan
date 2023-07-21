@@ -428,4 +428,11 @@ describe("Quiz module", () => {
       deletedQuiz,
     );
   });
+
+  test("Missing quizId parameter should raise a missing quizId error", async () => {
+    const quizId: any = undefined;
+    expect(async () => await deleteQuiz({ quizId })).rejects.toThrow(
+      "missing quizId",
+    );
+  });
 });
