@@ -4,6 +4,7 @@ import {
   createQuizTestCases,
   updateQuizData,
   updateQuizSolution,
+  updateQuizTestCases,
 } from "@/lib/core/quiz";
 import { faker } from "@faker-js/faker";
 import { prismaMock } from "@/lib/db/prisma-mock-singleton";
@@ -375,5 +376,15 @@ describe("Quiz module", () => {
     expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
       "missing code",
     );
+  });
+
+  test("updateQuizTestCases fn should update and return updated quiz test cases", async () => {
+    const testCaseData = {
+      existingTests: [faker.lorem.text(), faker.lorem.text()],
+      tests: { input: [faker.lorem.text], output: [faker.lorem.text()] },
+    };
+    prismaMock.testCase.update.mockResolvedValue(testCaseData);
+    prismaMock.$transaction.mockResolvedValue(testCaseData);
+    expect(await updateQuizTestCases(testCaseData)).toEqual(testCaseData);
   });
 });
