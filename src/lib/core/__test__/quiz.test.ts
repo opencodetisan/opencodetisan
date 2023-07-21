@@ -395,4 +395,12 @@ describe("Quiz module", () => {
       await deleteQuizTestCases({ solutionId: faker.string.uuid() }),
     ).toEqual({ count: 4 });
   });
+
+  test("Missing solutionId parameter should raise a missing solutionId error", async () => {
+    const solutionId: any = undefined;
+    prismaMock.testCase.deleteMany.mockResolvedValue({ count: 4 });
+    expect(
+      async () => await deleteQuizTestCases({ solutionId }),
+    ).rejects.toThrow("missing solutionId");
+  });
 });
