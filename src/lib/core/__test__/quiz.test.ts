@@ -463,4 +463,15 @@ describe("Quiz module", () => {
       }),
     ).toEqual(quizzes);
   });
+
+  test("Missing userId parameter should raise a missing userId error", async () => {
+    const userId: any = undefined;
+    expect(
+      async () =>
+        await getAllUserQuizzes({
+          userId,
+          locale: faker.lorem.text(),
+        }),
+    ).rejects.toThrow("missing userId");
+  });
 });
