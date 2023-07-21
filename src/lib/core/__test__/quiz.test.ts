@@ -2,6 +2,7 @@ import {
   createQuiz,
   createQuizSolution,
   createQuizTestCases,
+  deleteQuiz,
   deleteQuizSolution,
   deleteQuizTestCases,
   updateQuizData,
@@ -417,6 +418,14 @@ describe("Quiz module", () => {
     prismaMock.solution.deleteMany.mockResolvedValue({ count: 4 });
     expect(async () => await deleteQuizSolution({ quizId })).rejects.toThrow(
       "missing quizId",
+    );
+  });
+
+  test("deleteQuiz fn should delete quiz and return deleted quiz", async () => {
+    const deletedQuiz: any = { title: faker.lorem.text() };
+    prismaMock.quiz.delete.mockResolvedValue(deletedQuiz);
+    expect(await deleteQuiz({ quizId: faker.string.uuid() })).toEqual(
+      deletedQuiz,
     );
   });
 });
