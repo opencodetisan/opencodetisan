@@ -198,3 +198,46 @@ export const getQuizSolutionIds = async ({ quizId }: { quizId: string }) => {
   });
   return solutionIds;
 };
+
+export const getAllUserQuizzes = async ({
+  userId,
+  locale,
+}: {
+  userId: string;
+  locale: string;
+}) => {
+  if (!userId) {
+    throw new Error("missing userId");
+  } else if (!locale) {
+    throw new Error("missing locale");
+  }
+  const quizzes = await prisma.quiz.findMany({
+    where: {
+      userId,
+      locale: locale as string,
+    },
+    select: {
+      id: true,
+      title: true,
+      submissionCachedCount: true,
+      difficultyLevelId: true,
+      codeLanguageId: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      status: true,
+      codeLanguage: {
+        select: {
+          id: true,
+          prettyName: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return quizzes;
+};
