@@ -5,6 +5,7 @@ import {
   deleteQuiz,
   deleteQuizSolution,
   deleteQuizTestCases,
+  getQuizSolutionIds,
   updateQuizData,
   updateQuizSolution,
   updateQuizTestCases,
@@ -433,6 +434,14 @@ describe("Quiz module", () => {
     const quizId: any = undefined;
     expect(async () => await deleteQuiz({ quizId })).rejects.toThrow(
       "missing quizId",
+    );
+  });
+
+  test("getQuizSolutionIds fn should return solutionIds", async () => {
+    const solutionIds: any = [faker.string.uuid(), faker.string.uuid()];
+    prismaMock.quiz.findUnique.mockResolvedValue(solutionIds);
+    expect(await getQuizSolutionIds({ quizId: faker.string.uuid() })).toEqual(
+      solutionIds,
     );
   });
 });
