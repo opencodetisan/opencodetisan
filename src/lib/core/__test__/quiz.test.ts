@@ -444,4 +444,11 @@ describe("Quiz module", () => {
       solutionIds,
     );
   });
+
+  test("Missing quizId parameter should raise a missing quizId error", async () => {
+    const quizId: any = undefined;
+    expect(async () => await getQuizSolutionIds({ quizId })).rejects.toThrow(
+      "missing quizId",
+    );
+  });
 });
