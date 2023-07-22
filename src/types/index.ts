@@ -45,3 +45,9 @@ export interface IUpdateQuizSolutionProps {
   testRunner?: string;
   defaultCode?: string;
 }
+
+export interface ICreateCandidateQuizSubmissionProps {
+  userId: string;
+  quizId: string;
+  code: string;
+}
