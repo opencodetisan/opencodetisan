@@ -275,24 +275,24 @@ describe('Quiz module', () => {
     expect(saveQuizTestCases).toEqual(testCaseData)
   })
 
-  test('Missing test case attributes should raise a test case missing attributes error', async () => {
+  test('Missing solutionId should raise a test case missing solutionId error', async () => {
     const testCaseData: any = [
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        sequence: 1,
+      },
       {
         // solutionId: faker.string.uuid(),
         input: faker.lorem.text(),
         output: faker.lorem.text(),
         sequence: 1,
       },
-      {
-        solutionId: faker.string.uuid(),
-        // input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
-      },
     ]
     prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      'test case missing attributes',
+      'test case missing solutionId',
     )
   })
 
