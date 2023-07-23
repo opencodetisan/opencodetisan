@@ -68,7 +68,7 @@ export const createQuizTestCases = async (
   return testCases
 }
 
-export const updateQuizData = async ({
+export const updateQuiz = async ({
   id,
   userId,
   instruction,

@@ -2,7 +2,7 @@ import {
   createQuiz,
   createQuizSolution,
   createQuizTestCases,
-  updateQuizData,
+  updateQuiz,
   updateQuizSolution,
   updateQuizTestCases,
 } from '@/lib/core/quiz'
@@ -304,13 +304,13 @@ describe('Quiz module', () => {
     )
   })
 
-  test('updateQuizData fn should update and return updated quiz data', async () => {
+  test('updateQuiz fn should update and return updated quiz data', async () => {
     const quizData: any = {
       userId: faker.string.uuid(),
       id: faker.string.uuid(),
     }
     prismaMock.quiz.updateMany.mockResolvedValue(quizData)
-    expect(await updateQuizData(quizData)).toEqual(quizData)
+    expect(await updateQuiz(quizData)).toEqual(quizData)
   })
 
   test('Missing quiz id parameter should raise a missing quiz id error', async () => {
@@ -319,7 +319,7 @@ describe('Quiz module', () => {
       // id: faker.string.uuid(),
     }
     prismaMock.quiz.updateMany.mockResolvedValue(quizData)
-    expect(async () => await updateQuizData(quizData)).rejects.toThrow(
+    expect(async () => await updateQuiz(quizData)).rejects.toThrow(
       'missing quiz id',
     )
   })
@@ -330,7 +330,7 @@ describe('Quiz module', () => {
       id: faker.string.uuid(),
     }
     prismaMock.quiz.updateMany.mockResolvedValue(quizData)
-    expect(async () => await updateQuizData(quizData)).rejects.toThrow(
+    expect(async () => await updateQuiz(quizData)).rejects.toThrow(
       'missing user id',
     )
   })
