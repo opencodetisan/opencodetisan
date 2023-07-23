@@ -27,7 +27,7 @@ export interface ICreateQuizTestCaseProps {
   sequence: number
 }
 
-export interface IUpdateQuizDataProps {
+export interface IUpdateQuizProps {
   id: string
   userId: string
   instruction?: string

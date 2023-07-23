@@ -2,7 +2,7 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
-  IUpdateQuizDataProps,
+  IUpdateQuizProps,
   IUpdateQuizSolutionProps,
 } from '@/types/index'
 import prisma from '@/lib/db/client'
@@ -75,7 +75,7 @@ export const updateQuiz = async ({
   title,
   codeLanguageId,
   difficultyLevelId,
-}: IUpdateQuizDataProps) => {
+}: IUpdateQuizProps) => {
   if (!id) {
     throw new Error('missing quiz id')
   } else if (!userId) {
