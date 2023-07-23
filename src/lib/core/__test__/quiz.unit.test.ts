@@ -317,6 +317,27 @@ describe('Quiz module', () => {
     )
   })
 
+  test('Missing output should raise a test case missing output error', async () => {
+    const testCaseData: any = [
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        // output: faker.lorem.text(),
+        sequence: 1,
+      },
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        // output: faker.lorem.text(),
+        sequence: 1,
+      },
+    ]
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
+      'test case missing output',
+    )
+  })
+
   test('Undefined testCaseData should raise a test case not found error', async () => {
     const testCaseData: any = undefined
     prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
