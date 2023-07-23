@@ -337,6 +337,26 @@ describe('Quiz module', () => {
       'test case missing output',
     )
   })
+  test('Missing sequence should raise a test case missing sequence error', async () => {
+    const testCaseData: any = [
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        sequence: 1,
+      },
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        // sequence: 1,
+      },
+    ]
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
+      'test case missing sequence',
+    )
+  })
 
   test('Undefined testCaseData should raise a test case not found error', async () => {
     const testCaseData: any = undefined
