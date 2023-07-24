@@ -110,17 +110,11 @@ export const updateQuizSolution = async ({
   } else if (!code) {
     throw new Error('missing code')
   }
-  const updatedSolution = await prisma.solution.upsert({
+  const updatedSolution = await prisma.solution.update({
     where: {
       id: solutionId ?? '',
     },
-    create: {
-      quizId,
-      code,
-      importDirectives,
-      testRunner,
-    },
-    update: {
+    data: {
       code,
       importDirectives,
       testRunner,
