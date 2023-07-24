@@ -1,4 +1,4 @@
-import {IcreateAssessmentProps} from '@/types'
+import {ICandidateEmailStatusProps, IcreateAssessmentProps} from '@/types'
 import prisma from '../db/client'
 
 export const createAssessment = async ({
@@ -39,4 +39,28 @@ export const createAssessment = async ({
     },
   })
   return assessment
+}
+
+export const createAssessmentCandidateEmails = async (
+  candidateEmails: ICandidateEmailStatusProps[],
+) => {
+  let missingField
+  const hasAllProps = candidateEmails.every((email) => {
+    return ['assessmentId', 'email', 'statusCode', 'errorMessage'].every(
+      (prop) => {
+        if (!Object.hasOwn(email, prop)) {
+          missingField = prop
+          return false
+        }
+        return true
+      },
+    )
+  })
+  if (!hasAllProps) {
+    throw new Error(`missing ${missingField}`)
+  }
+  const emails = await prisma.assessmentCandidateEmail.createMany({
+    data: candidateEmails,
+  })
+  return emails
 }
