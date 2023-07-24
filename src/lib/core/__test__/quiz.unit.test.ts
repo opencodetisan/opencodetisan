@@ -45,7 +45,6 @@ describe('Quiz module', () => {
     )
   })
 
-  //Continue to test remaining missing mandatory input parameter for createQuiz function
   test('Missing codeLanguageId parameter should raise an missing code language error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
