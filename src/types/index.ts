@@ -1,3 +1,13 @@
+export interface ITestCaseProps {
+  id: string
+  input: string
+  output: string
+  sequence: number
+  createdAt: Date
+  updatedAt: Date
+  solutionId: string
+}
+
 export interface ICreateQuizProps {
   id: string
   title: string
