@@ -56,7 +56,14 @@ export interface IUpdateQuizSolutionProps {
 }
 
 export interface ICreateCandidateQuizSubmissionProps {
-  userId: string;
-  quizId: string;
-  code: string;
+  userId: string
+  quizId: string
+  code: string
+}
+
+export interface IcreateAssessmentProps {
+  userId: string
+  title: string
+  description: string
+  quizIds: string[]
 }
