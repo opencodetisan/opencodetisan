@@ -100,13 +100,12 @@ export const updateQuiz = async ({
 
 export const updateQuizSolution = async ({
   solutionId,
-  quizId,
   code,
   importDirectives,
   testRunner,
   defaultCode,
 }: IUpdateQuizSolutionProps) => {
-  if (!quizId) {
+  if (!solutionId) {
     throw new Error('missing quiz id')
   } else if (!code) {
     throw new Error('missing code')
