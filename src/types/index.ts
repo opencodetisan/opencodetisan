@@ -67,3 +67,10 @@ export interface IcreateAssessmentProps {
   description: string
   quizIds: string[]
 }
+
+export interface ICandidateEmailStatusProps {
+  assessmentId: string
+  email: string
+  statusCode: number
+  errorMessage: string
+}
