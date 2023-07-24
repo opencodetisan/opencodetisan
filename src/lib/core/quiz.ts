@@ -112,7 +112,7 @@ export const updateQuizSolution = async ({
   }
   const updatedSolution = await prisma.solution.update({
     where: {
-      id: solutionId ?? '',
+      id: solutionId,
     },
     data: {
       code,
