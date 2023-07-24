@@ -59,7 +59,7 @@ export const createQuizTestCases = async (
   let missingField
   const hasAllProps = testCaseData.every((testCase) => {
     return ['solutionId', 'input', 'output', 'sequence'].every((prop) => {
-      if (!testCase.hasOwnProperty(prop)) {
+      if (!Object.hasOwn(testCase, prop)) {
         missingField = prop
         return false
       }
