@@ -106,7 +106,7 @@ export const updateQuizSolution = async ({
   defaultCode,
 }: IUpdateQuizSolutionProps) => {
   if (!solutionId) {
-    throw new Error('missing quiz id')
+    throw new Error('missing solutionId')
   } else if (!code) {
     throw new Error('missing code')
   }
