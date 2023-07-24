@@ -6,7 +6,6 @@ import {
   IUpdateQuizSolutionProps,
 } from '@/types/index'
 import prisma from '@/lib/db/client'
-import {TestCase} from '@prisma/client'
 
 export const createQuiz = async (quizData: ICreateQuizProps) => {
   if (!quizData.title) {
@@ -132,7 +131,7 @@ export const updateQuizTestCases = async ({
   existingTests,
   tests,
 }: {
-  existingTests: TestCase[]
+  existingTests: any
   tests: any
 }) => {
   if (!existingTests || existingTests.length === 0) {
