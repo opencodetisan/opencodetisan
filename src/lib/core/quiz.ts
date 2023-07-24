@@ -141,7 +141,7 @@ export const updateQuizTestCases = async ({
   }
   let i = -1
   const txn = await prisma.$transaction(
-    existingTests.map((test) => {
+    existingTests.map((test: any) => {
       i++
       return prisma.testCase.update({
         where: {
