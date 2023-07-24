@@ -115,4 +115,27 @@ describe('Assessment module', () => {
       async () => await createAssessmentCandidateEmails(candidateEmails),
     ).rejects.toThrow('missing assessmentId')
   })
+
+  test('missing email parameter should return a missing email error', async () => {
+    const candidateEmails: any = [
+      {
+        assessmentId: faker.string.uuid(),
+        // email: faker.lorem.text(),
+        statusCode: 200,
+        errorMessage: faker.lorem.text(),
+      },
+      {
+        assessmentId: faker.string.uuid(),
+        email: faker.lorem.text(),
+        statusCode: 200,
+        errorMessage: faker.lorem.text(),
+      },
+    ]
+    prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue(
+      candidateEmails,
+    )
+    expect(
+      async () => await createAssessmentCandidateEmails(candidateEmails),
+    ).rejects.toThrow('missing email')
+  })
 })
