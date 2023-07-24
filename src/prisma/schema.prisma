@@ -65,6 +65,7 @@ model User {
     name String?
         quizzes       Quiz[]
     submissions   Submission[]
+    assessments Assessment[]
 }
 
 model Solution {
@@ -103,4 +104,18 @@ model Submission {
     updatedAt DateTime @updatedAt
     // assessmentQuizSubmission AssessmentQuizSubmission?
     // submissionPoint SubmissionPoint[]
+}
+
+model Assessment {
+  id String @id @default(cuid())
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId String 
+  title String
+  description String
+  createdAt             DateTime        @default(now())
+  // assessmentQuizzes AssessmentQuiz[]
+  // assessmentCandidates AssessmentCandidate[]
+  // assessmentResults AssessmentResult[]
+  // assessmentCandidateEmail AssessmentCandidateEmail[]
+  // activityLog ActivityLog[]
 }
