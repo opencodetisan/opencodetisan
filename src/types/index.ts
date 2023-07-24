@@ -39,7 +39,6 @@ export interface IUpdateQuizProps {
 
 export interface IUpdateQuizSolutionProps {
   solutionId?: string
-  quizId: string
   code: string
   importDirectives?: string
   testRunner?: string
