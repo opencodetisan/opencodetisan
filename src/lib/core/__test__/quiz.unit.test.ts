@@ -400,41 +400,38 @@ describe('Quiz module', () => {
   test('updateQuizSolution fn should update and return updated quiz solution', async () => {
     const solutionData: any = {
       solutionId: faker.string.uuid(),
-      quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
       // defaultCode: faker.lorem.paragraph()
     }
-    prismaMock.solution.upsert.mockResolvedValue(solutionData)
+    prismaMock.solution.update.mockResolvedValue(solutionData)
     expect(await updateQuizSolution(solutionData)).toEqual(solutionData)
   })
 
-  test('Missing quizId parameter should raise a missing quiz id error', async () => {
+  test('Missing solutionId parameter should raise a missing solutionId error', async () => {
     const solutionData: any = {
-      solutionId: faker.string.uuid(),
-      // quizId: faker.string.uuid(),
+      // solutionId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
     }
-    prismaMock.solution.upsert.mockResolvedValue(solutionData)
+    prismaMock.solution.update.mockResolvedValue(solutionData)
     expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
-      'missing quiz id',
+      'missing solutionId',
     )
   })
 
   test('Missing code parameter should raise a missing code id error', async () => {
     const solutionData: any = {
       solutionId: faker.string.uuid(),
-      quizId: faker.string.uuid(),
       // code: faker.lorem.paragraphs(),
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
     }
-    prismaMock.solution.upsert.mockResolvedValue(solutionData)
+    prismaMock.solution.update.mockResolvedValue(solutionData)
     expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
       'missing code',
     )
