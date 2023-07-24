@@ -3,7 +3,7 @@ import {prismaMock} from '../../db/prisma-mock-singleton'
 import {createAssessment, createAssessmentCandidateEmails} from '../assessment'
 
 describe('Assessment module', () => {
-  test(' saveUserQuizSubmission fn should save and return the submission data', async () => {
+  test('createAssessment fn should save and return the assessment data', async () => {
     const assessmentData: any = {
       userId: faker.string.uuid(),
       title: faker.lorem.text(),
