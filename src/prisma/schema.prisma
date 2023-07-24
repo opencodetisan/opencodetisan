@@ -66,6 +66,7 @@ model User {
         quizzes       Quiz[]
     submissions   Submission[]
     assessments Assessment[]
+    adminContact AdminContact?
 }
 
 model Solution {
@@ -138,4 +139,12 @@ model AssessmentCandidateEmail {
   errorMessage String?
   assessment Assessment @relation(fields: [assessmentId], references: [id])
   assessmentId String 
+}
+
+model AdminContact {
+  id String @id @default(cuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
+  companyName String
+  contactNumber Int
 }
