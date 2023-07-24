@@ -116,7 +116,7 @@ model Assessment {
   assessmentQuizzes AssessmentQuiz[]
   // assessmentCandidates AssessmentCandidate[]
   // assessmentResults AssessmentResult[]
-  // assessmentCandidateEmail AssessmentCandidateEmail[]
+  assessmentCandidateEmail AssessmentCandidateEmail[]
   // activityLog ActivityLog[]
 }
 
@@ -129,4 +129,13 @@ model AssessmentQuiz {
   submissionId String? @unique
 
   @@id([assessmentId, quizId])
+}
+
+model AssessmentCandidateEmail {
+  id String @id @default(cuid())
+  email String
+  statusCode Int
+  errorMessage String?
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  assessmentId String 
 }
