@@ -8,15 +8,15 @@ import {
   getAllUserQuizzes,
   getQuiz,
   getQuizSolutionIds,
-  updateQuizData,
+  updateQuiz,
   updateQuizSolution,
   updateQuizTestCases,
-} from "@/lib/core/quiz";
-import { faker } from "@faker-js/faker";
-import { prismaMock } from "@/lib/db/prisma-mock-singleton";
+} from '@/lib/core/quiz'
+import {faker} from '@faker-js/faker'
+import {prismaMock} from '@/lib/db/prisma-mock-singleton'
 
-describe("Quiz module", () => {
-  test("createQuiz function should save the quiz data and return the saved data", async () => {
+describe('Quiz module', () => {
+  test('createQuiz function should save the quiz data and return the saved data', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -26,14 +26,14 @@ describe("Quiz module", () => {
       instruction: faker.lorem.paragraphs(),
       answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
-    const savedQuiz = await createQuiz(quizData);
-    expect(savedQuiz).toBe(quizData);
-  });
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
+    const savedQuiz = await createQuiz(quizData)
+    expect(savedQuiz).toBe(quizData)
+  })
 
-  test("Missing title parameter should raise an missing title error", async () => {
+  test('Missing title parameter should raise an missing title error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -43,16 +43,15 @@ describe("Quiz module", () => {
       instruction: faker.lorem.paragraphs(),
       answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing quiz title",
-    );
-  });
+      'missing quiz title',
+    )
+  })
 
-  //Continue to test remaining missing mandatory input parameter for createQuiz function
-  test("Missing codeLanguageId parameter should raise an missing code language error", async () => {
+  test('Missing codeLanguageId parameter should raise an missing code language error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -62,15 +61,15 @@ describe("Quiz module", () => {
       instruction: faker.lorem.paragraphs(),
       answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing code language id",
-    );
-  });
+      'missing code language id',
+    )
+  })
 
-  test("Missing userId parameter should raise an missing user id error", async () => {
+  test('Missing userId parameter should raise an missing user id error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       // userId: faker.string.uuid(),
@@ -80,15 +79,15 @@ describe("Quiz module", () => {
       instruction: faker.lorem.paragraphs(),
       answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing user id",
-    );
-  });
+      'missing user id',
+    )
+  })
 
-  test("Missing difficultyLevelId parameter should raise a missing difficulty level id error", async () => {
+  test('Missing difficultyLevelId parameter should raise a missing difficulty level id error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -98,15 +97,15 @@ describe("Quiz module", () => {
       instruction: faker.lorem.paragraphs(),
       answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing difficulty level id",
-    );
-  });
+      'missing difficulty level id',
+    )
+  })
 
-  test("Missing instruction parameter should raise a missing instruction error", async () => {
+  test('Missing instruction parameter should raise a missing instruction error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -116,15 +115,15 @@ describe("Quiz module", () => {
       // instruction: faker.lorem.paragraphs(),
       answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing instruction",
-    );
-  });
+      'missing instruction',
+    )
+  })
 
-  test("Missing answer parameter should raise a missing answer error", async () => {
+  test('Missing answer parameter should raise a missing answer error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -134,15 +133,15 @@ describe("Quiz module", () => {
       instruction: faker.lorem.paragraphs(),
       // answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing answer",
-    );
-  });
+      'missing answer',
+    )
+  })
 
-  test("Missing default code parameter should raise a missing default code error", async () => {
+  test('Missing default code parameter should raise a missing default code error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -152,15 +151,15 @@ describe("Quiz module", () => {
       instruction: faker.lorem.paragraphs(),
       answer: faker.lorem.paragraphs(),
       // defaultCode: faker.lorem.paragraphs(),
-      locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+      locale: 'en',
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing default code",
-    );
-  });
+      'missing default code',
+    )
+  })
 
-  test("Missing locale parameter should raise a missing locale error", async () => {
+  test('Missing locale parameter should raise a missing locale error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
@@ -171,97 +170,97 @@ describe("Quiz module", () => {
       answer: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraphs(),
       // locale: "en",
-    };
-    prismaMock.quiz.create.mockResolvedValue(quizData);
+    }
+    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      "missing locale",
-    );
-  });
+      'missing locale',
+    )
+  })
 
-  test("createQuizSolution fn should save and return quiz solution", async () => {
+  test('createQuizSolution fn should save and return quiz solution', async () => {
     const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
-    };
-    prismaMock.solution.create.mockResolvedValue(solutionData);
-    const savedQuizSolution = await createQuizSolution(solutionData);
-    expect(savedQuizSolution).toEqual(solutionData);
-  });
+    }
+    prismaMock.solution.create.mockResolvedValue(solutionData)
+    const savedQuizSolution = await createQuizSolution(solutionData)
+    expect(savedQuizSolution).toEqual(solutionData)
+  })
 
-  test("Missing quizId parameter should raise a missing quiz id error", async () => {
+  test('Missing quizId parameter should raise a missing quiz id error', async () => {
     const solutionData: any = {
       // quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
-    };
-    prismaMock.solution.create.mockResolvedValue(solutionData);
+    }
+    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      "missing quiz id",
-    );
-  });
+      'missing quiz id',
+    )
+  })
 
-  test("Missing code parameter should raise a missing code error", async () => {
+  test('Missing code parameter should raise a missing code error', async () => {
     const solutionData: any = {
       quizId: faker.string.uuid(),
       // code: faker.lorem.paragraphs(),
       sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
-    };
-    prismaMock.solution.create.mockResolvedValue(solutionData);
+    }
+    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      "missing code",
-    );
-  });
+      'missing code',
+    )
+  })
 
-  test("Missing sequence parameter should raise a missing sequence error", async () => {
+  test('Missing sequence parameter should raise a missing sequence error', async () => {
     const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       // sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
-    };
-    prismaMock.solution.create.mockResolvedValue(solutionData);
+    }
+    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      "missing sequence",
-    );
-  });
+      'missing sequence',
+    )
+  })
 
-  test("Missing importDirectives parameter should raise a missing import directives error", async () => {
+  test('Missing importDirectives parameter should raise a missing import directives error', async () => {
     const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
       // importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
-    };
-    prismaMock.solution.create.mockResolvedValue(solutionData);
+    }
+    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      "missing import directives",
-    );
-  });
+      'missing import directives',
+    )
+  })
 
-  test("Missing testRunner parameter should raise a missing test runner error", async () => {
+  test('Missing testRunner parameter should raise a missing test runner error', async () => {
     const solutionData: any = {
       quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       sequence: 1,
       importDirectives: faker.lorem.paragraphs(),
       // testRunner: faker.lorem.paragraphs(),
-    };
-    prismaMock.solution.create.mockResolvedValue(solutionData);
+    }
+    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      "missing test runner",
-    );
-  });
+      'missing test runner',
+    )
+  })
 
-  test("createQuizTestCases fn should save and return test cases", async () => {
+  test('createQuizTestCases fn should save and return test cases', async () => {
     const testCaseData: any = [
       {
         solutionId: faker.string.uuid(),
@@ -275,221 +274,278 @@ describe("Quiz module", () => {
         output: faker.lorem.text(),
         sequence: 1,
       },
-    ];
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData);
-    const saveQuizTestCases = await createQuizTestCases(testCaseData);
-    expect(saveQuizTestCases).toEqual(testCaseData);
-  });
+    ]
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
+    const saveQuizTestCases = await createQuizTestCases(testCaseData)
+    expect(saveQuizTestCases).toEqual(testCaseData)
+  })
 
-  test("Missing test case attributes should raise a test case missing attributes error", async () => {
+  test('Missing solutionId should raise a test case missing solutionId error', async () => {
     const testCaseData: any = [
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        sequence: 1,
+      },
       {
         // solutionId: faker.string.uuid(),
         input: faker.lorem.text(),
         output: faker.lorem.text(),
         sequence: 1,
       },
+    ]
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
+      'test case missing solutionId',
+    )
+  })
+
+  test('Missing input should raise a test case missing input error', async () => {
+    const testCaseData: any = [
       {
         solutionId: faker.string.uuid(),
         // input: faker.lorem.text(),
         output: faker.lorem.text(),
         sequence: 1,
       },
-    ];
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData);
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        sequence: 1,
+      },
+    ]
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      "test case missing attributes",
-    );
-  });
+      'test case missing input',
+    )
+  })
 
-  test("Undefined testCaseData should raise a test case not found error", async () => {
-    const testCaseData: any = undefined;
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData);
+  test('Missing output should raise a test case missing output error', async () => {
+    const testCaseData: any = [
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        // output: faker.lorem.text(),
+        sequence: 1,
+      },
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        // output: faker.lorem.text(),
+        sequence: 1,
+      },
+    ]
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      "test case not found",
-    );
-  });
+      'test case missing output',
+    )
+  })
+  test('Missing sequence should raise a test case missing sequence error', async () => {
+    const testCaseData: any = [
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        sequence: 1,
+      },
+      {
+        solutionId: faker.string.uuid(),
+        input: faker.lorem.text(),
+        output: faker.lorem.text(),
+        // sequence: 1,
+      },
+    ]
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
+      'test case missing sequence',
+    )
+  })
 
-  test("updateQuizData fn should update and return updated quiz data", async () => {
+  test('Undefined testCaseData should raise a test case not found error', async () => {
+    const testCaseData: any = undefined
+    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
+      'test case not found',
+    )
+  })
+
+  test('updateQuiz fn should update and return updated quiz data', async () => {
     const quizData: any = {
       userId: faker.string.uuid(),
       id: faker.string.uuid(),
-    };
-    prismaMock.quiz.updateMany.mockResolvedValue(quizData);
-    expect(await updateQuizData(quizData)).toEqual(quizData);
-  });
+    }
+    prismaMock.quiz.update.mockResolvedValue(quizData)
+    expect(await updateQuiz(quizData)).toEqual(quizData)
+  })
 
-  test("Missing quiz id parameter should raise a missing quiz id error", async () => {
+  test('Missing quiz id parameter should raise a missing quiz id error', async () => {
     const quizData: any = {
       userId: faker.string.uuid(),
       // id: faker.string.uuid(),
-    };
-    prismaMock.quiz.updateMany.mockResolvedValue(quizData);
-    expect(async () => await updateQuizData(quizData)).rejects.toThrow(
-      "missing quiz id",
-    );
-  });
+    }
+    prismaMock.quiz.update.mockResolvedValue(quizData)
+    expect(async () => await updateQuiz(quizData)).rejects.toThrow(
+      'missing quiz id',
+    )
+  })
 
-  test("Missing user id parameter should raise a missing user id error", async () => {
+  test('Missing user id parameter should raise a missing user id error', async () => {
     const quizData: any = {
       // userId: faker.string.uuid(),
       id: faker.string.uuid(),
-    };
-    prismaMock.quiz.updateMany.mockResolvedValue(quizData);
-    expect(async () => await updateQuizData(quizData)).rejects.toThrow(
-      "missing user id",
-    );
-  });
+    }
+    prismaMock.quiz.update.mockResolvedValue(quizData)
+    expect(async () => await updateQuiz(quizData)).rejects.toThrow(
+      'missing user id',
+    )
+  })
 
-  test("updateQuizSolution fn should update and return updated quiz solution", async () => {
+  test('updateQuizSolution fn should update and return updated quiz solution', async () => {
     const solutionData: any = {
       solutionId: faker.string.uuid(),
-      quizId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
       // defaultCode: faker.lorem.paragraph()
-    };
-    prismaMock.solution.upsert.mockResolvedValue(solutionData);
-    expect(await updateQuizSolution(solutionData)).toEqual(solutionData);
-  });
+    }
+    prismaMock.solution.update.mockResolvedValue(solutionData)
+    expect(await updateQuizSolution(solutionData)).toEqual(solutionData)
+  })
 
-  test("Missing quizId parameter should raise a missing quiz id error", async () => {
+  test('Missing solutionId parameter should raise a missing solutionId error', async () => {
     const solutionData: any = {
-      solutionId: faker.string.uuid(),
-      // quizId: faker.string.uuid(),
+      // solutionId: faker.string.uuid(),
       code: faker.lorem.paragraphs(),
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
-    };
-    prismaMock.solution.upsert.mockResolvedValue(solutionData);
+    }
+    prismaMock.solution.update.mockResolvedValue(solutionData)
     expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
-      "missing quiz id",
-    );
-  });
+      'missing solutionId',
+    )
+  })
 
-  test("Missing code parameter should raise a missing code id error", async () => {
+  test('Missing code parameter should raise a missing code id error', async () => {
     const solutionData: any = {
       solutionId: faker.string.uuid(),
-      quizId: faker.string.uuid(),
       // code: faker.lorem.paragraphs(),
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
-    };
-    prismaMock.solution.upsert.mockResolvedValue(solutionData);
+    }
+    prismaMock.solution.update.mockResolvedValue(solutionData)
     expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
-      "missing code",
-    );
-  });
+      'missing code',
+    )
+  })
 
-  test("updateQuizTestCases fn should update and return updated quiz test cases", async () => {
+  test('updateQuizTestCases fn should update and return updated quiz test cases', async () => {
     const testCaseData: any = {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
-      tests: { input: [faker.lorem.text], output: [faker.lorem.text()] },
-    };
-    prismaMock.testCase.update.mockResolvedValue(testCaseData);
-    prismaMock.$transaction.mockResolvedValue(testCaseData);
-    expect(await updateQuizTestCases(testCaseData)).toEqual(testCaseData);
-  });
+      tests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
+    }
+    prismaMock.testCase.update.mockResolvedValue(testCaseData)
+    prismaMock.$transaction.mockResolvedValue(testCaseData)
+    expect(await updateQuizTestCases(testCaseData)).toEqual(testCaseData)
+  })
 
-  test("deleteQuizTestCases fn should delete test cases and return count number", async () => {
-    prismaMock.testCase.deleteMany.mockResolvedValue({ count: 4 });
+  test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
+    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
     expect(
-      await deleteQuizTestCases({ solutionId: faker.string.uuid() }),
-    ).toEqual({ count: 4 });
-  });
+      await deleteQuizTestCases({solutionId: faker.string.uuid()}),
+    ).toEqual({count: 4})
+  })
 
-  test("Missing solutionId parameter should raise a missing solutionId error", async () => {
-    const solutionId: any = undefined;
-    prismaMock.testCase.deleteMany.mockResolvedValue({ count: 4 });
-    expect(
-      async () => await deleteQuizTestCases({ solutionId }),
-    ).rejects.toThrow("missing solutionId");
-  });
+  test('Missing solutionId parameter should raise a missing solutionId error', async () => {
+    const solutionId: any = undefined
+    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
+    expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
+      'missing solutionId',
+    )
+  })
 
-  test("deleteQuizSolution fn should delete solutions and return count number", async () => {
-    prismaMock.solution.deleteMany.mockResolvedValue({ count: 4 });
-    expect(await deleteQuizSolution({ quizId: faker.string.uuid() })).toEqual({
+  test('deleteQuizSolution fn should delete solutions and return count number', async () => {
+    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
+    expect(await deleteQuizSolution({quizId: faker.string.uuid()})).toEqual({
       count: 4,
-    });
-  });
+    })
+  })
 
-  test("Missing quizId parameter should raise a missing quizId error", async () => {
-    const quizId: any = undefined;
-    prismaMock.solution.deleteMany.mockResolvedValue({ count: 4 });
-    expect(async () => await deleteQuizSolution({ quizId })).rejects.toThrow(
-      "missing quizId",
-    );
-  });
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
+    const quizId: any = undefined
+    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
+    expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
+      'missing quizId',
+    )
+  })
 
-  test("deleteQuiz fn should delete quiz and return deleted quiz", async () => {
-    const deletedQuiz: any = { title: faker.lorem.text() };
-    prismaMock.quiz.delete.mockResolvedValue(deletedQuiz);
-    expect(await deleteQuiz({ quizId: faker.string.uuid() })).toEqual(
-      deletedQuiz,
-    );
-  });
+  test('deleteQuiz fn should delete quiz and return deleted quiz', async () => {
+    const deletedQuiz: any = {title: faker.lorem.text()}
+    prismaMock.quiz.delete.mockResolvedValue(deletedQuiz)
+    expect(await deleteQuiz({quizId: faker.string.uuid()})).toEqual(deletedQuiz)
+  })
 
-  test("Missing quizId parameter should raise a missing quizId error", async () => {
-    const quizId: any = undefined;
-    expect(async () => await deleteQuiz({ quizId })).rejects.toThrow(
-      "missing quizId",
-    );
-  });
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
+    const quizId: any = undefined
+    expect(async () => await deleteQuiz({quizId})).rejects.toThrow(
+      'missing quizId',
+    )
+  })
 
-  test("getQuizSolutionIds fn should return solutionIds", async () => {
-    const solutionIds: any = [faker.string.uuid(), faker.string.uuid()];
-    prismaMock.quiz.findUnique.mockResolvedValue(solutionIds);
-    expect(await getQuizSolutionIds({ quizId: faker.string.uuid() })).toEqual(
+  test('getQuizSolutionIds fn should return solutionIds', async () => {
+    const solutionIds: any = [faker.string.uuid(), faker.string.uuid()]
+    prismaMock.quiz.findUnique.mockResolvedValue(solutionIds)
+    expect(await getQuizSolutionIds({quizId: faker.string.uuid()})).toEqual(
       solutionIds,
-    );
-  });
+    )
+  })
 
-  test("Missing quizId parameter should raise a missing quizId error", async () => {
-    const quizId: any = undefined;
-    expect(async () => await getQuizSolutionIds({ quizId })).rejects.toThrow(
-      "missing quizId",
-    );
-  });
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
+    const quizId: any = undefined
+    expect(async () => await getQuizSolutionIds({quizId})).rejects.toThrow(
+      'missing quizId',
+    )
+  })
 
-  test("getAllUserQuizzes fn should return quizzes", async () => {
-    const quizzes: any = [{ id: 1 }, { id: 2 }];
-    prismaMock.quiz.findMany.mockResolvedValue(quizzes);
+  test('getAllUserQuizzes fn should return quizzes', async () => {
+    const quizzes: any = [{id: 1}, {id: 2}]
+    prismaMock.quiz.findMany.mockResolvedValue(quizzes)
     expect(
       await getAllUserQuizzes({
         userId: faker.string.uuid(),
         locale: faker.lorem.text(),
       }),
-    ).toEqual(quizzes);
-  });
+    ).toEqual(quizzes)
+  })
 
-  test("Missing userId parameter should raise a missing userId error", async () => {
-    const userId: any = undefined;
+  test('Missing userId parameter should raise a missing userId error', async () => {
+    const userId: any = undefined
     expect(
       async () =>
         await getAllUserQuizzes({
           userId,
           locale: faker.lorem.text(),
         }),
-    ).rejects.toThrow("missing userId");
-  });
+    ).rejects.toThrow('missing userId')
+  })
 
-  test("Missing locale parameter should raise a missing locale error", async () => {
-    const locale: any = undefined;
+  test('Missing locale parameter should raise a missing locale error', async () => {
+    const locale: any = undefined
     expect(
       async () =>
         await getAllUserQuizzes({
           locale,
           userId: faker.lorem.text(),
         }),
-    ).rejects.toThrow("missing locale");
-  });
+    ).rejects.toThrow('missing locale')
+  })
 
-  test("getQuiz fn should return quiz", async () => {
-    const quiz: any = { id: 1 };
-    prismaMock.quiz.findFirst.mockResolvedValue(quiz);
-    expect(await getQuiz({})).toEqual(quiz);
-  });
-});
+  test('getQuiz fn should return quiz', async () => {
+    const quiz: any = {id: 1}
+    prismaMock.quiz.findFirst.mockResolvedValue(quiz)
+    expect(await getQuiz({})).toEqual(quiz)
+  })
+})
