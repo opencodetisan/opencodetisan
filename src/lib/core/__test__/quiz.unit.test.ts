@@ -371,7 +371,7 @@ describe('Quiz module', () => {
       userId: faker.string.uuid(),
       id: faker.string.uuid(),
     }
-    prismaMock.quiz.updateMany.mockResolvedValue(quizData)
+    prismaMock.quiz.update.mockResolvedValue(quizData)
     expect(await updateQuiz(quizData)).toEqual(quizData)
   })
 
@@ -380,7 +380,7 @@ describe('Quiz module', () => {
       userId: faker.string.uuid(),
       // id: faker.string.uuid(),
     }
-    prismaMock.quiz.updateMany.mockResolvedValue(quizData)
+    prismaMock.quiz.update.mockResolvedValue(quizData)
     expect(async () => await updateQuiz(quizData)).rejects.toThrow(
       'missing quiz id',
     )
@@ -391,7 +391,7 @@ describe('Quiz module', () => {
       // userId: faker.string.uuid(),
       id: faker.string.uuid(),
     }
-    prismaMock.quiz.updateMany.mockResolvedValue(quizData)
+    prismaMock.quiz.update.mockResolvedValue(quizData)
     expect(async () => await updateQuiz(quizData)).rejects.toThrow(
       'missing user id',
     )

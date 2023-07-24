@@ -86,7 +86,7 @@ export const updateQuiz = async ({
   } else if (!userId) {
     throw new Error('missing user id')
   }
-  const updatedQuiz = await prisma.quiz.updateMany({
+  const updatedQuiz = await prisma.quiz.update({
     where: {id, userId},
     data: {
       instruction,
