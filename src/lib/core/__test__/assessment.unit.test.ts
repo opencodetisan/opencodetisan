@@ -42,6 +42,20 @@ describe('Assessment module', () => {
     )
   })
 
+  test('missing description parameter should return a missing description error', async () => {
+    const assessmentData: any = {
+      userId: faker.string.uuid(),
+      title: faker.lorem.text(),
+      // description: faker.lorem.text(),
+      quizIds: [faker.string.uuid(), faker.string.uuid()],
+    }
+
+    prismaMock.assessmentCandidateEmail.create.mockResolvedValue(assessmentData)
+    expect(async () => await createAssessment(assessmentData)).rejects.toThrow(
+      'missing description',
+    )
+  })
+
   test('createAssessmentCandidateEmails fn should save and return the count number', async () => {
     const candidateEmails: any = [
       {
