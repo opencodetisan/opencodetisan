@@ -1,0 +1,15 @@
+# Set the version of docker compose to use
+version: '3.9'
+
+# The containers that compose the project
+services:
+  db:
+    image: postgres:15
+    restart: always
+    container_name: integration-test
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: opencodetisan
+      POSTGRES_PASSWORD: opencodetisan
+      POSTGRES_DB: tests
