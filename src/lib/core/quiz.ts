@@ -2,6 +2,7 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
+  ITestCaseProps,
   IUpdateQuizProps,
   IUpdateQuizSolutionProps,
 } from '@/types/index'
@@ -131,7 +132,7 @@ export const updateQuizTestCases = async ({
   existingTests,
   tests,
 }: {
-  existingTests: any
+  existingTests: ITestCaseProps[]
   tests: any
 }) => {
   if (!existingTests || existingTests.length === 0) {
