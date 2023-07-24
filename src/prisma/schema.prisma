@@ -30,7 +30,7 @@ model Quiz {
     locale String @default("")
     status QuizStatus @default(DRAFT)
     //challenges Challenge[]
-    //assessmentQuizzes AssessmentQuiz[]
+    assessmentQuizzes AssessmentQuiz[]
     //assessmentResults AssessmentResult[]
     //quizPointCollection QuizPointCollection[]
 }
@@ -99,7 +99,7 @@ model Submission {
     quizId    String
     quiz      Quiz     @relation(fields: [quizId], references: [id])
     code      String
-    // assessment      AssessmentQuiz?
+    assessment      AssessmentQuiz?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     // assessmentQuizSubmission AssessmentQuizSubmission?
@@ -113,9 +113,20 @@ model Assessment {
   title String
   description String
   createdAt             DateTime        @default(now())
-  // assessmentQuizzes AssessmentQuiz[]
+  assessmentQuizzes AssessmentQuiz[]
   // assessmentCandidates AssessmentCandidate[]
   // assessmentResults AssessmentResult[]
   // assessmentCandidateEmail AssessmentCandidateEmail[]
   // activityLog ActivityLog[]
+}
+
+model AssessmentQuiz {
+  assessment Assessment @relation(fields: [assessmentId],references: [id])
+  assessmentId String 
+  quiz Quiz @relation(fields: [quizId],references: [id])
+  quizId String 
+  submission Submission? @relation(fields: [submissionId],references: [id])
+  submissionId String? @unique
+
+  @@id([assessmentId, quizId])
 }
