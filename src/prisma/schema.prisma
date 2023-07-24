@@ -26,7 +26,7 @@ model Quiz {
     defaultCode           String          @default("")
     difficultyLevelId     Int             @default(0)
     difficultyLevel       DifficultyLevel @relation(fields: [difficultyLevelId], references: [id])
-    //solutions             Solution[]
+    solutions             Solution[]
     locale String @default("")
     status QuizStatus @default(DRAFT)
     //challenges Challenge[]
@@ -67,3 +67,26 @@ model User {
 
 }
 
+model Solution {
+    id            String     @id @default(cuid())
+    code          String     @default("")
+    sequence      Int        @default(0)
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+    importDirectives String @default("")
+    testRunner String @default("")
+    testCases     TestCase[]
+    quizId        String
+    quiz          Quiz       @relation(fields: [quizId], references: [id])
+}
+
+model TestCase {
+    id         String   @id @default(cuid())
+    input      String
+    output     String
+    sequence   Int      @default(0)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    solutionId String   @default("")
+    solution   Solution @relation(fields: [solutionId], references: [id])
+}

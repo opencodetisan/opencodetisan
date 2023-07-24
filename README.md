@@ -27,6 +27,3 @@ Vivamus aliquam tortor id sapien rutrum, nec imperdiet nisl dapibus. Nunc rutrum
 ## Contact
 
 Praesent sit amet massa interdum, vestibulum urna at, finibus libero. Quisque nec lorem nisl. Donec consequat, ante id consectetur sagittis, lorem diam condimentum risus, ac aliquet ligula mi id purus.
-
-
-
