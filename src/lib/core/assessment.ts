@@ -1,6 +1,7 @@
 import {
   IAddAssessmentQuizzesProps,
   ICandidateEmailStatusProps,
+  IDeleteAssessmentQuizSubmissionsProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
   IcreateAssessmentProps,
@@ -157,4 +158,22 @@ export const getAssessmentResult = async ({
     },
   })
   return assessmentResult
+}
+
+export const deleteAssessmentQuizSubmissions = async ({
+  submissionIds,
+}: IDeleteAssessmentQuizSubmissionsProps) => {
+  if (!submissionIds) {
+    throw new Error('missing submissionIds')
+  } else if (submissionIds.length === 0) {
+    return null
+  }
+  const rmvedSubmissions = await prisma.assessmentQuizSubmission.deleteMany({
+    where: {
+      id: {
+        in: submissionIds,
+      },
+    },
+  })
+  return rmvedSubmissions
 }
