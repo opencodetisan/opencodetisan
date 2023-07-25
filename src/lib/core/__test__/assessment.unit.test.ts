@@ -222,4 +222,16 @@ describe('Assessment module', () => {
       'missing title',
     )
   })
+
+  test('missing description parameter should return a missing description error', async () => {
+    const assessmentData: any = {
+      assessmentId: faker.string.uuid(),
+      title: faker.lorem.text(),
+      // description: faker.lorem.text(),
+    }
+    prismaMock.assessment.update.mockResolvedValue(assessmentData)
+    expect(async () => await updateAssessment(assessmentData)).rejects.toThrow(
+      'missing description',
+    )
+  })
 })
