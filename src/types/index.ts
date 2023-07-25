@@ -74,3 +74,9 @@ export interface ICandidateEmailStatusProps {
   statusCode: number
   errorMessage: string
 }
+
+export interface IUpdateAssessmentProps {
+  assessmentId: string
+  title: string
+  description: string
+}
