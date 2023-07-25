@@ -399,4 +399,13 @@ describe('Assessment module', () => {
     prismaMock.assessment.findMany.mockResolvedValue(data)
     expect(await getAssessments(data)).toEqual(data)
   })
+
+  test('missing userId parameter should return a missing userId error', async () => {
+    const data: any = {
+      userId: undefined,
+    }
+    expect(async () => await getAssessments(data)).rejects.toThrow(
+      'missing userId',
+    )
+  })
 })
