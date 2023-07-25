@@ -262,4 +262,18 @@ describe('Assessment module', () => {
         await updateAssessmentCandidateStatus(assessmentCandidateData),
     ).rejects.toThrow('missing assessmentId')
   })
+
+  test('missing candidateId parameter should return a missing candidateId error', async () => {
+    const assessmentCandidateData: any = {
+      assessmentId: faker.string.uuid(),
+      // candidateId: faker.string.uuid(),
+    }
+    prismaMock.assessmentCandidate.update.mockResolvedValue(
+      assessmentCandidateData,
+    )
+    expect(
+      async () =>
+        await updateAssessmentCandidateStatus(assessmentCandidateData),
+    ).rejects.toThrow('missing candidateId')
+  })
 })
