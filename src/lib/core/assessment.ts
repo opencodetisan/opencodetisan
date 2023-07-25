@@ -137,3 +137,24 @@ export const addAssessmentQuizzes = async ({
   })
   return quizzes
 }
+
+export const getAssessmentResult = async ({
+  quizId,
+  assessmentId,
+}: IAddAssessmentQuizzesProps) => {
+  if (!assessmentId) {
+    throw new Error('missing assessmentId')
+  } else if (!quizId) {
+    throw new Error('missing quizId')
+  }
+  const assessmentResult = await prisma.assessmentResult.findFirst({
+    where: {
+      assessmentId,
+      quizId,
+    },
+    include: {
+      assessmentQuizSubmissions: true,
+    },
+  })
+  return assessmentResult
+}
