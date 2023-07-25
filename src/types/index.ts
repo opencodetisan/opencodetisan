@@ -80,3 +80,8 @@ export interface IUpdateAssessmentProps {
   title: string
   description: string
 }
+
+export interface IUpdateAssessmentCandidateStatusProps {
+  assessmentId: string
+  candidateId: string
+}
