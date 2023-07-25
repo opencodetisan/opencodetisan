@@ -1,6 +1,7 @@
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '../../db/prisma-mock-singleton'
 import {
+  addAssessmentQuizzes,
   createAssessment,
   createAssessmentCandidateEmails,
   updateAssessment,
@@ -275,5 +276,16 @@ describe('Assessment module', () => {
       async () =>
         await updateAssessmentCandidateStatus(assessmentCandidateData),
     ).rejects.toThrow('missing candidateId')
+  })
+
+  test('addAssessmentQuizzes fn should add quizzes and return the count number', async () => {
+    const assessmentQuizData: any = {
+      assessmentId: faker.string.uuid(),
+      quizIds: [faker.string.uuid(), faker.string.uuid()],
+    }
+    prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
+    expect(await addAssessmentQuizzes(assessmentQuizData)).toEqual(
+      assessmentQuizData,
+    )
   })
 })
