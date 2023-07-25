@@ -68,6 +68,7 @@ model User {
     assessments Assessment[]
     adminContact AdminContact?
     assessmentResults AssessmentResult[]
+    assessmentCandidates AssessmentCandidate[]
 }
 
 model Solution {
@@ -114,6 +115,11 @@ enum AssessmentQuizStatus {
   COMPLETED
 }
 
+enum AssessmentStatus {
+  PENDING
+  COMPLETED
+}
+
 model Assessment {
   id String @id @default(cuid())
   owner User @relation(fields: [ownerId], references: [id])
@@ -122,7 +128,7 @@ model Assessment {
   description String
   createdAt             DateTime        @default(now())
   assessmentQuizzes AssessmentQuiz[]
-  // assessmentCandidates AssessmentCandidate[]
+  assessmentCandidates AssessmentCandidate[]
   assessmentResults AssessmentResult[]
   assessmentCandidateEmail AssessmentCandidateEmail[]
   // activityLog ActivityLog[]
@@ -167,4 +173,15 @@ model AssessmentResult {
   timeTaken Float? @default(0.0)
   status AssessmentQuizStatus @default(PENDING)
   // assessmentQuizSubmissions AssessmentQuizSubmission[]
+}
+
+model AssessmentCandidate {
+  assessment Assessment @relation(fields: [assessmentId],references: [id])
+  assessmentId String
+  candidate User @relation(fields: [candidateId], references: [id])
+  candidateId String
+  status AssessmentStatus @default(PENDING)
+  token String @unique
+
+  @@id([assessmentId, candidateId])
 }
