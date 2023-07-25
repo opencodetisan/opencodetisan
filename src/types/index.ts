@@ -90,3 +90,8 @@ export interface IAddAssessmentQuizzesProps {
   quizIds: string[]
   assessmentId: string
 }
+
+export interface IAddAssessmentQuizzesProps {
+  quizId: string
+  assessmentId: string
+}
