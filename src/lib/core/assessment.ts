@@ -1,4 +1,5 @@
 import {
+  IAddAssessmentQuizzesProps,
   ICandidateEmailStatusProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
@@ -115,4 +116,21 @@ export const updateAssessmentCandidateStatus = async ({
     },
   })
   return assessmentCandidate
+}
+
+export const addAssessmentQuizzes = async ({
+  quizIds,
+  assessmentId,
+}: IAddAssessmentQuizzesProps) => {
+  if (!assessmentId) {
+    throw new Error('missing assessmentId')
+  } else if (!quizIds) {
+    throw new Error('missing quizIds')
+  }
+  const quizzes = await prisma.assessmentQuiz.createMany({
+    data: quizIds.map((quizId) => {
+      return {quizId, assessmentId}
+    }),
+  })
+  return quizzes
 }
