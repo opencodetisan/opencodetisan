@@ -1,4 +1,8 @@
-import {ICandidateEmailStatusProps, IcreateAssessmentProps} from '@/types'
+import {
+  ICandidateEmailStatusProps,
+  IUpdateAssessmentProps,
+  IcreateAssessmentProps,
+} from '@/types'
 import prisma from '../db/client'
 
 export const createAssessment = async ({
@@ -63,4 +67,28 @@ export const createAssessmentCandidateEmails = async (
     data: candidateEmails,
   })
   return emails
+}
+
+export const updateAssessment = async ({
+  assessmentId,
+  title,
+  description,
+}: IUpdateAssessmentProps) => {
+  if (!assessmentId) {
+    throw new Error('missing assessmentId')
+  } else if (!title) {
+    throw new Error('missing title')
+  } else if (!description) {
+    throw new Error('missing description')
+  }
+  const updatedAssessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      title,
+      description,
+    },
+  })
+  return updatedAssessment
 }
