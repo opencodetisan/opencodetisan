@@ -382,4 +382,12 @@ describe('Assessment module', () => {
       async () => await deleteAssessmentQuizSubmissions(data),
     ).rejects.toThrow('missing submissionIds')
   })
+
+  test('empty submissionIds array should return null', async () => {
+    const data: any = {
+      submissionIds: [],
+    }
+    prismaMock.assessmentQuizSubmission.deleteMany.mockResolvedValue({count: 2})
+    expect(await deleteAssessmentQuizSubmissions(data)).toBe(null)
+  })
 })
