@@ -31,7 +31,7 @@ model Quiz {
     status QuizStatus @default(DRAFT)
     //challenges Challenge[]
     assessmentQuizzes AssessmentQuiz[]
-    //assessmentResults AssessmentResult[]
+    assessmentResults AssessmentResult[]
     //quizPointCollection QuizPointCollection[]
 }
 
@@ -67,6 +67,7 @@ model User {
     submissions   Submission[]
     assessments Assessment[]
     adminContact AdminContact?
+    assessmentResults AssessmentResult[]
 }
 
 model Solution {
@@ -107,6 +108,12 @@ model Submission {
     // submissionPoint SubmissionPoint[]
 }
 
+enum AssessmentQuizStatus {
+  PENDING
+  STARTED
+  COMPLETED
+}
+
 model Assessment {
   id String @id @default(cuid())
   owner User @relation(fields: [ownerId], references: [id])
@@ -116,7 +123,7 @@ model Assessment {
   createdAt             DateTime        @default(now())
   assessmentQuizzes AssessmentQuiz[]
   // assessmentCandidates AssessmentCandidate[]
-  // assessmentResults AssessmentResult[]
+  assessmentResults AssessmentResult[]
   assessmentCandidateEmail AssessmentCandidateEmail[]
   // activityLog ActivityLog[]
 }
@@ -147,4 +154,17 @@ model AdminContact {
   userId String @unique
   companyName String
   contactNumber Int
+}
+
+model AssessmentResult {
+  id String @id @default(cuid())
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  quizId String 
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  assessmentId String
+  candidate User? @relation(fields: [candidateId], references: [id])
+  candidateId String?
+  timeTaken Float? @default(0.0)
+  status AssessmentQuizStatus @default(PENDING)
+  // assessmentQuizSubmissions AssessmentQuizSubmission[]
 }
