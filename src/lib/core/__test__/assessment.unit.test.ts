@@ -4,6 +4,7 @@ import {
   addAssessmentQuizzes,
   createAssessment,
   createAssessmentCandidateEmails,
+  deleteAssessmentQuizSubmissions,
   getAssessmentResult,
   updateAssessment,
   updateAssessmentCandidateStatus,
@@ -360,5 +361,15 @@ describe('Assessment module', () => {
     expect(
       async () => await getAssessmentResult(assessmentResultData),
     ).rejects.toThrow('missing quizId')
+  })
+
+  test('deleteAssessmentQuizSubmissions fn should delete and return the count number', async () => {
+    const data: any = {
+      submissionIds: [faker.string.uuid(), faker.string.uuid()],
+    }
+    prismaMock.assessmentQuizSubmission.deleteMany.mockResolvedValue({count: 2})
+    expect(await deleteAssessmentQuizSubmissions(data)).toEqual({
+      count: 2,
+    })
   })
 })
