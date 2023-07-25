@@ -95,3 +95,7 @@ export interface IAddAssessmentQuizzesProps {
   quizId: string
   assessmentId: string
 }
+
+export interface IDeleteAssessmentQuizSubmissionsProps {
+  submissionIds: string[]
+}
