@@ -85,3 +85,8 @@ export interface IUpdateAssessmentCandidateStatusProps {
   assessmentId: string
   candidateId: string
 }
+
+export interface IAddAssessmentQuizzesProps {
+  quizIds: string[]
+  assessmentId: string
+}
