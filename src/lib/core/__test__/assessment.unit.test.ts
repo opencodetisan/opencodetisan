@@ -310,4 +310,15 @@ describe('Assessment module', () => {
       async () => await addAssessmentQuizzes(assessmentQuizData),
     ).rejects.toThrow('missing quizIds')
   })
+
+  test('Empty quizIds array should return a 0 quizId found error', async () => {
+    const assessmentQuizData: any = {
+      assessmentId: faker.string.uuid(),
+      quizIds: [],
+    }
+    prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
+    expect(
+      async () => await addAssessmentQuizzes(assessmentQuizData),
+    ).rejects.toThrow('0 quizId found')
+  })
 })
