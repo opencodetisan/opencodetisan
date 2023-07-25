@@ -1,6 +1,10 @@
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '../../db/prisma-mock-singleton'
-import {createAssessment, createAssessmentCandidateEmails} from '../assessment'
+import {
+  createAssessment,
+  createAssessmentCandidateEmails,
+  updateAssessment,
+} from '../assessment'
 
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
@@ -183,5 +187,15 @@ describe('Assessment module', () => {
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
     ).rejects.toThrow('missing errorMessage')
+  })
+
+  test('updateAssessment fn should save and return the assessment data', async () => {
+    const assessmentData: any = {
+      assessmentId: faker.string.uuid(),
+      title: faker.lorem.text(),
+      description: faker.lorem.text(),
+    }
+    prismaMock.assessment.update.mockResolvedValue(assessmentData)
+    expect(await updateAssessment(assessmentData)).toEqual(assessmentData)
   })
 })
