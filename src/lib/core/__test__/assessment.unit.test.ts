@@ -372,4 +372,14 @@ describe('Assessment module', () => {
       count: 2,
     })
   })
+
+  test('missing submissionIds parameter should return a missing submissionIds error', async () => {
+    const data: any = {
+      submissionIds: undefined,
+    }
+    prismaMock.assessmentQuizSubmission.deleteMany.mockResolvedValue({count: 2})
+    expect(
+      async () => await deleteAssessmentQuizSubmissions(data),
+    ).rejects.toThrow('missing submissionIds')
+  })
 })
