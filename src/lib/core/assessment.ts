@@ -126,7 +126,10 @@ export const addAssessmentQuizzes = async ({
     throw new Error('missing assessmentId')
   } else if (!quizIds) {
     throw new Error('missing quizIds')
+  } else if (quizIds.length === 0) {
+    throw new Error('0 quizId found')
   }
+
   const quizzes = await prisma.assessmentQuiz.createMany({
     data: quizIds.map((quizId) => {
       return {quizId, assessmentId}
