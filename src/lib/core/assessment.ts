@@ -177,3 +177,39 @@ export const deleteAssessmentQuizSubmissions = async ({
   })
   return rmvedSubmissions
 }
+
+export const getAssessments = async ({userId}: {userId: string}) => {
+  if (!userId) {
+    throw new Error('missing userId')
+  }
+  const assessments = await prisma.assessment.findMany({
+    where: {
+      ownerId: userId,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    select: {
+      id: true,
+      title: true,
+      assessmentQuizzes: {
+        select: {
+          quizId: true,
+        },
+      },
+      assessmentCandidates: {
+        select: {
+          status: true,
+          candidate: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      createdAt: true,
+      description: true,
+    },
+  })
+  return assessments
+}
