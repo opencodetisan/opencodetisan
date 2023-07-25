@@ -4,6 +4,7 @@ import {
   addAssessmentQuizzes,
   createAssessment,
   createAssessmentCandidateEmails,
+  getAssessmentResult,
   updateAssessment,
   updateAssessmentCandidateStatus,
 } from '../assessment'
@@ -320,5 +321,18 @@ describe('Assessment module', () => {
     expect(
       async () => await addAssessmentQuizzes(assessmentQuizData),
     ).rejects.toThrow('0 quizId found')
+  })
+
+  test('getAssessmentResult fn should return the assessmentResult', async () => {
+    const assessmentResultData: any = {
+      assessmentId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+    }
+    prismaMock.assessmentResult.findFirst.mockResolvedValue(
+      assessmentResultData,
+    )
+    expect(await getAssessmentResult(assessmentResultData)).toEqual(
+      assessmentResultData,
+    )
   })
 })
