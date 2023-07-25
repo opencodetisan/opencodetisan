@@ -4,6 +4,7 @@ import {
   createAssessment,
   createAssessmentCandidateEmails,
   updateAssessment,
+  updateAssessmentCandidateStatus,
 } from '../assessment'
 
 describe('Assessment module', () => {
@@ -233,5 +234,18 @@ describe('Assessment module', () => {
     expect(async () => await updateAssessment(assessmentData)).rejects.toThrow(
       'missing description',
     )
+  })
+
+  test('updateAssessmentCandidateStatus fn should update and return the assessmentCandidate data', async () => {
+    const assessmentCandidateData: any = {
+      assessmentId: faker.string.uuid(),
+      candidateId: faker.string.uuid(),
+    }
+    prismaMock.assessmentCandidate.update.mockResolvedValue(
+      assessmentCandidateData,
+    )
+    expect(
+      await updateAssessmentCandidateStatus(assessmentCandidateData),
+    ).toEqual(assessmentCandidateData)
   })
 })
