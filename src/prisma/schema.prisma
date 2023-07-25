@@ -105,7 +105,7 @@ model Submission {
     assessment      AssessmentQuiz?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    // assessmentQuizSubmission AssessmentQuizSubmission?
+    assessmentQuizSubmission AssessmentQuizSubmission?
     // submissionPoint SubmissionPoint[]
 }
 
@@ -172,7 +172,7 @@ model AssessmentResult {
   candidateId String?
   timeTaken Float? @default(0.0)
   status AssessmentQuizStatus @default(PENDING)
-  // assessmentQuizSubmissions AssessmentQuizSubmission[]
+  assessmentQuizSubmissions AssessmentQuizSubmission[]
 }
 
 model AssessmentCandidate {
@@ -184,4 +184,14 @@ model AssessmentCandidate {
   token String @unique
 
   @@id([assessmentId, candidateId])
+}
+
+model AssessmentQuizSubmission {
+  id String @id @default(cuid())
+  assessmentResult AssessmentResult @relation(fields: [assessmentResultId], references: [id])
+  assessmentResultId String
+  submission Submission? @relation(fields: [submissionId], references: [id])
+  submissionId String? @unique
+  start DateTime?
+  end DateTime?
 }
