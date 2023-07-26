@@ -418,4 +418,14 @@ describe('Assessment module', () => {
     prismaMock.assessmentQuiz.delete.mockResolvedValue(data)
     expect(await deleteAssessmentQuiz(data)).toEqual(data)
   })
+
+  test('missing assessmentId parameter should return a missing assessmentId error', async () => {
+    const data: any = {
+      // assessmentId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+    }
+    expect(async () => await deleteAssessmentQuiz(data)).rejects.toThrow(
+      'missing assessmentId',
+    )
+  })
 })
