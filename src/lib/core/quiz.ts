@@ -240,16 +240,9 @@ export const getAllUserQuizzes = async ({
   return quizzes
 }
 
-export const getQuiz = async ({
-  userId,
-  quizId,
-}: {
-  userId?: string
-  quizId?: string
-}) => {
-  const quiz = await prisma.quiz.findFirst({
+export const getQuiz = async ({quizId}: {quizId: string}) => {
+  const quiz = await prisma.quiz.findUnique({
     where: {
-      userId,
       id: quizId,
     },
     select: {
