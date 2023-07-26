@@ -241,6 +241,9 @@ export const getAllUserQuizzes = async ({
 }
 
 export const getQuiz = async ({quizId}: {quizId: string}) => {
+  if (!quizId) {
+    throw new Error('missing quizId')
+  }
   const quiz = await prisma.quiz.findUnique({
     where: {
       id: quizId,
