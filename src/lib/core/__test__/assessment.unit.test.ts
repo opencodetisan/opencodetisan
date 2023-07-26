@@ -4,6 +4,7 @@ import {
   addAssessmentQuizzes,
   createAssessment,
   createAssessmentCandidateEmails,
+  deleteAssessmentQuiz,
   deleteAssessmentQuizSubmissions,
   deleteAssessmentResult,
   getAssessmentResult,
@@ -407,5 +408,14 @@ describe('Assessment module', () => {
     expect(async () => await deleteAssessmentResult(data)).rejects.toThrow(
       'missing assessmentResultId',
     )
+  })
+
+  test('deleteAssessmentQuiz fn should delete and return assessmentResult', async () => {
+    const data: any = {
+      assessmentId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+    }
+    prismaMock.assessmentQuiz.delete.mockResolvedValue(data)
+    expect(await deleteAssessmentQuiz(data)).toEqual(data)
   })
 })
