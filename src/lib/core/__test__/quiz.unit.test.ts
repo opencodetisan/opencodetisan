@@ -139,7 +139,7 @@ describe('Quiz module', () => {
     )
   })
 
-  test('Missing default code parameter should raise a missing default code error', async () => {
+  test('Missing defaultCode parameter should raise a missing defaultCode error', async () => {
     const quizData: any = {
       id: faker.string.uuid(),
       userId: faker.string.uuid(),
