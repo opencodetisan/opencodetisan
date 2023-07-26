@@ -378,25 +378,25 @@ describe('Quiz module', () => {
     expect(await updateQuiz(quizData)).toEqual(quizData)
   })
 
-  test('Missing quiz id parameter should raise a missing quiz id error', async () => {
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
     const quizData: any = {
       userId: faker.string.uuid(),
       // id: faker.string.uuid(),
     }
     prismaMock.quiz.update.mockResolvedValue(quizData)
     expect(async () => await updateQuiz(quizData)).rejects.toThrow(
-      'missing quiz id',
+      'missing quizId',
     )
   })
 
-  test('Missing user id parameter should raise a missing user id error', async () => {
+  test('Missing userId parameter should raise a missing userId error', async () => {
     const quizData: any = {
       // userId: faker.string.uuid(),
       id: faker.string.uuid(),
     }
     prismaMock.quiz.update.mockResolvedValue(quizData)
     expect(async () => await updateQuiz(quizData)).rejects.toThrow(
-      'missing user id',
+      'missing userId',
     )
   })
 

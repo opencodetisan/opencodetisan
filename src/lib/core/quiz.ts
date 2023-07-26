@@ -82,9 +82,9 @@ export const updateQuiz = async ({
   difficultyLevelId,
 }: IUpdateQuizProps) => {
   if (!id) {
-    throw new Error('missing quiz id')
+    throw new Error('missing quizId')
   } else if (!userId) {
-    throw new Error('missing user id')
+    throw new Error('missing userId')
   }
   const updatedQuiz = await prisma.quiz.update({
     where: {id, userId},
