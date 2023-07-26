@@ -43,7 +43,6 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing quiz title',
     )
@@ -61,7 +60,6 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing codeLanguageId',
     )
@@ -79,7 +77,6 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing userId',
     )
@@ -97,7 +94,6 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing difficultyLevelId',
     )
@@ -115,7 +111,6 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing instruction',
     )
@@ -133,7 +128,6 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing answer',
     )
@@ -151,7 +145,6 @@ describe('Quiz module', () => {
       // defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing defaultCode',
     )
@@ -169,7 +162,6 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       // locale: "en",
     }
-    prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
       'missing locale',
     )
@@ -196,7 +188,6 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
       'missing quizId',
     )
@@ -210,7 +201,6 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
       'missing code',
     )
@@ -224,7 +214,6 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
       'missing sequence',
     )
@@ -238,7 +227,6 @@ describe('Quiz module', () => {
       // importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
       'missing importDirectives',
     )
@@ -252,7 +240,6 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       // testRunner: faker.lorem.paragraphs(),
     }
-    prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
       'missing testRunner',
     )
@@ -293,7 +280,6 @@ describe('Quiz module', () => {
         sequence: 1,
       },
     ]
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
       'test case missing solutionId',
     )
@@ -314,7 +300,6 @@ describe('Quiz module', () => {
         sequence: 1,
       },
     ]
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
       'test case missing input',
     )
@@ -335,7 +320,6 @@ describe('Quiz module', () => {
         sequence: 1,
       },
     ]
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
       'test case missing output',
     )
@@ -355,7 +339,6 @@ describe('Quiz module', () => {
         // sequence: 1,
       },
     ]
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
       'test case missing sequence',
     )
@@ -363,7 +346,6 @@ describe('Quiz module', () => {
 
   test('Undefined testCaseData should raise a test case not found error', async () => {
     const testCaseData: any = undefined
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
     expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
       'test case not found',
     )
@@ -383,7 +365,6 @@ describe('Quiz module', () => {
       userId: faker.string.uuid(),
       // id: faker.string.uuid(),
     }
-    prismaMock.quiz.update.mockResolvedValue(quizData)
     expect(async () => await updateQuiz(quizData)).rejects.toThrow(
       'missing quizId',
     )
@@ -394,7 +375,6 @@ describe('Quiz module', () => {
       // userId: faker.string.uuid(),
       id: faker.string.uuid(),
     }
-    prismaMock.quiz.update.mockResolvedValue(quizData)
     expect(async () => await updateQuiz(quizData)).rejects.toThrow(
       'missing userId',
     )
@@ -420,7 +400,6 @@ describe('Quiz module', () => {
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
     }
-    prismaMock.solution.update.mockResolvedValue(solutionData)
     expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
       'missing solutionId',
     )
@@ -434,7 +413,6 @@ describe('Quiz module', () => {
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
     }
-    prismaMock.solution.update.mockResolvedValue(solutionData)
     expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
       'missing code',
     )
@@ -529,7 +507,6 @@ describe('Quiz module', () => {
 
   test('Missing solutionId parameter should raise a missing solutionId error', async () => {
     const solutionId: any = undefined
-    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
     expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
       'missing solutionId',
     )
@@ -544,7 +521,6 @@ describe('Quiz module', () => {
 
   test('Missing quizId parameter should raise a missing quizId error', async () => {
     const quizId: any = undefined
-    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
     expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
       'missing quizId',
     )
