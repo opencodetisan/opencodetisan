@@ -510,6 +510,16 @@ describe('Quiz module', () => {
     )
   })
 
+  test('Empty tests output field should raise a 0 tests output found error', async () => {
+    const testCaseData: any = {
+      existingTests: [faker.lorem.text(), faker.lorem.text()],
+      tests: {input: [faker.lorem.text()], output: []},
+    }
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
+      '0 tests output found',
+    )
+  })
+
   test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
     prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
     expect(
