@@ -450,6 +450,16 @@ describe('Quiz module', () => {
     expect(await updateQuizTestCases(testCaseData)).toEqual(testCaseData)
   })
 
+  test('Missing existingTests parameter should raise a missing existingTests error', async () => {
+    const testCaseData: any = {
+      // existingTests: [faker.lorem.text(), faker.lorem.text()],
+      tests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
+    }
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
+      'missing existingTests',
+    )
+  })
+
   test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
     prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
     expect(
