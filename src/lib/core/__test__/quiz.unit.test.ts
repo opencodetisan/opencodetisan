@@ -490,6 +490,16 @@ describe('Quiz module', () => {
     )
   })
 
+  test('Empty tests input field should raise a 0 tests input found error', async () => {
+    const testCaseData: any = {
+      existingTests: [faker.lorem.text(), faker.lorem.text()],
+      tests: {input: [], output: [faker.lorem.text()]},
+    }
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
+      '0 tests input found',
+    )
+  })
+
   test('Missing tests output field should raise a missing tests output field error', async () => {
     const testCaseData: any = {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
