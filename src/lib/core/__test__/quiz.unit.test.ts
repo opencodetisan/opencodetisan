@@ -698,4 +698,11 @@ describe('Quiz module', () => {
     prismaMock.quiz.findUnique.mockResolvedValue(quizData)
     expect(await getQuiz(quizData)).toEqual(quizData)
   })
+
+  test('Missing locale parameter should raise a missing locale error', async () => {
+    const quizData: any = {quizId: undefined}
+    expect(async () => await getQuiz(quizData)).rejects.toThrow(
+      'missing quizId',
+    )
+  })
 })
