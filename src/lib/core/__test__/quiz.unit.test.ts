@@ -480,6 +480,16 @@ describe('Quiz module', () => {
     )
   })
 
+  test('Missing tests input field should raise a missing tests input field error', async () => {
+    const testCaseData: any = {
+      existingTests: [faker.lorem.text(), faker.lorem.text()],
+      tests: {output: [faker.lorem.text()]},
+    }
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
+      'missing tests input field',
+    )
+  })
+
   test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
     prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
     expect(
