@@ -63,7 +63,7 @@ describe('Quiz module', () => {
     }
     prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing code language id',
+      'missing codeLanguageId',
     )
   })
 
@@ -81,7 +81,7 @@ describe('Quiz module', () => {
     }
     prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing user id',
+      'missing userId',
     )
   })
 
@@ -99,7 +99,7 @@ describe('Quiz module', () => {
     }
     prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing difficulty level id',
+      'missing difficultyLevelId',
     )
   })
 
@@ -153,7 +153,7 @@ describe('Quiz module', () => {
     }
     prismaMock.quiz.create.mockResolvedValue(quizData)
     expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing default code',
+      'missing defaultCode',
     )
   })
 
