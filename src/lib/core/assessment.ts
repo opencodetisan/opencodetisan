@@ -191,3 +191,26 @@ export const deleteAssessmentResult = async ({
   })
   return assessmentResult
 }
+
+export const deleteAssessmentQuiz = async ({
+  assessmentId,
+  quizId,
+}: {
+  assessmentId: string
+  quizId: string
+}) => {
+  if (!assessmentId) {
+    throw new Error('missing assessmentId')
+  } else if (!quizId) {
+    throw new Error('missing quizId')
+  }
+  const assessmentResult = await prisma.assessmentQuiz.delete({
+    where: {
+      assessmentId_quizId: {
+        assessmentId,
+        quizId,
+      },
+    },
+  })
+  return assessmentResult
+}
