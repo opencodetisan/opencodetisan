@@ -136,9 +136,9 @@ export const updateQuizTestCases = async ({
   tests: any
 }) => {
   if (!existingTests || existingTests.length === 0) {
-    throw new Error('missing existing test cases')
+    throw new Error('missing existingTests')
   } else if (!tests) {
-    throw new Error('missing new test cases')
+    throw new Error('missing tests')
   }
   let i = -1
   const txn = await prisma.$transaction(
