@@ -694,8 +694,8 @@ describe('Quiz module', () => {
   })
 
   test('getQuiz fn should return quiz', async () => {
-    const quiz: any = {id: 1}
-    prismaMock.quiz.findFirst.mockResolvedValue(quiz)
-    expect(await getQuiz({})).toEqual(quiz)
+    const quizData: any = {quizId: 1}
+    prismaMock.quiz.findUnique.mockResolvedValue(quizData)
+    expect(await getQuiz(quizData)).toEqual(quizData)
   })
 })
