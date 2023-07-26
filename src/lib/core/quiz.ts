@@ -34,15 +34,15 @@ export const createQuizSolution = async (
   solutionData: ICreateQuizSolutionProps,
 ) => {
   if (!solutionData.quizId) {
-    throw new Error('missing quiz id')
+    throw new Error('missing quizId')
   } else if (!solutionData.code) {
     throw new Error('missing code')
   } else if (!solutionData.sequence) {
     throw new Error('missing sequence')
   } else if (!solutionData.importDirectives) {
-    throw new Error('missing import directives')
+    throw new Error('missing importDirectives')
   } else if (!solutionData.testRunner) {
-    throw new Error('missing test runner')
+    throw new Error('missing testRunner')
   }
   const solution = await prisma.solution.create({
     data: solutionData,

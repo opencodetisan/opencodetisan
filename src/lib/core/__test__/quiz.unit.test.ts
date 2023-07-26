@@ -198,7 +198,7 @@ describe('Quiz module', () => {
     }
     prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing quiz id',
+      'missing quizId',
     )
   })
 
@@ -240,7 +240,7 @@ describe('Quiz module', () => {
     }
     prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing import directives',
+      'missing importDirectives',
     )
   })
 
@@ -254,7 +254,7 @@ describe('Quiz module', () => {
     }
     prismaMock.solution.create.mockResolvedValue(solutionData)
     expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing test runner',
+      'missing testRunner',
     )
   })
 
