@@ -470,6 +470,16 @@ describe('Quiz module', () => {
     )
   })
 
+  test('Missing tests parameter should raise a missing tests error', async () => {
+    const testCaseData: any = {
+      existingTests: [faker.lorem.text(), faker.lorem.text()],
+      // tests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
+    }
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
+      'missing tests',
+    )
+  })
+
   test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
     prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
     expect(
