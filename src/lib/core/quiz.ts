@@ -2,6 +2,7 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
+  ITestCaseClientProps,
   ITestCaseProps,
   IUpdateQuizProps,
   IUpdateQuizSolutionProps,
@@ -133,7 +134,7 @@ export const updateQuizTestCases = async ({
   tests,
 }: {
   existingTests: ITestCaseProps[]
-  tests: any
+  tests: ITestCaseClientProps
 }) => {
   if (!existingTests) {
     throw new Error('missing existingTests')
@@ -141,6 +142,8 @@ export const updateQuizTestCases = async ({
     throw new Error('0 existingTest found')
   } else if (!tests) {
     throw new Error('missing tests')
+  } else if (!tests.input) {
+    throw new Error('missing tests input field')
   }
   let i = -1
   const txn = await prisma.$transaction(
