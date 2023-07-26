@@ -144,7 +144,10 @@ export const updateQuizTestCases = async ({
     throw new Error('missing tests')
   } else if (!tests.input) {
     throw new Error('missing tests input field')
+  } else if (tests.input.length === 0) {
+    throw new Error('0 tests input found')
   }
+
   let i = -1
   const txn = await prisma.$transaction(
     existingTests.map((test: any) => {
