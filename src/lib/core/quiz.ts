@@ -135,8 +135,10 @@ export const updateQuizTestCases = async ({
   existingTests: ITestCaseProps[]
   tests: any
 }) => {
-  if (!existingTests || existingTests.length === 0) {
+  if (!existingTests) {
     throw new Error('missing existingTests')
+  } else if (existingTests.length === 0) {
+    throw new Error('0 existingTest found')
   } else if (!tests) {
     throw new Error('missing tests')
   }
