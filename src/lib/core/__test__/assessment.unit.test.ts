@@ -8,6 +8,7 @@ import {
   getAssessment,
   getAssessmentCompletedQuiz,
   getAssessmentPoints,
+  getAssessmentQuizPoint,
   getAssessmentResult,
   getAssessments,
   updateAssessment,
@@ -451,6 +452,44 @@ describe('Assessment module', () => {
     prismaMock.assessmentPoint.findMany.mockResolvedValue(data)
     expect(await getAssessmentPoints()).toEqual({
       point: {point: 1, id: '1'},
+    })
+  })
+
+  test('getAssessmentQuizPoint fn should return the assessmentResult', async () => {
+    const assessmentPointData: any = [
+      {name: 'easyQuizCompletionPoint', point: 1, id: '1111'},
+      {name: 'speedPoint', point: 1, id: '2222'},
+    ]
+    const assessmentQuizData = {
+      assessmentQuizzes: [
+        {
+          quiz: {
+            difficultyLevel: {
+              name: 'easy',
+            },
+            id: 'quiz1',
+            title: 'Two sum',
+            instruction: 'Just do it',
+            difficultyLevelId: 1,
+          },
+        },
+      ],
+    }
+    prismaMock.assessmentPoint.findMany.mockResolvedValue(assessmentPointData)
+    expect(await getAssessmentQuizPoint(assessmentQuizData)).toEqual({
+      totalPoint: 2.2,
+      quizPoints: {quiz1: 2.2},
+      assignedQuizzes: [
+        {
+          difficultyLevel: {
+            name: 'easy',
+          },
+          difficultyLevelId: 1,
+          id: 'quiz1',
+          instruction: 'Just do it',
+          title: 'Two sum',
+        },
+      ],
     })
   })
 })
