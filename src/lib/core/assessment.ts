@@ -318,3 +318,25 @@ export const getAssessment = async ({assessmentId}: {assessmentId: string}) => {
   })
   return assessment
 }
+
+export const getAssessmentCompletedQuiz = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw new Error('missing assessmentId')
+  }
+  const assessmentResults = await prisma.assessmentResult.findMany({
+    where: {
+      assessmentId,
+      status: 'COMPLETED',
+    },
+    select: {
+      quizId: true,
+    },
+    distinct: ['quizId'],
+  })
+
+  return assessmentResults
+}
