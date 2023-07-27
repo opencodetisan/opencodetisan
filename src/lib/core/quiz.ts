@@ -141,7 +141,7 @@ export const updateQuizTestCases = async ({
   } else if (existingTests.length === 0) {
     throw new Error('0 existingTest found')
   } else if (!tests) {
-    throw new Error('missing tests')
+    throw new Error('missing new tests')
   } else if (!tests.input) {
     throw new Error('missing tests input field')
   } else if (tests.input.length === 0) {

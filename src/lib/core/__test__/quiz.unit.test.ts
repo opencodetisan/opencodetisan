@@ -454,7 +454,7 @@ describe('Quiz module', () => {
       // tests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
     }
     expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      'missing tests',
+      'missing new tests',
     )
   })
 
