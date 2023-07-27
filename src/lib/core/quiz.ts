@@ -2,8 +2,6 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
-  ITestCaseClientProps,
-  ITestCaseProps,
   IUpdateQuizProps,
   IUpdateQuizSolutionProps,
   IUpdateQuizTestCasesProps,
