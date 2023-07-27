@@ -195,3 +195,10 @@ model AssessmentQuizSubmission {
   start DateTime?
   end DateTime?
 }
+
+model AssessmentPoint {
+  id Int @id @default(autoincrement())
+  name String @unique
+  point Int
+  // submissionPoint SubmissionPoint[]
+}
