@@ -223,11 +223,21 @@ model Price {
   label String
   description String?
   // subscription Subscription[]
-  // priceFeature PriceFeature[]
+  priceFeature PriceFeature[]
+}
+
+model PriceFeature {
+  price Price @relation(fields: [priceId], references: [id]) 
+  priceId String 
+  feature Feature @relation(fields: [featureId], references: [id])
+  featureId Int
+  value String
+
+  @@id([priceId, featureId])
 }
 
 model Feature {
   id Int @id @default(autoincrement())
   name String @unique
-  // priceFeature PriceFeature[]
+  priceFeature PriceFeature[]
 }
