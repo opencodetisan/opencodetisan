@@ -6,6 +6,7 @@ import {
   ITestCaseProps,
   IUpdateQuizProps,
   IUpdateQuizSolutionProps,
+  IUpdateQuizTestCasesProps,
 } from '@/types/index'
 import prisma from '@/lib/db/client'
 
@@ -131,24 +132,21 @@ export const updateQuizSolution = async ({
 
 export const updateQuizTestCases = async ({
   existingTests,
-  tests,
-}: {
-  existingTests: ITestCaseProps[]
-  tests: ITestCaseClientProps
-}) => {
+  newTests,
+}: IUpdateQuizTestCasesProps) => {
   if (!existingTests) {
     throw new Error('missing existingTests')
   } else if (existingTests.length === 0) {
     throw new Error('0 existingTest found')
-  } else if (!tests) {
-    throw new Error('missing new tests')
-  } else if (!tests.input) {
-    throw new Error('missing tests input field')
-  } else if (tests.input.length === 0) {
-    throw new Error('0 tests input found')
-  } else if (!tests.output) {
-    throw new Error('missing tests output field')
-  } else if (tests.output.length === 0) {
+  } else if (!newTests) {
+    throw new Error('missing new newTests')
+  } else if (!newTests.input) {
+    throw new Error('missing newTests input field')
+  } else if (newTests.input.length === 0) {
+    throw new Error('0 newTests input found')
+  } else if (!newTests.output) {
+    throw new Error('missing newTests output field')
+  } else if (newTests.output.length === 0) {
     throw new Error('0 tests output found')
   }
 
@@ -161,8 +159,8 @@ export const updateQuizTestCases = async ({
           id: test.id,
         },
         data: {
-          input: tests.input[i],
-          output: tests.output[i],
+          input: newTests.input[i],
+          output: newTests.output[i],
         },
       })
     }),
