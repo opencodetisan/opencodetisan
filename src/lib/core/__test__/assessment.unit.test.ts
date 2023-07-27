@@ -492,4 +492,16 @@ describe('Assessment module', () => {
       ],
     })
   })
+
+  test('missing assessmentQuizzes parameter should return a missing assessmentQuizzes error', async () => {
+    const data: any = {}
+    const assessmentPointData: any = [
+      {name: 'easyQuizCompletionPoint', point: 1, id: '1111'},
+      {name: 'speedPoint', point: 1, id: '2222'},
+    ]
+    prismaMock.assessmentPoint.findMany.mockResolvedValue(assessmentPointData)
+    expect(async () => await getAssessmentQuizPoint(data)).rejects.toThrow(
+      'missing assessmentQuizzes',
+    )
+  })
 })
