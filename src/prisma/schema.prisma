@@ -215,6 +215,17 @@ model SubmissionPoint {
   submissionId String
 }
 
+model Price {
+  id String @id @default(cuid())
+  stripePriceId String @unique
+  stripeProductId String 
+  amount Float
+  label String
+  description String?
+  // subscription Subscription[]
+  // priceFeature PriceFeature[]
+}
+
 model Feature {
   id Int @id @default(autoincrement())
   name String @unique
