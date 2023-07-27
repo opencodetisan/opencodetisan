@@ -214,3 +214,9 @@ model SubmissionPoint {
   submission Submission @relation(fields: [submissionId], references: [id])
   submissionId String
 }
+
+model Feature {
+  id Int @id @default(autoincrement())
+  name String @unique
+  // priceFeature PriceFeature[]
+}
