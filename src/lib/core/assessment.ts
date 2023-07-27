@@ -1,5 +1,6 @@
 import {
   IAddAssessmentQuizzesProps,
+  IAssessmentQuizProps,
   ICandidateEmailStatusProps,
   IDeleteAssessmentQuizSubmissionsProps,
   IUpdateAssessmentCandidateStatusProps,
@@ -7,6 +8,8 @@ import {
   IcreateAssessmentProps,
 } from '@/types'
 import prisma from '../db/client'
+import {AssessmentPoint} from '@/enums'
+import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
 
 export const createAssessment = async ({
   userId,
@@ -352,4 +355,34 @@ export const getAssessmentPoints = async () => {
     )
   }
   return object
+}
+
+export const getAssessmentQuizPoint = async ({
+  assessmentQuizzes,
+}: {
+  assessmentQuizzes: IAssessmentQuizProps[] | undefined
+}) => {
+  const assessmentPoints = await getAssessmentPoints()
+  if (!assessmentQuizzes) {
+    throw new Error('missing assessmentQuizzes')
+  } else if (assessmentQuizzes.length === 0) {
+    throw new Error('assessmentQuizzes is empty')
+  } else if (!assessmentPoints) {
+    throw new Error('missing assessmentPoints')
+  }
+  const assignedQuizzes: any = []
+  let totalPoint = 0
+  let quizPoints: {[index: string]: number} = {}
+  assessmentQuizzes.forEach((q) => {
+    const assessmentPointName = `${q.quiz.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
+    const difficultyPoint = assessmentPoints![assessmentPointName]?.point
+    const speedPoint =
+      assessmentPoints![AssessmentPoint.SpeedPoint]?.point *
+      MAX_SPEED_POINT_MULTIPLIER
+    const sum = difficultyPoint + speedPoint
+    assignedQuizzes.push(q.quiz)
+    totalPoint += sum
+    quizPoints[q.quiz.id] = sum
+  })
+  return {totalPoint, quizPoints, assignedQuizzes}
 }
