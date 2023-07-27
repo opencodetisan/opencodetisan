@@ -2,6 +2,12 @@ import {
   createQuiz,
   createQuizSolution,
   createQuizTestCases,
+  deleteQuiz,
+  deleteQuizSolution,
+  deleteQuizTestCases,
+  getAllUserQuizzes,
+  getQuiz,
+  getQuizSolutionIds,
   updateQuiz,
   updateQuizSolution,
   updateQuizTestCases,
@@ -444,5 +450,109 @@ describe('Quiz module', () => {
     prismaMock.testCase.update.mockResolvedValue(testCaseData)
     prismaMock.$transaction.mockResolvedValue(testCaseData)
     expect(await updateQuizTestCases(testCaseData)).toEqual(testCaseData)
+  })
+
+  test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
+    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
+    expect(
+      await deleteQuizTestCases({solutionId: faker.string.uuid()}),
+    ).toEqual({count: 4})
+  })
+
+  test('Missing solutionId parameter should raise a missing solutionId error', async () => {
+    const solutionId: any = undefined
+    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
+    expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
+      'missing solutionId',
+    )
+  })
+
+  test('deleteQuizSolution fn should delete solutions and return count number', async () => {
+    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
+    expect(await deleteQuizSolution({quizId: faker.string.uuid()})).toEqual({
+      count: 4,
+    })
+  })
+
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
+    const quizId: any = undefined
+    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
+    expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
+      'missing quizId',
+    )
+  })
+
+  test('deleteQuiz fn should delete quiz and return deleted quiz', async () => {
+    const deletedQuiz: any = {title: faker.lorem.text()}
+    prismaMock.quiz.delete.mockResolvedValue(deletedQuiz)
+    expect(await deleteQuiz({quizId: faker.string.uuid()})).toEqual(deletedQuiz)
+  })
+
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
+    const quizId: any = undefined
+    expect(async () => await deleteQuiz({quizId})).rejects.toThrow(
+      'missing quizId',
+    )
+  })
+
+  test('getQuizSolutionIds fn should return solutionIds', async () => {
+    const solutionIds: any = [faker.string.uuid(), faker.string.uuid()]
+    prismaMock.quiz.findUnique.mockResolvedValue(solutionIds)
+    expect(await getQuizSolutionIds({quizId: faker.string.uuid()})).toEqual(
+      solutionIds,
+    )
+  })
+
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
+    const quizId: any = undefined
+    expect(async () => await getQuizSolutionIds({quizId})).rejects.toThrow(
+      'missing quizId',
+    )
+  })
+
+  test('getAllUserQuizzes fn should return quizzes', async () => {
+    const quizzes: any = [{id: 1}, {id: 2}]
+    prismaMock.quiz.findMany.mockResolvedValue(quizzes)
+    expect(
+      await getAllUserQuizzes({
+        userId: faker.string.uuid(),
+        locale: faker.lorem.text(),
+      }),
+    ).toEqual(quizzes)
+  })
+
+  test('Missing userId parameter should raise a missing userId error', async () => {
+    const userId: any = undefined
+    expect(
+      async () =>
+        await getAllUserQuizzes({
+          userId,
+          locale: faker.lorem.text(),
+        }),
+    ).rejects.toThrow('missing userId')
+  })
+
+  test('Missing locale parameter should raise a missing locale error', async () => {
+    const locale: any = undefined
+    expect(
+      async () =>
+        await getAllUserQuizzes({
+          locale,
+          userId: faker.lorem.text(),
+        }),
+    ).rejects.toThrow('missing locale')
+  })
+
+  test('getQuiz fn should return quiz', async () => {
+    const quizData: any = {quizId: 1}
+    prismaMock.quiz.findUnique.mockResolvedValue(quizData)
+    expect(await getQuiz(quizData)).toEqual(quizData)
+  })
+
+  test('Missing locale parameter should raise a missing locale error', async () => {
+    const quizData: any = {quizId: undefined}
+    expect(async () => await getQuiz(quizData)).rejects.toThrow(
+      'missing quizId',
+    )
   })
 })
