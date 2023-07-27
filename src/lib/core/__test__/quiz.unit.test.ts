@@ -5,6 +5,8 @@ import {
   deleteQuiz,
   deleteQuizSolution,
   deleteQuizTestCases,
+  getAllUserQuizzes,
+  getQuiz,
   getQuizSolutionIds,
   updateQuiz,
   updateQuizSolution,
@@ -550,6 +552,52 @@ describe('Quiz module', () => {
   test('Missing quizId parameter should raise a missing quizId error', async () => {
     const quizId: any = undefined
     expect(async () => await getQuizSolutionIds({quizId})).rejects.toThrow(
+      'missing quizId',
+    )
+  })
+
+  test('getAllUserQuizzes fn should return quizzes', async () => {
+    const quizzes: any = [{id: 1}, {id: 2}]
+    prismaMock.quiz.findMany.mockResolvedValue(quizzes)
+    expect(
+      await getAllUserQuizzes({
+        userId: faker.string.uuid(),
+        locale: faker.lorem.text(),
+      }),
+    ).toEqual(quizzes)
+  })
+
+  test('Missing userId parameter should raise a missing userId error', async () => {
+    const userId: any = undefined
+    expect(
+      async () =>
+        await getAllUserQuizzes({
+          userId,
+          locale: faker.lorem.text(),
+        }),
+    ).rejects.toThrow('missing userId')
+  })
+
+  test('Missing locale parameter should raise a missing locale error', async () => {
+    const locale: any = undefined
+    expect(
+      async () =>
+        await getAllUserQuizzes({
+          locale,
+          userId: faker.lorem.text(),
+        }),
+    ).rejects.toThrow('missing locale')
+  })
+
+  test('getQuiz fn should return quiz', async () => {
+    const quizData: any = {quizId: 1}
+    prismaMock.quiz.findUnique.mockResolvedValue(quizData)
+    expect(await getQuiz(quizData)).toEqual(quizData)
+  })
+
+  test('Missing locale parameter should raise a missing locale error', async () => {
+    const quizData: any = {quizId: undefined}
+    expect(async () => await getQuiz(quizData)).rejects.toThrow(
       'missing quizId',
     )
   })

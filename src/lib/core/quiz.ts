@@ -206,3 +206,93 @@ export const getQuizSolutionIds = async ({quizId}: {quizId: string}) => {
   })
   return solutionIds
 }
+
+export const getAllUserQuizzes = async ({
+  userId,
+  locale,
+}: {
+  userId: string
+  locale: string
+}) => {
+  if (!userId) {
+    throw new Error('missing userId')
+  } else if (!locale) {
+    throw new Error('missing locale')
+  }
+  const quizzes = await prisma.quiz.findMany({
+    where: {
+      userId,
+      locale: locale as string,
+    },
+    select: {
+      id: true,
+      title: true,
+      submissionCachedCount: true,
+      difficultyLevelId: true,
+      codeLanguageId: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      status: true,
+      codeLanguage: {
+        select: {
+          id: true,
+          prettyName: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+  return quizzes
+}
+
+export const getQuiz = async ({quizId}: {quizId: string}) => {
+  if (!quizId) {
+    throw new Error('missing quizId')
+  }
+  const quiz = await prisma.quiz.findUnique({
+    where: {
+      id: quizId,
+    },
+    select: {
+      id: true,
+      title: true,
+      instruction: true,
+      submissionCachedCount: true,
+      difficultyLevelId: true,
+      codeLanguageId: true,
+      codeLanguage: {
+        select: {
+          id: true,
+          prettyName: true,
+        },
+      },
+      status: true,
+      locale: true,
+      createdAt: true,
+      updatedAt: true,
+      defaultCode: true,
+      solutions: {
+        select: {
+          id: true,
+          code: true,
+          //entryFunction: true,
+          testCases: {
+            select: {
+              id: true,
+              input: true,
+              output: true,
+            },
+          },
+          importDirectives: true,
+          testRunner: true,
+        },
+      },
+    },
+  })
+  return quiz
+}
