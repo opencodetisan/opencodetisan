@@ -70,6 +70,7 @@ model User {
     assessmentResults AssessmentResult[]
     assessmentCandidates AssessmentCandidate[]
     submissionPoint SubmissionPoint[]
+    subscription Subscription?
 }
 
 model Solution {
@@ -215,6 +216,34 @@ model SubmissionPoint {
   submissionId String
 }
 
+enum SubscriptionStatus {
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+}
+
+model Subscription {
+  id String @id @default(cuid())
+  stripeSubscriptionId String? @unique
+  status SubscriptionStatus
+  upcomingAmount Float @default(0)
+  currentPeriodStart DateTime?
+  currentPeriodEnd DateTime?
+  cancelAtPeriodEnd Boolean?
+  cancelAt DateTime?
+  canceledAt DateTime?
+  endedAt DateTime?
+  defaultPaymentMethod String?
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
+  price Price @relation(fields: [priceId], references: [stripePriceId])
+  priceId String 
+}
+
 model Price {
   id String @id @default(cuid())
   stripePriceId String @unique
@@ -222,7 +251,7 @@ model Price {
   amount Float
   label String
   description String?
-  // subscription Subscription[]
+  subscription Subscription[]
   priceFeature PriceFeature[]
 }
 
