@@ -360,7 +360,7 @@ export const getAssessmentPoints = async () => {
 export const getAssessmentQuizPoint = async ({
   assessmentQuizzes,
 }: {
-  assessmentQuizzes: IAssessmentQuizProps[] | undefined
+  assessmentQuizzes: IAssessmentQuizProps[]
 }) => {
   const assessmentPoints = await getAssessmentPoints()
   if (!assessmentQuizzes) {
@@ -375,9 +375,9 @@ export const getAssessmentQuizPoint = async ({
   let quizPoints: {[index: string]: number} = {}
   assessmentQuizzes.forEach((q) => {
     const assessmentPointName = `${q.quiz.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
-    const difficultyPoint = assessmentPoints![assessmentPointName]?.point
+    const difficultyPoint = assessmentPoints[assessmentPointName]?.point
     const speedPoint =
-      assessmentPoints![AssessmentPoint.SpeedPoint]?.point *
+      assessmentPoints[AssessmentPoint.SpeedPoint]?.point *
       MAX_SPEED_POINT_MULTIPLIER
     const sum = difficultyPoint + speedPoint
     assignedQuizzes.push(q.quiz)
