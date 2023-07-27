@@ -7,6 +7,7 @@ import {
   deleteAssessmentQuizSubmissions,
   getAssessment,
   getAssessmentCompletedQuiz,
+  getAssessmentPoints,
   getAssessmentResult,
   getAssessments,
   updateAssessment,
@@ -443,5 +444,13 @@ describe('Assessment module', () => {
     expect(async () => await getAssessmentCompletedQuiz(data)).rejects.toThrow(
       'missing assessmentId',
     )
+  })
+
+  test('getAssessmentPoints fn should return the assessmentResult', async () => {
+    const data: any = [{name: 'point', point: 1, id: '1'}]
+    prismaMock.assessmentPoint.findMany.mockResolvedValue(data)
+    expect(await getAssessmentPoints()).toEqual({
+      point: {point: 1, id: '1'},
+    })
   })
 })
