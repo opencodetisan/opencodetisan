@@ -99,3 +99,15 @@ export interface IAddAssessmentQuizzesProps {
 export interface IDeleteAssessmentQuizSubmissionsProps {
   submissionIds: string[]
 }
+
+export interface IAssessmentQuizProps {
+  quiz: {
+    difficultyLevel: {
+      name: string
+    }
+    id: string
+    title: string
+    instruction: string
+    difficultyLevelId: number
+  }
+}
