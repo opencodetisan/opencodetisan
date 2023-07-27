@@ -59,3 +59,8 @@ export interface IUpdateQuizSolutionProps {
   testRunner?: string
   defaultCode?: string
 }
+
+export interface IUpdateQuizTestCasesProps {
+  existingTests: ITestCaseProps[]
+  newTests: ITestCaseClientProps
+}
