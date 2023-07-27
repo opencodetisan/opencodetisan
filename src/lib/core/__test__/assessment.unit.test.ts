@@ -435,4 +435,13 @@ describe('Assessment module', () => {
     prismaMock.assessmentResult.findMany.mockResolvedValue(data)
     expect(await getAssessmentCompletedQuiz(data)).toEqual(data)
   })
+
+  test('missing assessmentId parameter should return a missing assessmentId error', async () => {
+    const data: any = {
+      // assessmentId: faker.string.uuid(),
+    }
+    expect(async () => await getAssessmentCompletedQuiz(data)).rejects.toThrow(
+      'missing assessmentId',
+    )
+  })
 })
