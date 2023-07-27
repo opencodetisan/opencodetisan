@@ -5,6 +5,7 @@ import {
   createAssessment,
   createAssessmentCandidateEmails,
   deleteAssessmentQuizSubmissions,
+  getAssessment,
   getAssessmentResult,
   getAssessments,
   updateAssessment,
@@ -407,5 +408,13 @@ describe('Assessment module', () => {
     expect(async () => await getAssessments(data)).rejects.toThrow(
       'missing userId',
     )
+  })
+
+  test('getAssessment fn should return the assessment', async () => {
+    const data: any = {
+      assessmentId: faker.string.uuid(),
+    }
+    prismaMock.assessment.findUnique.mockResolvedValue(data)
+    expect(await getAssessment(data)).toEqual(data)
   })
 })
