@@ -213,3 +213,108 @@ export const getAssessments = async ({userId}: {userId: string}) => {
   })
   return assessments
 }
+
+export const getAssessment = async ({assessmentId}: {assessmentId: string}) => {
+  if (!assessmentId) {
+    throw new Error('missing assessmentId')
+  }
+  const assessment = await prisma.assessment.findUnique({
+    where: {
+      id: assessmentId,
+    },
+    select: {
+      title: true,
+      description: true,
+      createdAt: true,
+      owner: {
+        select: {
+          subscription: {
+            select: {
+              price: {
+                select: {
+                  label: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      assessmentCandidateEmail: {
+        select: {
+          id: true,
+          email: true,
+          statusCode: true,
+        },
+      },
+      assessmentCandidates: {
+        select: {
+          status: true,
+          candidate: {
+            select: {
+              id: true,
+              name: true,
+              assessmentResults: {
+                where: {
+                  assessmentId: assessmentId,
+                },
+                include: {
+                  quiz: {
+                    select: {
+                      id: true,
+                      codeLanguageId: true,
+                      difficultyLevelId: true,
+                      title: true,
+                      instruction: true,
+                    },
+                  },
+                  assessmentQuizSubmissions: {
+                    where: {
+                      submissionId: {
+                        not: null,
+                      },
+                    },
+                    select: {
+                      id: true,
+                      submission: {
+                        select: {
+                          code: true,
+                          submissionPoint: {
+                            include: {
+                              assessmentPoint: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                    orderBy: {
+                      start: 'desc',
+                    },
+                    take: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      assessmentQuizzes: {
+        select: {
+          quiz: {
+            select: {
+              id: true,
+              title: true,
+              instruction: true,
+              difficultyLevelId: true,
+              difficultyLevel: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  return assessment
+}
