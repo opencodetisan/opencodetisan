@@ -18,13 +18,13 @@ export const createAssessment = async ({
   quizIds,
 }: IcreateAssessmentProps) => {
   if (!userId) {
-    throw new Error('missing userId')
+    throw Error('missing userId')
   } else if (!title) {
-    throw new Error('missing title')
+    throw Error('missing title')
   } else if (!description) {
-    throw new Error('missing description')
+    throw Error('missing description')
   } else if (!quizIds) {
-    throw new Error('missing quizIds')
+    throw Error('missing quizIds')
   }
   const assessment = await prisma.assessment.create({
     data: {
@@ -67,7 +67,7 @@ export const createAssessmentCandidateEmails = async (
     )
   })
   if (!hasAllProps) {
-    throw new Error(`missing ${missingField}`)
+    throw Error(`missing ${missingField}`)
   }
   const emails = await prisma.assessmentCandidateEmail.createMany({
     data: candidateEmails,
@@ -81,11 +81,11 @@ export const updateAssessment = async ({
   description,
 }: IUpdateAssessmentProps) => {
   if (!assessmentId) {
-    throw new Error('missing assessmentId')
+    throw Error('missing assessmentId')
   } else if (!title) {
-    throw new Error('missing title')
+    throw Error('missing title')
   } else if (!description) {
-    throw new Error('missing description')
+    throw Error('missing description')
   }
   const updatedAssessment = await prisma.assessment.update({
     where: {
@@ -104,9 +104,9 @@ export const updateAssessmentCandidateStatus = async ({
   candidateId,
 }: IUpdateAssessmentCandidateStatusProps) => {
   if (!assessmentId) {
-    throw new Error('missing assessmentId')
+    throw Error('missing assessmentId')
   } else if (!candidateId) {
-    throw new Error('missing candidateId')
+    throw Error('missing candidateId')
   }
   const assessmentCandidate = await prisma.assessmentCandidate.update({
     where: {
@@ -127,11 +127,11 @@ export const addAssessmentQuizzes = async ({
   assessmentId,
 }: IAddAssessmentQuizzesProps) => {
   if (!assessmentId) {
-    throw new Error('missing assessmentId')
+    throw Error('missing assessmentId')
   } else if (!quizIds) {
-    throw new Error('missing quizIds')
+    throw Error('missing quizIds')
   } else if (quizIds.length === 0) {
-    throw new Error('0 quizId found')
+    throw Error('0 quizId found')
   }
 
   const quizzes = await prisma.assessmentQuiz.createMany({
@@ -147,9 +147,9 @@ export const getAssessmentResult = async ({
   assessmentId,
 }: IAddAssessmentQuizzesProps) => {
   if (!assessmentId) {
-    throw new Error('missing assessmentId')
+    throw Error('missing assessmentId')
   } else if (!quizId) {
-    throw new Error('missing quizId')
+    throw Error('missing quizId')
   }
   const assessmentResult = await prisma.assessmentResult.findFirst({
     where: {
@@ -167,7 +167,7 @@ export const deleteAssessmentQuizSubmissions = async ({
   submissionIds,
 }: IDeleteAssessmentQuizSubmissionsProps) => {
   if (!submissionIds) {
-    throw new Error('missing submissionIds')
+    throw Error('missing submissionIds')
   } else if (submissionIds.length === 0) {
     return null
   }
@@ -183,7 +183,7 @@ export const deleteAssessmentQuizSubmissions = async ({
 
 export const getAssessments = async ({userId}: {userId: string}) => {
   if (!userId) {
-    throw new Error('missing userId')
+    throw Error('missing userId')
   }
   const assessments = await prisma.assessment.findMany({
     where: {
@@ -219,7 +219,7 @@ export const getAssessments = async ({userId}: {userId: string}) => {
 
 export const getAssessment = async ({assessmentId}: {assessmentId: string}) => {
   if (!assessmentId) {
-    throw new Error('missing assessmentId')
+    throw Error('missing assessmentId')
   }
   const assessment = await prisma.assessment.findUnique({
     where: {
@@ -328,7 +328,7 @@ export const getAssessmentCompletedQuiz = async ({
   assessmentId: string
 }) => {
   if (!assessmentId) {
-    throw new Error('missing assessmentId')
+    throw Error('missing assessmentId')
   }
   const assessmentResults = await prisma.assessmentResult.findMany({
     where: {
@@ -365,11 +365,11 @@ export const getAssessmentQuizPoint = async ({
   assessmentPoints: any
 }) => {
   if (!assessmentQuizzes) {
-    throw new Error('missing assessmentQuizzes')
+    throw Error('missing assessmentQuizzes')
   } else if (assessmentQuizzes.length === 0) {
-    throw new Error('assessmentQuizzes is empty')
+    throw Error('assessmentQuizzes is empty')
   } else if (!assessmentPoints) {
-    throw new Error('missing assessmentPoints')
+    throw Error('missing assessmentPoints')
   }
   const assignedQuizzes: any = []
   let totalPoint = 0
