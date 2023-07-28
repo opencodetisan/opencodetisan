@@ -520,4 +520,13 @@ describe('Assessment module', () => {
       Error('assessmentQuizzes is empty'),
     )
   })
+
+  test('missing assessmentPoints should return a missing assessmentPoints error', async () => {
+    const data: any = {
+      assessmentQuizzes: [''],
+    }
+    expect(async () => await getAssessmentQuizPoint(data)).rejects.toEqual(
+      Error('missing assessmentPoints'),
+    )
+  })
 })
