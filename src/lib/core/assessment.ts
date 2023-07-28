@@ -395,11 +395,11 @@ export const getAssessmentComparativeScore = async ({
   point,
   quizPoint,
 }: IGetAssessmentComparativeScoreProps) => {
-  if (!usersCount) {
+  if (usersCount === undefined) {
     throw Error('missing usersCount')
-  } else if (!usersBelowPointCount) {
+  } else if (usersBelowPointCount === undefined) {
     throw Error('missing usersBelowPointCount')
-  } else if (!point) {
+  } else if (point === undefined) {
     throw Error('missing point')
   }
   let comparativeScore = 100
