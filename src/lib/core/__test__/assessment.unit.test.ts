@@ -6,6 +6,7 @@ import {
   createAssessmentCandidateEmails,
   deleteAssessmentQuizSubmissions,
   getAssessment,
+  getAssessmentComparativeScore,
   getAssessmentCompletedQuiz,
   getAssessmentPoints,
   getAssessmentQuizPoint,
@@ -528,5 +529,17 @@ describe('Assessment module', () => {
     expect(async () => await getAssessmentQuizPoint(data)).rejects.toEqual(
       Error('missing assessmentPoints'),
     )
+  })
+
+  test('getAssessmentComparativeScore fn should return the comparativeScore and usersBelowPointCount', async () => {
+    const data: any = {
+      usersCount: 0,
+      usersBelowPointCount: 0,
+      point: 100,
+    }
+    expect(await getAssessmentComparativeScore(data)).toEqual({
+      comparativeScore: 100,
+      usersBelowPointCount: 0,
+    })
   })
 })
