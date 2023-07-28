@@ -359,10 +359,11 @@ export const getAssessmentPoints = async () => {
 
 export const getAssessmentQuizPoint = async ({
   assessmentQuizzes,
+  assessmentPoints,
 }: {
   assessmentQuizzes: IAssessmentQuizProps[]
+  assessmentPoints: any
 }) => {
-  const assessmentPoints = await getAssessmentPoints()
   if (!assessmentQuizzes) {
     throw new Error('missing assessmentQuizzes')
   } else if (assessmentQuizzes.length === 0) {
