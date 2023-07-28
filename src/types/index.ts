@@ -8,6 +8,11 @@ export interface ITestCaseProps {
   solutionId: string
 }
 
+export interface ITestCaseClientProps {
+  input: string[]
+  output: string[]
+}
+
 export interface ICreateQuizProps {
   id: string
   title: string
@@ -53,4 +58,9 @@ export interface IUpdateQuizSolutionProps {
   importDirectives?: string
   testRunner?: string
   defaultCode?: string
+}
+
+export interface IUpdateQuizTestCasesProps {
+  existingTests: ITestCaseProps[]
+  newTests: ITestCaseClientProps
 }

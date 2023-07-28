@@ -2,9 +2,9 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
-  ITestCaseProps,
   IUpdateQuizProps,
   IUpdateQuizSolutionProps,
+  IUpdateQuizTestCasesProps,
 } from '@/types/index'
 import prisma from '@/lib/db/client'
 
@@ -12,17 +12,17 @@ export const createQuiz = async (quizData: ICreateQuizProps) => {
   if (!quizData.title) {
     throw new Error('missing quiz title')
   } else if (!quizData.codeLanguageId) {
-    throw new Error('missing code language id')
+    throw new Error('missing codeLanguageId')
   } else if (!quizData.userId) {
-    throw new Error('missing user id')
+    throw new Error('missing userId')
   } else if (!quizData.difficultyLevelId) {
-    throw new Error('missing difficulty level id')
+    throw new Error('missing difficultyLevelId')
   } else if (!quizData.instruction) {
     throw new Error('missing instruction')
   } else if (!quizData.answer) {
     throw new Error('missing answer')
   } else if (!quizData.defaultCode) {
-    throw new Error('missing default code')
+    throw new Error('missing defaultCode')
   } else if (!quizData.locale) {
     throw new Error('missing locale')
   }
@@ -34,15 +34,15 @@ export const createQuizSolution = async (
   solutionData: ICreateQuizSolutionProps,
 ) => {
   if (!solutionData.quizId) {
-    throw new Error('missing quiz id')
+    throw new Error('missing quizId')
   } else if (!solutionData.code) {
     throw new Error('missing code')
   } else if (!solutionData.sequence) {
     throw new Error('missing sequence')
   } else if (!solutionData.importDirectives) {
-    throw new Error('missing import directives')
+    throw new Error('missing importDirectives')
   } else if (!solutionData.testRunner) {
-    throw new Error('missing test runner')
+    throw new Error('missing testRunner')
   }
   const solution = await prisma.solution.create({
     data: solutionData,
@@ -82,9 +82,9 @@ export const updateQuiz = async ({
   difficultyLevelId,
 }: IUpdateQuizProps) => {
   if (!id) {
-    throw new Error('missing quiz id')
+    throw new Error('missing quizId')
   } else if (!userId) {
-    throw new Error('missing user id')
+    throw new Error('missing userId')
   }
   const updatedQuiz = await prisma.quiz.update({
     where: {id, userId},
@@ -130,16 +130,24 @@ export const updateQuizSolution = async ({
 
 export const updateQuizTestCases = async ({
   existingTests,
-  tests,
-}: {
-  existingTests: ITestCaseProps[]
-  tests: any
-}) => {
-  if (!existingTests || existingTests.length === 0) {
-    throw new Error('missing existing test cases')
-  } else if (!tests) {
-    throw new Error('missing new test cases')
+  newTests,
+}: IUpdateQuizTestCasesProps) => {
+  if (!existingTests) {
+    throw new Error('missing existingTests')
+  } else if (existingTests.length === 0) {
+    throw new Error('0 existingTest found')
+  } else if (!newTests) {
+    throw new Error('missing newTests')
+  } else if (!newTests.input) {
+    throw new Error('missing newTests input field')
+  } else if (newTests.input.length === 0) {
+    throw new Error('0 newTests input found')
+  } else if (!newTests.output) {
+    throw new Error('missing newTests output field')
+  } else if (newTests.output.length === 0) {
+    throw new Error('0 newTests output found')
   }
+
   let i = -1
   const txn = await prisma.$transaction(
     existingTests.map((test: any) => {
@@ -149,8 +157,8 @@ export const updateQuizTestCases = async ({
           id: test.id,
         },
         data: {
-          input: tests.input[i],
-          output: tests.output[i],
+          input: newTests.input[i],
+          output: newTests.output[i],
         },
       })
     }),
