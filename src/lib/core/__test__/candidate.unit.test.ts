@@ -25,4 +25,15 @@ describe('Candidate module', () => {
       async () => await createCandidateQuizSubmission(submissionData),
     ).rejects.toEqual(Error('missing userId'))
   })
+
+  test('Missing quizId parameter should raise an missing quizId error', async () => {
+    const submissionData: any = {
+      userId: faker.string.uuid(),
+      // quizId: faker.string.uuid(),
+      code: faker.lorem.text(),
+    }
+    expect(
+      async () => await createCandidateQuizSubmission(submissionData),
+    ).rejects.toEqual(Error('missing quizId'))
+  })
 })
