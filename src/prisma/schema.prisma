@@ -32,7 +32,7 @@ model Quiz {
     //challenges Challenge[]
     assessmentQuizzes AssessmentQuiz[]
     assessmentResults AssessmentResult[]
-    //quizPointCollection QuizPointCollection[]
+    quizPointCollection QuizPointCollection[]
 }
 
 enum QuizStatus {
@@ -71,6 +71,7 @@ model User {
     assessmentCandidates AssessmentCandidate[]
     submissionPoint SubmissionPoint[]
     subscription Subscription?
+    quizPointCollection QuizPointCollection[]
 }
 
 model Solution {
@@ -269,4 +270,15 @@ model Feature {
   id Int @id @default(autoincrement())
   name String @unique
   priceFeature PriceFeature[]
+}
+
+model QuizPointCollection {
+  id String @id @default(cuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  quizId String
+  point Int
+
+  @@unique([userId, quizId])
 }
