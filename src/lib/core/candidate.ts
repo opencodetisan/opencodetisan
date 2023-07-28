@@ -7,11 +7,11 @@ export const createCandidateQuizSubmission = async ({
   code,
 }: ICreateCandidateQuizSubmissionProps) => {
   if (!userId) {
-    throw new Error('missing userId')
+    throw Error('missing userId')
   } else if (!quizId) {
-    throw new Error('missing quizId')
+    throw Error('missing quizId')
   } else if (!code) {
-    throw new Error('missing code')
+    throw Error('missing code')
   }
   const submission = await prisma.submission.create({
     data: {
