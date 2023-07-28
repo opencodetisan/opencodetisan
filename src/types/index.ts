@@ -111,3 +111,10 @@ export interface IAssessmentQuizProps {
     difficultyLevelId: number
   }
 }
+
+export interface IGetAssessmentComparativeScoreProps {
+  usersBelowPointCount: number
+  usersCount: number
+  point: number
+  quizPoint?: number
+}
