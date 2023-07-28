@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test:unit": "jest unit",
+    "test:integration": "docker-compose up -d && jest integration && docker-compose down"
   },
   "dependencies": {
     "@prisma/client": "5.0.0",
@@ -16,7 +17,6 @@
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
     "next": "13.4.9",
-    "node-fetch": "^3.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
