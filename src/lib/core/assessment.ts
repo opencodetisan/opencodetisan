@@ -3,6 +3,7 @@ import {
   IAssessmentQuizProps,
   ICandidateEmailStatusProps,
   IDeleteAssessmentQuizSubmissionsProps,
+  IGetAssessmentComparativeScoreProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
   IcreateAssessmentProps,
@@ -386,4 +387,31 @@ export const getAssessmentQuizPoint = async ({
     quizPoints[q.quiz.id] = sum
   })
   return {totalPoint, quizPoints, assignedQuizzes}
+}
+
+export const getAssessmentComparativeScore = async ({
+  usersCount,
+  usersBelowPointCount,
+  point,
+  quizPoint,
+}: IGetAssessmentComparativeScoreProps) => {
+  if (!usersCount) {
+    throw Error('missing usersCount')
+  } else if (!usersBelowPointCount) {
+    throw Error('missing usersBelowPointCount')
+  } else if (!point) {
+    throw Error('missing point')
+  } else if (!quizPoint) {
+    throw Error('missing point')
+  }
+  let comparativeScore = 100
+  if (point && !usersCount) {
+    comparativeScore = 100
+  } else if (!point) {
+    comparativeScore = 0
+  } else if (point !== quizPoint) {
+    comparativeScore = Math.round(+((usersBelowPointCount / usersCount) * 100))
+  }
+
+  return {comparativeScore, usersBelowPointCount}
 }
