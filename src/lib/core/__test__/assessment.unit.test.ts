@@ -506,4 +506,18 @@ describe('Assessment module', () => {
       async () => await getAssessmentQuizPoint(data),
     ).rejects.toThrow('missing assessmentQuizzes')
   })
+
+  test('empty assessmentQuizzes should return a assessmentQuizzes is empty error', async () => {
+    const assessmentPointData: any = {
+      easyQuizCompletionPoint: {point: 1, id: '1111'},
+      speedPoint: {point: 1, id: '2222'},
+    }
+    const data: any = {
+      assessmentQuizzes: [],
+      assessmentPoints: assessmentPointData,
+    }
+    expect(async () => await getAssessmentQuizPoint(data)).rejects.toEqual(
+      Error('assessmentQuizzes is empty'),
+    )
+  })
 })
