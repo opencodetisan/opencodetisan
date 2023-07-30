@@ -9,7 +9,7 @@ import {
   IcreateAssessmentProps,
 } from '@/types'
 import prisma from '../db/client'
-import {AssessmentPoint} from '@/enums'
+import {AssessmentPoint, AssessmentComparativeScoreLevel} from '@/enums'
 import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
 
 export const createAssessment = async ({
@@ -412,4 +412,21 @@ export const getAssessmentComparativeScore = async ({
   }
 
   return {comparativeScore, usersBelowPointCount}
+}
+
+export const getAssessmentComparativeScoreLevel = ({
+  comparativeScore,
+}: {
+  comparativeScore: number
+}) => {
+  if (comparativeScore === undefined) {
+    throw Error('missing comparativeScore')
+  }
+  if (comparativeScore < 49) {
+    return AssessmentComparativeScoreLevel.Low
+  } else if (comparativeScore < 79) {
+    return AssessmentComparativeScoreLevel.Medium
+  } else {
+    return AssessmentComparativeScoreLevel.High
+  }
 }
