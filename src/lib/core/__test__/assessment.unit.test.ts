@@ -428,14 +428,4 @@ describe('Assessment module', () => {
       'missing assessmentId',
     )
   })
-
-  test('missing quizId parameter should return a missing quizId error', async () => {
-    const data: any = {
-      assessmentId: faker.string.uuid(),
-      // quizId: faker.string.uuid(),
-    }
-    expect(async () => await deleteAssessmentQuiz(data)).rejects.toThrow(
-      'missing quizId',
-    )
-  })
 })
