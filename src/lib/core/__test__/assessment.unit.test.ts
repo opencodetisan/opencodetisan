@@ -583,4 +583,13 @@ describe('Assessment module', () => {
     }
     expect(getAssessmentComparativeScoreLevel(data)).toBe('low')
   })
+
+  test('missing comparativeScore param should return a missing comparativeScore error', async () => {
+    const data: any = {
+      comparativeScore: undefined,
+    }
+    expect(() => getAssessmentComparativeScoreLevel(data)).toThrow(
+      /^missing comparativeScore$/,
+    )
+  })
 })
