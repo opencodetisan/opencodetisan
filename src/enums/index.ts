@@ -4,3 +4,9 @@ export enum AssessmentPoint {
   MediumQuizCompletionPoint = 'mediumQuizCompletionPoint',
   HardQuizCompletionPoint = 'hardQuizCompletionPoint',
 }
+
+export enum AssessmentComparativeScoreLevel {
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high',
+}
