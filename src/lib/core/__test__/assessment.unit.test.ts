@@ -7,6 +7,7 @@ import {
   deleteAssessmentQuizSubmissions,
   getAssessment,
   getAssessmentComparativeScore,
+  getAssessmentComparativeScoreLevel,
   getAssessmentCompletedQuiz,
   getAssessmentPoints,
   getAssessmentQuizPoint,
@@ -574,5 +575,12 @@ describe('Assessment module', () => {
     expect(
       async () => await getAssessmentComparativeScore(data),
     ).rejects.toEqual(Error('missing point'))
+  })
+
+  test('getAssessmentComparativeScoreLevel fn should return the comparativeScore level', async () => {
+    const data: any = {
+      comparativeScore: 0,
+    }
+    expect(getAssessmentComparativeScoreLevel(data)).toBe('low')
   })
 })
