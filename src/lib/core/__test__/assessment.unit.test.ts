@@ -553,4 +553,15 @@ describe('Assessment module', () => {
       async () => await getAssessmentComparativeScore(data),
     ).rejects.toEqual(Error('missing usersCount'))
   })
+
+  test('missing usersBelowPointCount param should return a missing usersBelowPointCount error', async () => {
+    const data: any = {
+      usersCount: 0,
+      // usersBelowPointCount: 0,
+      point: 100,
+    }
+    expect(
+      async () => await getAssessmentComparativeScore(data),
+    ).rejects.toEqual(Error('missing usersBelowPointCount'))
+  })
 })
