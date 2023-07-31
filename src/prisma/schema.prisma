@@ -30,8 +30,8 @@ model Quiz {
     locale String @default("")
     status QuizStatus @default(DRAFT)
     //challenges Challenge[]
-    //assessmentQuizzes AssessmentQuiz[]
-    //assessmentResults AssessmentResult[]
+    assessmentQuizzes AssessmentQuiz[]
+    assessmentResults AssessmentResult[]
     //quizPointCollection QuizPointCollection[]
 }
 
@@ -65,6 +65,10 @@ model User {
     name String?
         quizzes       Quiz[]
     submissions   Submission[]
+    assessments Assessment[]
+    adminContact AdminContact?
+    assessmentResults AssessmentResult[]
+    assessmentCandidates AssessmentCandidate[]
 }
 
 model Solution {
@@ -98,9 +102,96 @@ model Submission {
     quizId    String
     quiz      Quiz     @relation(fields: [quizId], references: [id])
     code      String
-    // assessment      AssessmentQuiz?
+    assessment      AssessmentQuiz?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    // assessmentQuizSubmission AssessmentQuizSubmission?
+    assessmentQuizSubmission AssessmentQuizSubmission?
     // submissionPoint SubmissionPoint[]
+}
+
+enum AssessmentQuizStatus {
+  PENDING
+  STARTED
+  COMPLETED
+}
+
+enum AssessmentStatus {
+  PENDING
+  COMPLETED
+}
+
+model Assessment {
+  id String @id @default(cuid())
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId String 
+  title String
+  description String
+  createdAt             DateTime        @default(now())
+  assessmentQuizzes AssessmentQuiz[]
+  assessmentCandidates AssessmentCandidate[]
+  assessmentResults AssessmentResult[]
+  assessmentCandidateEmail AssessmentCandidateEmail[]
+  // activityLog ActivityLog[]
+}
+
+model AssessmentQuiz {
+  assessment Assessment @relation(fields: [assessmentId],references: [id])
+  assessmentId String 
+  quiz Quiz @relation(fields: [quizId],references: [id])
+  quizId String 
+  submission Submission? @relation(fields: [submissionId],references: [id])
+  submissionId String? @unique
+
+  @@id([assessmentId, quizId])
+}
+
+model AssessmentCandidateEmail {
+  id String @id @default(cuid())
+  email String
+  statusCode Int
+  errorMessage String?
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  assessmentId String 
+}
+
+model AdminContact {
+  id String @id @default(cuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
+  companyName String
+  contactNumber Int
+}
+
+model AssessmentResult {
+  id String @id @default(cuid())
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  quizId String 
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  assessmentId String
+  candidate User? @relation(fields: [candidateId], references: [id])
+  candidateId String?
+  timeTaken Float? @default(0.0)
+  status AssessmentQuizStatus @default(PENDING)
+  assessmentQuizSubmissions AssessmentQuizSubmission[]
+}
+
+model AssessmentCandidate {
+  assessment Assessment @relation(fields: [assessmentId],references: [id])
+  assessmentId String
+  candidate User @relation(fields: [candidateId], references: [id])
+  candidateId String
+  status AssessmentStatus @default(PENDING)
+  token String @unique
+
+  @@id([assessmentId, candidateId])
+}
+
+model AssessmentQuizSubmission {
+  id String @id @default(cuid())
+  assessmentResult AssessmentResult @relation(fields: [assessmentResultId], references: [id])
+  assessmentResultId String
+  submission Submission? @relation(fields: [submissionId], references: [id])
+  submissionId String? @unique
+  start DateTime?
+  end DateTime?
 }
