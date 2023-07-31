@@ -45,8 +45,8 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing quiz title',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing quiz title'),
     )
   })
 
@@ -62,8 +62,8 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing codeLanguageId',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing codeLanguageId'),
     )
   })
 
@@ -79,8 +79,8 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing userId',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing userId'),
     )
   })
 
@@ -96,8 +96,8 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing difficultyLevelId',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing difficultyLevelId'),
     )
   })
 
@@ -113,8 +113,8 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing instruction',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing instruction'),
     )
   })
 
@@ -130,8 +130,8 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing answer',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing answer'),
     )
   })
 
@@ -147,8 +147,8 @@ describe('Quiz module', () => {
       // defaultCode: faker.lorem.paragraphs(),
       locale: 'en',
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing defaultCode',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing defaultCode'),
     )
   })
 
@@ -164,8 +164,8 @@ describe('Quiz module', () => {
       defaultCode: faker.lorem.paragraphs(),
       // locale: "en",
     }
-    expect(async () => await createQuiz(quizData)).rejects.toThrow(
-      'missing locale',
+    expect(async () => await createQuiz(quizData)).rejects.toEqual(
+      Error('missing locale'),
     )
   })
 
@@ -190,8 +190,8 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing quizId',
+    expect(async () => await createQuizSolution(solutionData)).rejects.toEqual(
+      Error('missing quizId'),
     )
   })
 
@@ -203,8 +203,8 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing code',
+    expect(async () => await createQuizSolution(solutionData)).rejects.toEqual(
+      Error('missing code'),
     )
   })
 
@@ -216,8 +216,8 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing sequence',
+    expect(async () => await createQuizSolution(solutionData)).rejects.toEqual(
+      Error('missing sequence'),
     )
   })
 
@@ -229,8 +229,8 @@ describe('Quiz module', () => {
       // importDirectives: faker.lorem.paragraphs(),
       testRunner: faker.lorem.paragraphs(),
     }
-    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing importDirectives',
+    expect(async () => await createQuizSolution(solutionData)).rejects.toEqual(
+      Error('missing importDirectives'),
     )
   })
 
@@ -242,8 +242,8 @@ describe('Quiz module', () => {
       importDirectives: faker.lorem.paragraphs(),
       // testRunner: faker.lorem.paragraphs(),
     }
-    expect(async () => await createQuizSolution(solutionData)).rejects.toThrow(
-      'missing testRunner',
+    expect(async () => await createQuizSolution(solutionData)).rejects.toEqual(
+      Error('missing testRunner'),
     )
   })
 
@@ -282,8 +282,8 @@ describe('Quiz module', () => {
         sequence: 1,
       },
     ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      'test case missing solutionId',
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('test case missing solutionId'),
     )
   })
 
@@ -302,8 +302,8 @@ describe('Quiz module', () => {
         sequence: 1,
       },
     ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      'test case missing input',
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('test case missing input'),
     )
   })
 
@@ -322,8 +322,8 @@ describe('Quiz module', () => {
         sequence: 1,
       },
     ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      'test case missing output',
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('test case missing output'),
     )
   })
   test('Missing sequence should raise a test case missing sequence error', async () => {
@@ -341,15 +341,15 @@ describe('Quiz module', () => {
         // sequence: 1,
       },
     ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      'test case missing sequence',
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('test case missing sequence'),
     )
   })
 
   test('Undefined testCaseData should raise a test case not found error', async () => {
     const testCaseData: any = undefined
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      'test case not found',
+    expect(async () => await createQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('test case not found'),
     )
   })
 
@@ -367,8 +367,8 @@ describe('Quiz module', () => {
       userId: faker.string.uuid(),
       // id: faker.string.uuid(),
     }
-    expect(async () => await updateQuiz(quizData)).rejects.toThrow(
-      'missing quizId',
+    expect(async () => await updateQuiz(quizData)).rejects.toEqual(
+      Error('missing quizId'),
     )
   })
 
@@ -377,8 +377,8 @@ describe('Quiz module', () => {
       // userId: faker.string.uuid(),
       id: faker.string.uuid(),
     }
-    expect(async () => await updateQuiz(quizData)).rejects.toThrow(
-      'missing userId',
+    expect(async () => await updateQuiz(quizData)).rejects.toEqual(
+      Error('missing userId'),
     )
   })
 
@@ -402,8 +402,8 @@ describe('Quiz module', () => {
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
     }
-    expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
-      'missing solutionId',
+    expect(async () => await updateQuizSolution(solutionData)).rejects.toEqual(
+      Error('missing solutionId'),
     )
   })
 
@@ -415,8 +415,8 @@ describe('Quiz module', () => {
       testRunner: faker.lorem.paragraphs(),
       defaultCode: faker.lorem.paragraph(),
     }
-    expect(async () => await updateQuizSolution(solutionData)).rejects.toThrow(
-      'missing code',
+    expect(async () => await updateQuizSolution(solutionData)).rejects.toEqual(
+      Error('missing code'),
     )
   })
 
@@ -435,8 +435,8 @@ describe('Quiz module', () => {
       // existingTests: [faker.lorem.text(), faker.lorem.text()],
       newTests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      'missing existingTests',
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('missing existingTests'),
     )
   })
 
@@ -445,8 +445,8 @@ describe('Quiz module', () => {
       existingTests: [],
       newTests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      '0 existingTest found',
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('0 existingTest found'),
     )
   })
 
@@ -455,8 +455,8 @@ describe('Quiz module', () => {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
       // newTests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      'missing newTests',
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('missing newTests'),
     )
   })
 
@@ -465,8 +465,8 @@ describe('Quiz module', () => {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
       newTests: {output: [faker.lorem.text()]},
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      'missing newTests input field',
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('missing newTests input field'),
     )
   })
 
@@ -475,8 +475,8 @@ describe('Quiz module', () => {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
       newTests: {input: [], output: [faker.lorem.text()]},
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      '0 newTests input found',
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('0 newTests input found'),
     )
   })
 
@@ -485,8 +485,8 @@ describe('Quiz module', () => {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
       newTests: {input: [faker.lorem.text]},
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      'missing newTests output field',
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('missing newTests output field'),
     )
   })
 
@@ -495,8 +495,8 @@ describe('Quiz module', () => {
       existingTests: [faker.lorem.text(), faker.lorem.text()],
       newTests: {input: [faker.lorem.text()], output: []},
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      '0 newTests output found',
+    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toEqual(
+      Error('0 newTests output found'),
     )
   })
 
@@ -509,8 +509,8 @@ describe('Quiz module', () => {
 
   test('Missing solutionId parameter should raise a missing solutionId error', async () => {
     const solutionId: any = undefined
-    expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
-      'missing solutionId',
+    expect(async () => await deleteQuizTestCases({solutionId})).rejects.toEqual(
+      Error('missing solutionId'),
     )
   })
 
@@ -523,8 +523,8 @@ describe('Quiz module', () => {
 
   test('Missing quizId parameter should raise a missing quizId error', async () => {
     const quizId: any = undefined
-    expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
-      'missing quizId',
+    expect(async () => await deleteQuizSolution({quizId})).rejects.toEqual(
+      Error('missing quizId'),
     )
   })
 
@@ -536,8 +536,8 @@ describe('Quiz module', () => {
 
   test('Missing quizId parameter should raise a missing quizId error', async () => {
     const quizId: any = undefined
-    expect(async () => await deleteQuiz({quizId})).rejects.toThrow(
-      'missing quizId',
+    expect(async () => await deleteQuiz({quizId})).rejects.toEqual(
+      Error('missing quizId'),
     )
   })
 
@@ -551,8 +551,8 @@ describe('Quiz module', () => {
 
   test('Missing quizId parameter should raise a missing quizId error', async () => {
     const quizId: any = undefined
-    expect(async () => await getQuizSolutionIds({quizId})).rejects.toThrow(
-      'missing quizId',
+    expect(async () => await getQuizSolutionIds({quizId})).rejects.toEqual(
+      Error('missing quizId'),
     )
   })
 
@@ -575,7 +575,7 @@ describe('Quiz module', () => {
           userId,
           locale: faker.lorem.text(),
         }),
-    ).rejects.toThrow('missing userId')
+    ).rejects.toEqual(Error('missing userId'))
   })
 
   test('Missing locale parameter should raise a missing locale error', async () => {
@@ -586,7 +586,7 @@ describe('Quiz module', () => {
           locale,
           userId: faker.lorem.text(),
         }),
-    ).rejects.toThrow('missing locale')
+    ).rejects.toEqual(Error('missing locale'))
   })
 
   test('getQuiz fn should return quiz', async () => {
@@ -597,8 +597,8 @@ describe('Quiz module', () => {
 
   test('Missing locale parameter should raise a missing locale error', async () => {
     const quizData: any = {quizId: undefined}
-    expect(async () => await getQuiz(quizData)).rejects.toThrow(
-      'missing quizId',
+    expect(async () => await getQuiz(quizData)).rejects.toEqual(
+      Error('missing quizId'),
     )
   })
 
