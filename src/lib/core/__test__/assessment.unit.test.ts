@@ -655,4 +655,15 @@ describe('Assessment module', () => {
       async () => await getAssessmentUsersBelowPointCount(data),
     ).rejects.toThrow(/^missing userId$/)
   })
+
+  test('missing point param should return a missing point error', async () => {
+    const data: any = {
+      userId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+      // point: 10,
+    }
+    expect(
+      async () => await getAssessmentUsersBelowPointCount(data),
+    ).rejects.toThrow(/^missing point$/)
+  })
 })
