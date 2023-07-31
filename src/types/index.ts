@@ -128,3 +128,7 @@ export interface IGetAssessmentComparativeScoreProps {
   point: number
   quizPoint?: number
 }
+
+export interface IAssessmentPointsProps {
+  [key: string]: {point: number; id: string}
+}
