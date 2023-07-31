@@ -352,7 +352,7 @@ export const getAssessmentPoints = async () => {
     return {}
   } else {
     assessmentPoints.forEach(
-      (p) => (object[p.name] = {point: p.point, id: p.id}),
+      (p: any) => (object[p.name] = {point: p.point, id: p.id}),
     )
   }
   return object
