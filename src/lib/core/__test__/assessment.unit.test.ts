@@ -12,6 +12,7 @@ import {
   getAssessmentPoints,
   getAssessmentQuizPoint,
   getAssessmentResult,
+  getAssessmentUsersCount,
   getAssessments,
   updateAssessment,
   updateAssessmentCandidateStatus,
@@ -591,5 +592,14 @@ describe('Assessment module', () => {
     expect(() => getAssessmentComparativeScoreLevel(data)).toThrow(
       /^missing comparativeScore$/,
     )
+  })
+
+  test('getAssessmentUsersCount fn should return the usersCount', async () => {
+    const data: any = {
+      userId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+    }
+    prismaMock.quizPointCollection.count.mockResolvedValue(10)
+    expect(await getAssessmentUsersCount(data)).toBe(10)
   })
 })
