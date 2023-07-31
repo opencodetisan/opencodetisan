@@ -6,4 +6,9 @@ describe('Candidate module', () => {
     const data = 1
     expect(convertToMinuteSecond(data)).toEqual({minutes: 0, seconds: 1})
   })
+
+  test('Missing seconds parameter should raise an missing seconds error', () => {
+    const data: any = undefined
+    expect(() => convertToMinuteSecond(data)).toThrow(/^missing seconds$/)
+  })
 })
