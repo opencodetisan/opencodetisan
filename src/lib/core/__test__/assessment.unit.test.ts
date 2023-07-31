@@ -612,4 +612,14 @@ describe('Assessment module', () => {
       /^missing userId$/,
     )
   })
+
+  test('missing quizId param should return a missing quizId error', async () => {
+    const data: any = {
+      userId: faker.string.uuid(),
+      // quizId: faker.string.uuid(),
+    }
+    expect(async () => await getAssessmentUsersCount(data)).rejects.toThrow(
+      /^missing quizId$/,
+    )
+  })
 })
