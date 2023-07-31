@@ -1,9 +1,11 @@
 import {
   IAddAssessmentQuizzesProps,
+  IAssessmentPointsProps,
   IAssessmentQuizProps,
   ICandidateEmailStatusProps,
   IDeleteAssessmentQuizSubmissionsProps,
   IGetAssessmentComparativeScoreProps,
+  IGetAssessmentQuizPointProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
   IcreateAssessmentProps,
@@ -346,7 +348,7 @@ export const getAssessmentCompletedQuiz = async ({
 }
 
 export const getAssessmentPoints = async () => {
-  let object: {[key: string]: {point: number; id: number}} = {}
+  let object: IAssessmentPointsProps = {}
   const assessmentPoints = await prisma.assessmentPoint.findMany()
   if (assessmentPoints.length === 0) {
     return {}
@@ -361,10 +363,7 @@ export const getAssessmentPoints = async () => {
 export const getAssessmentQuizPoint = async ({
   assessmentQuizzes,
   assessmentPoints,
-}: {
-  assessmentQuizzes: IAssessmentQuizProps[]
-  assessmentPoints: any
-}) => {
+}: IGetAssessmentQuizPointProps) => {
   if (!assessmentQuizzes) {
     throw Error('missing assessmentQuizzes')
   } else if (assessmentQuizzes.length === 0) {
