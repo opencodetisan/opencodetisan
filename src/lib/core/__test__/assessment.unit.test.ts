@@ -633,4 +633,15 @@ describe('Assessment module', () => {
     prismaMock.quizPointCollection.count.mockResolvedValue(10)
     expect(await getAssessmentUsersBelowPointCount(data)).toBe(10)
   })
+
+  test('missing quizId param should return a missing quizId error', async () => {
+    const data: any = {
+      userId: faker.string.uuid(),
+      // quizId: faker.string.uuid(),
+      point: 10,
+    }
+    expect(
+      async () => await getAssessmentUsersBelowPointCount(data),
+    ).rejects.toThrow(/^missing quizId$/)
+  })
 })
