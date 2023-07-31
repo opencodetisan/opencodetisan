@@ -22,7 +22,7 @@ model Quiz {
     instruction           String          @default("")
     answer                String          @default("")
     submissionCachedCount Int             @default(0)
-    //submissions           Submission[]
+    submissions           Submission[]
     defaultCode           String          @default("")
     difficultyLevelId     Int             @default(0)
     difficultyLevel       DifficultyLevel @relation(fields: [difficultyLevelId], references: [id])
@@ -64,7 +64,7 @@ model User {
   id String @id @default(cuid())
     name String?
         quizzes       Quiz[]
-
+    submissions   Submission[]
 }
 
 model Solution {
@@ -89,4 +89,18 @@ model TestCase {
     updatedAt  DateTime @updatedAt
     solutionId String   @default("")
     solution   Solution @relation(fields: [solutionId], references: [id])
+}
+
+model Submission {
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    quizId    String
+    quiz      Quiz     @relation(fields: [quizId], references: [id])
+    code      String
+    // assessment      AssessmentQuiz?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    // assessmentQuizSubmission AssessmentQuizSubmission?
+    // submissionPoint SubmissionPoint[]
 }

@@ -64,3 +64,9 @@ export interface IUpdateQuizTestCasesProps {
   existingTests: ITestCaseProps[]
   newTests: ITestCaseClientProps
 }
+
+export interface ICreateCandidateQuizSubmissionProps {
+  userId: string;
+  quizId: string;
+  code: string;
+}
