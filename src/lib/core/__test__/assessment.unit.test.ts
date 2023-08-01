@@ -132,7 +132,7 @@ describe('Assessment module', () => {
     )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
-    ).rejects.toEqual(Error('missing assessmentId'))
+    ).rejects.toThrow(/^missing assessmentId$/)
   })
 
   test('missing email parameter should return a missing email error', async () => {
@@ -155,7 +155,7 @@ describe('Assessment module', () => {
     )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
-    ).rejects.toEqual(Error('missing email'))
+    ).rejects.toThrow(/^missing email$/)
   })
 
   test('missing statusCode parameter should return a missing statusCode error', async () => {
@@ -178,7 +178,7 @@ describe('Assessment module', () => {
     )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
-    ).rejects.toEqual(Error('missing statusCode'))
+    ).rejects.toThrow(/^missing statusCode$/)
   })
 
   test('missing errorMessage parameter should return a missing errorMessage error', async () => {
@@ -201,7 +201,7 @@ describe('Assessment module', () => {
     )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
-    ).rejects.toEqual(Error('missing errorMessage'))
+    ).rejects.toThrow(/^missing errorMessage$/)
   })
 
   test('updateAssessment fn should save and return the assessment data', async () => {
@@ -274,7 +274,7 @@ describe('Assessment module', () => {
     expect(
       async () =>
         await updateAssessmentCandidateStatus(assessmentCandidateData),
-    ).rejects.toEqual(Error('missing assessmentId'))
+    ).rejects.toThrow(/^missing assessmentId$/)
   })
 
   test('missing candidateId parameter should return a missing candidateId error', async () => {
@@ -288,7 +288,7 @@ describe('Assessment module', () => {
     expect(
       async () =>
         await updateAssessmentCandidateStatus(assessmentCandidateData),
-    ).rejects.toEqual(Error('missing candidateId'))
+    ).rejects.toThrow(/^missing candidateId$/)
   })
 
   test('addAssessmentQuizzes fn should add quizzes and return the count number', async () => {
@@ -310,7 +310,7 @@ describe('Assessment module', () => {
     prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
     expect(
       async () => await addAssessmentQuizzes(assessmentQuizData),
-    ).rejects.toEqual(Error('missing assessmentId'))
+    ).rejects.toThrow(/^missing assessmentId$/)
   })
 
   test('missing quizIds parameter should return a missing quizIds error', async () => {
@@ -321,7 +321,7 @@ describe('Assessment module', () => {
     prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
     expect(
       async () => await addAssessmentQuizzes(assessmentQuizData),
-    ).rejects.toEqual(Error('missing quizIds'))
+    ).rejects.toThrow(/^missing quizIds$/)
   })
 
   test('Empty quizIds array should return a 0 quizId found error', async () => {
@@ -332,7 +332,7 @@ describe('Assessment module', () => {
     prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
     expect(
       async () => await addAssessmentQuizzes(assessmentQuizData),
-    ).rejects.toEqual(Error('0 quizId found'))
+    ).rejects.toThrow(/^0 quizId found$/)
   })
 
   test('getAssessmentResult fn should return the assessmentResult', async () => {
@@ -358,7 +358,7 @@ describe('Assessment module', () => {
     )
     expect(
       async () => await getAssessmentResult(assessmentResultData),
-    ).rejects.toEqual(Error('missing assessmentId'))
+    ).rejects.toThrow(/^missing assessmentId$/)
   })
 
   test('missing quizId parameter should return a missing quizId error', async () => {
@@ -371,7 +371,7 @@ describe('Assessment module', () => {
     )
     expect(
       async () => await getAssessmentResult(assessmentResultData),
-    ).rejects.toEqual(Error('missing quizId'))
+    ).rejects.toThrow(/^missing quizId$/)
   })
 
   test('deleteAssessmentQuizSubmissions fn should delete and return the count number', async () => {
@@ -391,7 +391,7 @@ describe('Assessment module', () => {
     prismaMock.assessmentQuizSubmission.deleteMany.mockResolvedValue({count: 2})
     expect(
       async () => await deleteAssessmentQuizSubmissions(data),
-    ).rejects.toEqual(Error('missing submissionIds'))
+    ).rejects.toThrow(/^missing submissionIds$/)
   })
 
   test('empty submissionIds array should return null', async () => {
@@ -546,7 +546,7 @@ describe('Assessment module', () => {
     }
     await expect(
       async () => await getAssessmentQuizPoint(data),
-    ).rejects.toEqual(Error('missing assessmentQuizzes'))
+    ).rejects.toThrow(/^missing assessmentQuizzes$/)
   })
 
   test('empty assessmentQuizzes should return a assessmentQuizzes is empty error', async () => {
@@ -592,7 +592,7 @@ describe('Assessment module', () => {
     }
     expect(
       async () => await getAssessmentComparativeScore(data),
-    ).rejects.toEqual(Error('missing usersCount'))
+    ).rejects.toThrow(/^missing usersCount$/)
   })
 
   test('missing usersBelowPointCount param should return a missing usersBelowPointCount error', async () => {
@@ -603,7 +603,7 @@ describe('Assessment module', () => {
     }
     expect(
       async () => await getAssessmentComparativeScore(data),
-    ).rejects.toEqual(Error('missing usersBelowPointCount'))
+    ).rejects.toThrow(/^missing usersBelowPointCount$/)
   })
 
   test('missing point param should return a missing point error', async () => {
@@ -614,7 +614,7 @@ describe('Assessment module', () => {
     }
     expect(
       async () => await getAssessmentComparativeScore(data),
-    ).rejects.toEqual(Error('missing point'))
+    ).rejects.toThrow(/^missing point$/)
   })
 
   test('getAssessmentComparativeScoreLevel fn should return the comparativeScore level', async () => {
