@@ -4,6 +4,7 @@ import {
   addAssessmentQuizzes,
   createAssessment,
   createAssessmentCandidateEmails,
+  deleteAssessmentQuiz,
   deleteAssessmentQuizSubmissions,
   getAssessment,
   getAssessmentComparativeScore,
@@ -11,6 +12,7 @@ import {
   getAssessmentCompletedQuiz,
   getAssessmentPoints,
   getAssessmentQuizPoint,
+  deleteAssessmentResult,
   getAssessmentResult,
   getAssessmentUsersBelowPointCount,
   getAssessmentUsersCount,
@@ -423,6 +425,42 @@ describe('Assessment module', () => {
     }
     prismaMock.assessment.findUnique.mockResolvedValue(data)
     expect(await getAssessment(data)).toEqual(data)
+  })
+
+  test('deleteAssessmentResult fn should delete and return assessmentResult', async () => {
+    const data: any = {
+      assessmentResultId: faker.string.uuid(),
+    }
+    prismaMock.assessmentResult.delete.mockResolvedValue(data)
+    expect(await deleteAssessmentResult(data)).toEqual(data)
+  })
+
+  test('missing assessmentResultId parameter should return a missing assessmentResultId error', async () => {
+    const data: any = {
+      assessmentResultId: undefined,
+    }
+    expect(async () => await deleteAssessmentResult(data)).rejects.toThrow(
+      'missing assessmentResultId',
+    )
+  })
+
+  test('deleteAssessmentQuiz fn should delete and return assessmentResult', async () => {
+    const data: any = {
+      assessmentId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+    }
+    prismaMock.assessmentQuiz.delete.mockResolvedValue(data)
+    expect(await deleteAssessmentQuiz(data)).toEqual(data)
+  })
+
+  test('missing assessmentId parameter should return a missing assessmentId error', async () => {
+    const data: any = {
+      // assessmentId: faker.string.uuid(),
+      quizId: faker.string.uuid(),
+    }
+    expect(async () => await deleteAssessmentQuiz(data)).rejects.toThrow(
+      'missing assessmentId',
+    )
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {

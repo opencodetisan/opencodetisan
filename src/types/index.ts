@@ -60,11 +60,6 @@ export interface IUpdateQuizSolutionProps {
   defaultCode?: string
 }
 
-export interface IUpdateQuizTestCasesProps {
-  existingTests: ITestCaseProps[]
-  newTests: ITestCaseClientProps
-}
-
 export interface ICreateCandidateQuizSubmissionProps {
   userId: string
   quizId: string
@@ -136,4 +131,15 @@ export interface IAssessmentPointsProps {
 export interface IGetAssessmentQuizPointProps {
   assessmentQuizzes: IAssessmentQuizProps[]
   assessmentPoints: IAssessmentPointsProps
+}
+
+export interface IUpdateQuizTestCasesProps {
+  existingTests: ITestCaseProps[]
+  newTests: ITestCaseClientProps
+}
+
+export interface ICreateCandidateQuizSubmissionProps {
+  userId: string
+  quizId: string
+  code: string
 }

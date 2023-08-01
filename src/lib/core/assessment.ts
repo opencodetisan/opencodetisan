@@ -482,3 +482,40 @@ export const getAssessmentUsersBelowPointCount = async ({
   })
   return usersCount
 }
+
+export const deleteAssessmentResult = async ({
+  assessmentResultId,
+}: {
+  assessmentResultId: string
+}) => {
+  if (!assessmentResultId) {
+    throw new Error('missing assessmentResultId')
+  }
+  const assessmentResult = await prisma.assessmentResult.delete({
+    where: {id: assessmentResultId},
+  })
+  return assessmentResult
+}
+
+export const deleteAssessmentQuiz = async ({
+  assessmentId,
+  quizId,
+}: {
+  assessmentId: string
+  quizId: string
+}) => {
+  if (!assessmentId) {
+    throw new Error('missing assessmentId')
+  } else if (!quizId) {
+    throw new Error('missing quizId')
+  }
+  const assessmentResult = await prisma.assessmentQuiz.delete({
+    where: {
+      assessmentId_quizId: {
+        assessmentId,
+        quizId,
+      },
+    },
+  })
+  return assessmentResult
+}
