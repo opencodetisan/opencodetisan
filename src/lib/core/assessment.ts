@@ -232,19 +232,6 @@ export const getAssessment = async ({assessmentId}: {assessmentId: string}) => {
       title: true,
       description: true,
       createdAt: true,
-      owner: {
-        select: {
-          subscription: {
-            select: {
-              price: {
-                select: {
-                  label: true,
-                },
-              },
-            },
-          },
-        },
-      },
       assessmentCandidateEmail: {
         select: {
           id: true,
