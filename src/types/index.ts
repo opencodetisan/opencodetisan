@@ -111,7 +111,14 @@ export interface IUpdateQuizTestCasesProps {
 }
 
 export interface ICreateCandidateQuizSubmissionProps {
-  userId: string;
-  quizId: string;
-  code: string;
+  userId: string
+  quizId: string
+  code: string
+}
+
+export interface IAssessmentEmailProps {
+  locale: string
+  recipient: string
+  assessmentUrl: string
+  companyName: string
 }

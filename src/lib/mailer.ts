@@ -1,4 +1,4 @@
-import {AssessmentEmailProps} from '@/types'
+import {IAssessmentEmailProps} from '@/types'
 import {MailerSend, EmailParams, Recipient} from 'mailersend'
 
 const mailersend = new MailerSend({
@@ -26,7 +26,7 @@ export const sendAssessmentEmail = async ({
   recipient,
   assessmentUrl,
   companyName,
-}: AssessmentEmailProps) => {
+}: IAssessmentEmailProps) => {
   const recipients = [new Recipient(recipient, recipient)]
   const personalization = [
     {
