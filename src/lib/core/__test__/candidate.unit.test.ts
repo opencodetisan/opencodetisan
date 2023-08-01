@@ -23,7 +23,7 @@ describe('Candidate module', () => {
     }
     expect(
       async () => await createCandidateQuizSubmission(submissionData),
-    ).rejects.toEqual(Error('missing userId'))
+    ).rejects.toThrow(/^missing userId$/)
   })
 
   test('Missing quizId parameter should raise an missing quizId error', async () => {
@@ -34,7 +34,7 @@ describe('Candidate module', () => {
     }
     expect(
       async () => await createCandidateQuizSubmission(submissionData),
-    ).rejects.toEqual(Error('missing quizId'))
+    ).rejects.toThrow(/^missing quizId$/)
   })
 
   test('Missing code parameter should raise an missing code error', async () => {
@@ -45,6 +45,6 @@ describe('Candidate module', () => {
     }
     expect(
       async () => await createCandidateQuizSubmission(submissionData),
-    ).rejects.toEqual(Error('missing code'))
+    ).rejects.toThrow(/^missing code$/)
   })
 })
