@@ -31,7 +31,7 @@ model Quiz {
     status QuizStatus @default(DRAFT)
     //challenges Challenge[]
     assessmentQuizzes AssessmentQuiz[]
-    //assessmentResults AssessmentResult[]
+    assessmentResults AssessmentResult[]
     //quizPointCollection QuizPointCollection[]
 }
 
@@ -67,6 +67,8 @@ model User {
     submissions   Submission[]
     assessments Assessment[]
     adminContact AdminContact?
+    assessmentResults AssessmentResult[]
+    assessmentCandidates AssessmentCandidate[]
 }
 
 model Solution {
@@ -103,8 +105,19 @@ model Submission {
     assessment      AssessmentQuiz?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    // assessmentQuizSubmission AssessmentQuizSubmission?
+    assessmentQuizSubmission AssessmentQuizSubmission?
     // submissionPoint SubmissionPoint[]
+}
+
+enum AssessmentQuizStatus {
+  PENDING
+  STARTED
+  COMPLETED
+}
+
+enum AssessmentStatus {
+  PENDING
+  COMPLETED
 }
 
 model Assessment {
@@ -115,8 +128,8 @@ model Assessment {
   description String
   createdAt             DateTime        @default(now())
   assessmentQuizzes AssessmentQuiz[]
-  // assessmentCandidates AssessmentCandidate[]
-  // assessmentResults AssessmentResult[]
+  assessmentCandidates AssessmentCandidate[]
+  assessmentResults AssessmentResult[]
   assessmentCandidateEmail AssessmentCandidateEmail[]
   // activityLog ActivityLog[]
 }
@@ -147,4 +160,38 @@ model AdminContact {
   userId String @unique
   companyName String
   contactNumber Int
+}
+
+model AssessmentResult {
+  id String @id @default(cuid())
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  quizId String 
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  assessmentId String
+  candidate User? @relation(fields: [candidateId], references: [id])
+  candidateId String?
+  timeTaken Float? @default(0.0)
+  status AssessmentQuizStatus @default(PENDING)
+  assessmentQuizSubmissions AssessmentQuizSubmission[]
+}
+
+model AssessmentCandidate {
+  assessment Assessment @relation(fields: [assessmentId],references: [id])
+  assessmentId String
+  candidate User @relation(fields: [candidateId], references: [id])
+  candidateId String
+  status AssessmentStatus @default(PENDING)
+  token String @unique
+
+  @@id([assessmentId, candidateId])
+}
+
+model AssessmentQuizSubmission {
+  id String @id @default(cuid())
+  assessmentResult AssessmentResult @relation(fields: [assessmentResultId], references: [id])
+  assessmentResultId String
+  submission Submission? @relation(fields: [submissionId], references: [id])
+  submissionId String? @unique
+  start DateTime?
+  end DateTime?
 }

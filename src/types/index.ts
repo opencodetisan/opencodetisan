@@ -8,6 +8,11 @@ export interface ITestCaseProps {
   solutionId: string
 }
 
+export interface ITestCaseClientProps {
+  input: string[]
+  output: string[]
+}
+
 export interface ICreateQuizProps {
   id: string
   title: string
@@ -73,4 +78,40 @@ export interface ICandidateEmailStatusProps {
   email: string
   statusCode: number
   errorMessage: string
+}
+
+export interface IUpdateAssessmentProps {
+  assessmentId: string
+  title: string
+  description: string
+}
+
+export interface IUpdateAssessmentCandidateStatusProps {
+  assessmentId: string
+  candidateId: string
+}
+
+export interface IAddAssessmentQuizzesProps {
+  quizIds: string[]
+  assessmentId: string
+}
+
+export interface IAddAssessmentQuizzesProps {
+  quizId: string
+  assessmentId: string
+}
+
+export interface IDeleteAssessmentQuizSubmissionsProps {
+  submissionIds: string[]
+}
+
+export interface IUpdateQuizTestCasesProps {
+  existingTests: ITestCaseProps[]
+  newTests: ITestCaseClientProps
+}
+
+export interface ICreateCandidateQuizSubmissionProps {
+  userId: string;
+  quizId: string;
+  code: string;
 }
