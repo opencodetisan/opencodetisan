@@ -1,8 +1,25 @@
+import {AssessmentEmailProps} from '@/types'
 import {MailerSend, EmailParams, Recipient} from 'mailersend'
 
 const mailersend = new MailerSend({
   apiKey: process.env.MAILERSEND_API_KEY!,
 })
+
+export enum Locale {
+  EN = 'en',
+  ZH_CN = 'zh-cn',
+}
+
+export const getAssessmentInviteTemplate = (locale: string) => {
+  switch (locale) {
+    case Locale.EN:
+      return process.env.EN_ASSESSMENT_TEMPLATE_ID
+    case Locale.ZH_CN:
+      return process.env.ZH_CN_ASSESSMENT_TEMPLATE_ID
+    default:
+      return process.env.EN_ASSESSMENT_TEMPLATE_ID
+  }
+}
 
 export const sendAssessmentEmail = async ({
   locale,
