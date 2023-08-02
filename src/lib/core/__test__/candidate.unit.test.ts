@@ -1,6 +1,10 @@
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '../../db/prisma-mock-singleton'
-import {createCandidateQuizSubmission, getActivityLogCount} from '../candidate'
+import {
+  createCandidateQuizSubmission,
+  getActivityLogCount,
+  getActivityLogs,
+} from '../candidate'
 
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
@@ -72,5 +76,14 @@ describe('Candidate module', () => {
     expect(async () => await getActivityLogCount(param)).rejects.toThrow(
       /^empty assessmentIds$/,
     )
+  })
+
+  test('getActivityLogs fn should return activity logs', async () => {
+    const uuid = faker.string.uuid()
+    const param: any = {
+      assessmentIds: [uuid, uuid],
+    }
+    prismaMock.candidateActivityLog.findMany.mockResolvedValue(param)
+    expect(await getActivityLogs(param)).toEqual(param)
   })
 })
