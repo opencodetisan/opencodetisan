@@ -1,4 +1,7 @@
-import {ICreateCandidateQuizSubmissionProps} from '@/types'
+import {
+  ICreateCandidateQuizSubmissionProps,
+  IGetActivityLogsProps,
+} from '@/types'
 import prisma from '../db/client'
 
 export const createCandidateQuizSubmission = async ({
@@ -42,6 +45,43 @@ export const getActivityLogCount = async ({
       },
     })
     return activityLogCount
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const getActivityLogs = async ({
+  assessmentIds,
+  amount,
+  skip,
+}: IGetActivityLogsProps) => {
+  if (!assessmentIds) {
+    throw Error('missing assessmentIds')
+  } else if (assessmentIds.length === 0) {
+    throw Error('empty assessmentIds')
+  }
+  try {
+    const activityLogData = await prisma.candidateActivityLog.findMany({
+      where: {
+        assessmentId: {
+          in: assessmentIds,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      skip,
+      take: amount,
+    })
+
+    return activityLogData
   } catch (e) {
     console.log(e)
   }
