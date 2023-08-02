@@ -261,8 +261,12 @@ model CandidateActivityLog {
   userId String
   assessment Assessment @relation(fields: [assessmentId], references: [id])
   assessmentId String
-  // userAction UserAction @relation(fields: [userActionId], references: [id])
-  // userActionId Int
-  // event Event @relation(fields: [eventId], references: [id])
-  // eventId Int
+  userAction UserAction @relation(fields: [userActionId], references: [id])
+  userActionId Int
+}
+
+model UserAction {
+  id Int @id @default(autoincrement())
+  userAction String @unique
+  candidateActivityLog CandidateActivityLog[]
 }
