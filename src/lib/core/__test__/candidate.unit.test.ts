@@ -93,4 +93,13 @@ describe('Candidate module', () => {
       /^missing assessmentIds$/,
     )
   })
+
+  test('Empty assessmentIds should raise an empty assessmentIds error', async () => {
+    const param: any = {
+      assessmentIds: [],
+    }
+    expect(async () => await getActivityLogs(param)).rejects.toThrow(
+      /^empty assessmentIds$/,
+    )
+  })
 })
