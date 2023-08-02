@@ -19,6 +19,7 @@ import {
   getAssessments,
   updateAssessment,
   updateAssessmentCandidateStatus,
+  getAssessmentIds,
 } from '../assessment'
 
 describe('Assessment module', () => {
@@ -713,5 +714,16 @@ describe('Assessment module', () => {
     expect(
       async () => await getAssessmentUsersBelowPointCount(data),
     ).rejects.toThrow(/^missing point$/)
+  })
+
+  test('getAssessmentIds fn should return an array of ids', async () => {
+    const param: any = {
+      userId: faker.string.uuid(),
+    }
+    const uuid = faker.string.uuid()
+    const mockValue: any = [{id: uuid}, {id: uuid}]
+    const returnValue = [uuid, uuid]
+    prismaMock.assessment.findMany.mockResolvedValue(mockValue)
+    expect(await getAssessmentIds(param)).toEqual(returnValue)
   })
 })
