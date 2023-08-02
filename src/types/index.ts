@@ -143,3 +143,10 @@ export interface ICreateCandidateQuizSubmissionProps {
   quizId: string
   code: string
 }
+
+export interface IAssessmentEmailProps {
+  locale: string
+  recipient: string
+  assessmentUrl: string
+  companyName: string
+}

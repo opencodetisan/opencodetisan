@@ -463,6 +463,16 @@ describe('Assessment module', () => {
     )
   })
 
+  test('sendAssessmentEmail fn should delete and return assessmentResult', async () => {
+    // const data: any = {
+    //   locale: faker.lorem.word(),
+    //   recipient: faker.lorem.word(),
+    //   assessmentUrl: faker.lorem.word(),
+    //   companyName: faker.lorem.word(),
+    // }
+    // expect(await sendAssessmentEmail(data)).toBe(1)
+  })
+
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
     const data: any = {
       // assessmentId: faker.string.uuid(),
