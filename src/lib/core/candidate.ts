@@ -31,7 +31,7 @@ export const getActivityLogCount = async ({
   if (!assessmentIds) {
     throw Error('missing assessmentIds')
   } else if (assessmentIds.length === 0) {
-    throw Error('assessmentIds is empty')
+    throw Error('empty assessmentIds')
   }
   try {
     const activityLogCount = await prisma.candidateActivityLog.count({
