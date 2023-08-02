@@ -6,11 +6,13 @@ import {
   getActivityLogs,
 } from '../candidate'
 
+const uuid = faker.string.uuid()
+
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
     const submissionData: any = {
-      userId: faker.string.uuid(),
-      quizId: faker.string.uuid(),
+      userId: uuid,
+      quizId: uuid,
       code: faker.lorem.text(),
     }
     prismaMock.submission.create.mockResolvedValue(submissionData)
@@ -21,8 +23,8 @@ describe('Candidate module', () => {
 
   test('Missing userId parameter should raise an missing userId error', async () => {
     const submissionData: any = {
-      // userId: faker.string.uuid(),
-      quizId: faker.string.uuid(),
+      // userId: uuid,
+      quizId: uuid,
       code: faker.lorem.text(),
     }
     expect(
@@ -32,8 +34,8 @@ describe('Candidate module', () => {
 
   test('Missing quizId parameter should raise an missing quizId error', async () => {
     const submissionData: any = {
-      userId: faker.string.uuid(),
-      // quizId: faker.string.uuid(),
+      userId: uuid,
+      // quizId: uuid,
       code: faker.lorem.text(),
     }
     expect(
@@ -43,8 +45,8 @@ describe('Candidate module', () => {
 
   test('Missing code parameter should raise an missing code error', async () => {
     const submissionData: any = {
-      userId: faker.string.uuid(),
-      quizId: faker.string.uuid(),
+      userId: uuid,
+      quizId: uuid,
       // code: faker.lorem.text(),
     }
     expect(
@@ -53,7 +55,6 @@ describe('Candidate module', () => {
   })
 
   test('getActivityLogCount fn should return the count number', async () => {
-    const uuid = faker.string.uuid()
     const param: any = {
       assessmentIds: [uuid, uuid],
     }
@@ -79,7 +80,6 @@ describe('Candidate module', () => {
   })
 
   test('getActivityLogs fn should return activity logs', async () => {
-    const uuid = faker.string.uuid()
     const param: any = {
       assessmentIds: [uuid, uuid],
     }
