@@ -505,3 +505,26 @@ export const deleteAssessmentQuiz = async ({
   })
   return assessmentResult
 }
+
+export const getAssessmentIds = async ({
+  userId,
+  amount = 1,
+}: {
+  userId: string
+  amount: number
+}): Promise<string[]> => {
+  if (!userId) {
+    throw Error('missing userId')
+  }
+  const assessments = await prisma.assessment.findMany({
+    where: {
+      ownerId: userId,
+    },
+    select: {
+      id: true,
+    },
+    take: amount,
+  })
+
+  return assessments.map((a) => a.id)
+}
