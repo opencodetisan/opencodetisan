@@ -86,4 +86,11 @@ describe('Candidate module', () => {
     prismaMock.candidateActivityLog.findMany.mockResolvedValue(param)
     expect(await getActivityLogs(param)).toEqual(param)
   })
+
+  test('Missing assessmentIds parameter should raise an missing assessmentIds error', async () => {
+    const param: any = {}
+    expect(async () => await getActivityLogs(param)).rejects.toThrow(
+      /^missing assessmentIds$/,
+    )
+  })
 })
