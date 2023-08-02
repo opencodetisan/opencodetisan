@@ -726,4 +726,13 @@ describe('Assessment module', () => {
     prismaMock.assessment.findMany.mockResolvedValue(mockValue)
     expect(await getAssessmentIds(param)).toEqual(returnValue)
   })
+
+  test('missing point param should return a missing point error', async () => {
+    const param: any = {
+      // userId: faker.string.uuid(),
+    }
+    expect(async () => await getAssessmentIds(param)).rejects.toThrow(
+      /^missing userId/,
+    )
+  })
 })
