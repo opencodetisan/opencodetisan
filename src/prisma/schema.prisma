@@ -71,6 +71,7 @@ model User {
     assessmentCandidates AssessmentCandidate[]
     submissionPoint SubmissionPoint[]
     quizPointCollection QuizPointCollection[]
+    candidateActivityLog CandidateActivityLog[]
 }
 
 model Solution {
@@ -133,7 +134,7 @@ model Assessment {
   assessmentCandidates AssessmentCandidate[]
   assessmentResults AssessmentResult[]
   assessmentCandidateEmail AssessmentCandidateEmail[]
-  // activityLog ActivityLog[]
+  candidateActivityLog CandidateActivityLog[]
 }
 
 model AssessmentQuiz {
@@ -251,4 +252,17 @@ model QuizPointCollection {
   point Int
 
   @@unique([userId, quizId])
+}
+
+model CandidateActivityLog {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  assessmentId String
+  // userAction UserAction @relation(fields: [userActionId], references: [id])
+  // userActionId Int
+  // event Event @relation(fields: [eventId], references: [id])
+  // eventId Int
 }
