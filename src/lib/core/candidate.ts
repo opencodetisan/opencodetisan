@@ -22,3 +22,27 @@ export const createCandidateQuizSubmission = async ({
   })
   return submission
 }
+
+export const getActivityLogCount = async ({
+  assessmentIds,
+}: {
+  assessmentIds: string[]
+}) => {
+  if (!assessmentIds) {
+    throw Error('missing assessmentIds')
+  } else if (assessmentIds.length === 0) {
+    throw Error('assessmentIds is empty')
+  }
+  try {
+    const activityLogCount = await prisma.candidateActivityLog.count({
+      where: {
+        assessmentId: {
+          in: assessmentIds,
+        },
+      },
+    })
+    return activityLogCount
+  } catch (e) {
+    console.log(e)
+  }
+}
