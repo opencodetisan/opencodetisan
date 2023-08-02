@@ -528,3 +528,19 @@ export const getAssessmentIds = async ({
 
   return assessments.map((a) => a.id)
 }
+
+export const getAssessmentQuizzes = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const quiz = await prisma.assessmentQuiz.findMany({
+    where: {
+      assessmentId,
+    },
+  })
+  return quiz
+}
