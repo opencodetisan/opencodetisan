@@ -1,7 +1,6 @@
 import {
   IAddAssessmentQuizzesProps,
   IAssessmentPointsProps,
-  IAssessmentQuizProps,
   ICandidateEmailStatusProps,
   IDeleteAssessmentQuizSubmissionsProps,
   IGetAssessmentComparativeScoreProps,
