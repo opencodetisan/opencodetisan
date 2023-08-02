@@ -511,7 +511,7 @@ export const getAssessmentIds = async ({
   amount = 1,
 }: {
   userId: string
-  amount: number
+  amount?: number
 }): Promise<string[]> => {
   if (!userId) {
     throw Error('missing userId')
