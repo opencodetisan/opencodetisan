@@ -5,6 +5,7 @@ import {
   IDeleteAssessmentQuizSubmissionsProps,
   IGetAssessmentComparativeScoreProps,
   IGetAssessmentQuizPointProps,
+  IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
   IcreateAssessmentProps,
@@ -543,4 +544,38 @@ export const getAssessmentQuizzes = async ({
     },
   })
   return quiz
+}
+
+export const updateAssessmentAcceptance = async ({
+  assessmentId,
+  candidateId,
+  assessmentResults,
+  token,
+}: IUpdateAssessmentAcceptanceProps) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      assessmentCandidates: {
+        create: {
+          candidateId,
+          token: token,
+        },
+      },
+      assessmentResults: {
+        create: assessmentResults,
+      },
+      candidateActivityLog: {
+        create: {
+          userId: candidateId,
+          userActionId: UserActionId.Accept,
+        },
+      },
+    },
+  })
+  return assessment
 }
