@@ -105,6 +105,34 @@ export interface IDeleteAssessmentQuizSubmissionsProps {
   submissionIds: string[]
 }
 
+export interface IAssessmentQuizProps {
+  quiz: {
+    difficultyLevel: {
+      name: string
+    }
+    id: string
+    title: string
+    instruction: string
+    difficultyLevelId: number
+  }
+}
+
+export interface IGetAssessmentComparativeScoreProps {
+  usersBelowPointCount: number
+  usersCount: number
+  point: number
+  quizPoint?: number
+}
+
+export interface IAssessmentPointsProps {
+  [key: string]: {point: number; id: string}
+}
+
+export interface IGetAssessmentQuizPointProps {
+  assessmentQuizzes: IAssessmentQuizProps[]
+  assessmentPoints: IAssessmentPointsProps
+}
+
 export interface IUpdateQuizTestCasesProps {
   existingTests: ITestCaseProps[]
   newTests: ITestCaseClientProps
