@@ -21,6 +21,7 @@ import {
   updateAssessmentCandidateStatus,
   getAssessmentIds,
   getAssessmentQuizzes,
+  updateAssessmentAcceptance,
 } from '../assessment'
 
 const uuid = faker.string.uuid()
@@ -751,5 +752,16 @@ describe('Assessment module', () => {
     expect(async () => await getAssessmentQuizzes(param)).rejects.toThrow(
       /^missing assessmentId$/,
     )
+  })
+
+  test('updateAssessmentAcceptance fn should update and return assessment', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      candidateId: uuid,
+      assessmentResults: {candidateId: uuid, quizId: uuid},
+      token: uuid,
+    }
+    prismaMock.assessment.update.mockResolvedValue(param)
+    expect(await updateAssessmentAcceptance(param)).toEqual(param)
   })
 })
