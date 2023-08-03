@@ -11,7 +11,11 @@ import {
   IcreateAssessmentProps,
 } from '@/types'
 import prisma from '../db/client'
-import {AssessmentPoint, AssessmentComparativeScoreLevel} from '@/enums'
+import {
+  AssessmentPoint,
+  AssessmentComparativeScoreLevel,
+  CandidateActionId,
+} from '@/enums'
 import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
 
 export const createAssessment = async ({
@@ -572,7 +576,7 @@ export const updateAssessmentAcceptance = async ({
       candidateActivityLog: {
         create: {
           userId: candidateId,
-          userActionId: UserActionId.Accept,
+          userActionId: CandidateActionId.Accept,
         },
       },
     },
