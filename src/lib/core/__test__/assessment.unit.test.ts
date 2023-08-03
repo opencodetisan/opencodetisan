@@ -812,4 +812,16 @@ describe('Assessment module', () => {
       /^missing assessmentResults$/,
     )
   })
+
+  test('empty assessmentResults param should return a empty assessmentResults error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      candidateId: uuid,
+      assessmentResults: [],
+      token: uuid,
+    }
+    expect(async () => await updateAssessmentAcceptance(param)).rejects.toThrow(
+      /^empty assessmentResults$/,
+    )
+  })
 })
