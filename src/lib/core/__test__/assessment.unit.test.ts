@@ -824,4 +824,19 @@ describe('Assessment module', () => {
       /^empty assessmentResults$/,
     )
   })
+
+  test('missing token param should return a missing token error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      candidateId: uuid,
+      assessmentResults: [
+        {candidateId: uuid, quizId: uuid},
+        {candidateId: uuid, quizId: uuid},
+      ],
+      // token: uuid,
+    }
+    expect(async () => await updateAssessmentAcceptance(param)).rejects.toThrow(
+      /^missing token$/,
+    )
+  })
 })
