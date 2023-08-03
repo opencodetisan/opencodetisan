@@ -36,18 +36,14 @@ export const getActivityLogCount = async ({
   } else if (assessmentIds.length === 0) {
     throw Error('empty assessmentIds')
   }
-  try {
-    const activityLogCount = await prisma.candidateActivityLog.count({
-      where: {
-        assessmentId: {
-          in: assessmentIds,
-        },
+  const activityLogCount = await prisma.candidateActivityLog.count({
+    where: {
+      assessmentId: {
+        in: assessmentIds,
       },
-    })
-    return activityLogCount
-  } catch (e) {
-    console.log(e)
-  }
+    },
+  })
+  return activityLogCount
 }
 
 export const getActivityLogs = async ({
@@ -60,29 +56,25 @@ export const getActivityLogs = async ({
   } else if (assessmentIds.length === 0) {
     throw Error('empty assessmentIds')
   }
-  try {
-    const activityLogData = await prisma.candidateActivityLog.findMany({
-      where: {
-        assessmentId: {
-          in: assessmentIds,
+  const activityLogData = await prisma.candidateActivityLog.findMany({
+    where: {
+      assessmentId: {
+        in: assessmentIds,
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-          },
-        },
-      },
-      skip,
-      take: amount,
-    })
+    },
+    skip,
+    take: amount,
+  })
 
-    return activityLogData
-  } catch (e) {
-    console.log(e)
-  }
+  return activityLogData
 }
