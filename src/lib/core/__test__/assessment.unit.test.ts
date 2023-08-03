@@ -758,7 +758,10 @@ describe('Assessment module', () => {
     const param: any = {
       assessmentId: uuid,
       candidateId: uuid,
-      assessmentResults: {candidateId: uuid, quizId: uuid},
+      assessmentResults: [
+        {candidateId: uuid, quizId: uuid},
+        {candidateId: uuid, quizId: uuid},
+      ],
       token: uuid,
     }
     prismaMock.assessment.update.mockResolvedValue(param)
