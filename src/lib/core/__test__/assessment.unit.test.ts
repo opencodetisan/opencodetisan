@@ -20,6 +20,7 @@ import {
   updateAssessment,
   updateAssessmentCandidateStatus,
   getAssessmentIds,
+  getAssessmentQuizzes,
 } from '../assessment'
 
 describe('Assessment module', () => {
@@ -734,5 +735,13 @@ describe('Assessment module', () => {
     expect(async () => await getAssessmentIds(param)).rejects.toThrow(
       /^missing userId/,
     )
+  })
+
+  test('getAssessmentQuizzes fn should return assessment quizzes', async () => {
+    const param: any = {
+      assessmentId: faker.string.uuid(),
+    }
+    prismaMock.assessmentQuiz.findMany.mockResolvedValue(param)
+    expect(await getAssessmentQuizzes(param)).toEqual(param)
   })
 })
