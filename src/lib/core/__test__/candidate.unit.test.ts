@@ -8,7 +8,7 @@ import {
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
-const time = faker.date.anytime()
+const date = faker.date.anytime()
 const number = faker.number.int()
 
 const mockSubmission = {
@@ -16,13 +16,13 @@ const mockSubmission = {
   userId: uuid,
   quizId: uuid,
   code: text,
-  createdAt: time,
-  updatedAt: time,
+  createdAt: date,
+  updatedAt: date,
 }
 
 const mockCandidateActivityLog = {
   id: uuid,
-  createdAt: time,
+  createdAt: date,
   userId: uuid,
   assessmentId: uuid,
   userActionId: number,
