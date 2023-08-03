@@ -767,4 +767,19 @@ describe('Assessment module', () => {
     prismaMock.assessment.update.mockResolvedValue(param)
     expect(await updateAssessmentAcceptance(param)).toEqual(param)
   })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+      candidateId: uuid,
+      assessmentResults: [
+        {candidateId: uuid, quizId: uuid},
+        {candidateId: uuid, quizId: uuid},
+      ],
+      token: uuid,
+    }
+    expect(async () => await updateAssessmentAcceptance(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
 })
