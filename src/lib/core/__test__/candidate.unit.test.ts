@@ -7,13 +7,14 @@ import {
 } from '../candidate'
 
 const uuid = faker.string.uuid()
+const text = faker.lorem.text()
 
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
     const submissionData: any = {
       userId: uuid,
       quizId: uuid,
-      code: faker.lorem.text(),
+      code: text,
     }
     prismaMock.submission.create.mockResolvedValue(submissionData)
     expect(await createCandidateQuizSubmission(submissionData)).toEqual(
@@ -25,7 +26,7 @@ describe('Candidate module', () => {
     const submissionData: any = {
       // userId: uuid,
       quizId: uuid,
-      code: faker.lorem.text(),
+      code: text,
     }
     expect(
       async () => await createCandidateQuizSubmission(submissionData),
@@ -36,7 +37,7 @@ describe('Candidate module', () => {
     const submissionData: any = {
       userId: uuid,
       // quizId: uuid,
-      code: faker.lorem.text(),
+      code: text,
     }
     expect(
       async () => await createCandidateQuizSubmission(submissionData),
@@ -47,7 +48,7 @@ describe('Candidate module', () => {
     const submissionData: any = {
       userId: uuid,
       quizId: uuid,
-      // code: faker.lorem.text(),
+      // code: text,
     }
     expect(
       async () => await createCandidateQuizSubmission(submissionData),
