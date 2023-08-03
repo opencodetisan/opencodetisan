@@ -516,7 +516,7 @@ export const getAssessmentIds = async ({
   if (!userId) {
     throw Error('missing userId')
   }
-  const assessments = await prisma.assessment.findMany({
+  const assessments: {id: string}[] = await prisma.assessment.findMany({
     where: {
       ownerId: userId,
     },
