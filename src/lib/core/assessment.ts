@@ -558,6 +558,14 @@ export const updateAssessmentAcceptance = async ({
 }: IUpdateAssessmentAcceptanceProps) => {
   if (!assessmentId) {
     throw Error('missing assessmentId')
+  } else if (!candidateId) {
+    throw Error('missing candidateId')
+  } else if (!assessmentResults) {
+    throw Error('missing assessmentResults')
+  } else if (assessmentResults.length === 0) {
+    throw Error('empty assessmentResults')
+  } else if (!token) {
+    throw Error('missing token')
   }
   const assessment = await prisma.assessment.update({
     where: {
