@@ -8,6 +8,16 @@ import {
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
+const time = faker.date.anytime()
+
+const mockSubmission = {
+  id: uuid,
+  userId: uuid,
+  quizId: uuid,
+  code: text,
+  createdAt: time,
+  updatedAt: time,
+}
 
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
@@ -16,8 +26,8 @@ describe('Candidate module', () => {
       quizId: uuid,
       code: text,
     }
-    prismaMock.submission.create.mockResolvedValue(param)
-    expect(await createCandidateQuizSubmission(param)).toEqual(param)
+    prismaMock.submission.create.mockResolvedValue(mockSubmission)
+    expect(await createCandidateQuizSubmission(param)).toEqual(mockSubmission)
   })
 
   test('Missing userId parameter should raise an missing userId error', async () => {
