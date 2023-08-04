@@ -27,6 +27,7 @@ import {
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
 const date = faker.date.anytime()
+const number = faker.number.int()
 
 const mockAssessment = {
   id: uuid,
@@ -112,12 +113,12 @@ describe('Assessment module', () => {
         errorMessage: faker.lorem.text(),
       },
     ]
-    prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue(
-      candidateEmails,
-    )
-    expect(await createAssessmentCandidateEmails(candidateEmails)).toEqual(
-      candidateEmails,
-    )
+    prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue({
+      count: number,
+    })
+    expect(await createAssessmentCandidateEmails(candidateEmails)).toEqual({
+      count: number,
+    })
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
