@@ -110,7 +110,7 @@ describe('Assessment module', () => {
   })
 
   test('createAssessmentCandidateEmails fn should save and return the count number', async () => {
-    const candidateEmails: any = [
+    const param: any = [
       {
         assessmentId: uuid,
         email: faker.lorem.text(),
@@ -127,13 +127,13 @@ describe('Assessment module', () => {
     prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue({
       count: number,
     })
-    expect(await createAssessmentCandidateEmails(candidateEmails)).toEqual({
+    expect(await createAssessmentCandidateEmails(param)).toEqual({
       count: number,
     })
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
-    const candidateEmails: any = [
+    const param: any = [
       {
         assessmentId: uuid,
         email: faker.lorem.text(),
@@ -148,12 +148,12 @@ describe('Assessment module', () => {
       },
     ]
     expect(
-      async () => await createAssessmentCandidateEmails(candidateEmails),
+      async () => await createAssessmentCandidateEmails(param),
     ).rejects.toThrow(/^missing assessmentId$/)
   })
 
   test('missing email parameter should return a missing email error', async () => {
-    const candidateEmails: any = [
+    const param: any = [
       {
         assessmentId: uuid,
         // email: faker.lorem.text(),
@@ -168,12 +168,12 @@ describe('Assessment module', () => {
       },
     ]
     expect(
-      async () => await createAssessmentCandidateEmails(candidateEmails),
+      async () => await createAssessmentCandidateEmails(param),
     ).rejects.toThrow(/^missing email$/)
   })
 
   test('missing statusCode parameter should return a missing statusCode error', async () => {
-    const candidateEmails: any = [
+    const param: any = [
       {
         assessmentId: uuid,
         email: faker.lorem.text(),
@@ -188,12 +188,12 @@ describe('Assessment module', () => {
       },
     ]
     expect(
-      async () => await createAssessmentCandidateEmails(candidateEmails),
+      async () => await createAssessmentCandidateEmails(param),
     ).rejects.toThrow(/^missing statusCode$/)
   })
 
   test('missing errorMessage parameter should return a missing errorMessage error', async () => {
-    const candidateEmails: any = [
+    const param: any = [
       {
         assessmentId: uuid,
         email: faker.lorem.text(),
@@ -208,7 +208,7 @@ describe('Assessment module', () => {
       },
     ]
     expect(
-      async () => await createAssessmentCandidateEmails(candidateEmails),
+      async () => await createAssessmentCandidateEmails(param),
     ).rejects.toThrow(/^missing errorMessage$/)
   })
 
