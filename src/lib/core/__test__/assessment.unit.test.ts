@@ -23,6 +23,7 @@ import {
   getAssessmentQuizzes,
   updateAssessmentAcceptance,
 } from '../assessment'
+import {AssessmentStatus} from '@prisma/client'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
@@ -48,6 +49,13 @@ const mockAssessmentCandidateEmail = {
 const mockAssessmentCandidateEmails = Array(2).fill(
   mockAssessmentCandidateEmail,
 )
+
+const mockAssessmentCandidate = {
+  assessmentId: uuid,
+  candidateId: uuid,
+  status: AssessmentStatus.COMPLETED,
+  token: uuid,
+}
 
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
@@ -261,11 +269,11 @@ describe('Assessment module', () => {
       candidateId: uuid,
     }
     prismaMock.assessmentCandidate.update.mockResolvedValue(
-      assessmentCandidateData,
+      mockAssessmentCandidate,
     )
     expect(
       await updateAssessmentCandidateStatus(assessmentCandidateData),
-    ).toEqual(assessmentCandidateData)
+    ).toEqual(mockAssessmentCandidate)
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
