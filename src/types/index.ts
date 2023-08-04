@@ -150,3 +150,9 @@ export interface IAssessmentEmailProps {
   assessmentUrl: string
   companyName: string
 }
+
+export interface IGetActivityLogsProps {
+  assessmentIds: string[]
+  amount?: number
+  skip?: number
+}
