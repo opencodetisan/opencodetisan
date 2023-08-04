@@ -585,13 +585,13 @@ describe('Assessment module', () => {
     )
   })
 
-  test('getAssessmentComparativeScore fn should return the comparativeScore and usersBelowPointCount', async () => {
+  test('getAssessmentComparativeScore fn should return the comparativeScore and usersBelowPointCount', () => {
     const data: any = {
       usersCount: 0,
       usersBelowPointCount: 0,
       point: 100,
     }
-    expect(await getAssessmentComparativeScore(data)).toEqual({
+    expect(getAssessmentComparativeScore(data)).toEqual({
       comparativeScore: 100,
       usersBelowPointCount: 0,
     })
@@ -603,9 +603,9 @@ describe('Assessment module', () => {
       usersBelowPointCount: 0,
       point: 100,
     }
-    expect(
-      async () => await getAssessmentComparativeScore(data),
-    ).rejects.toThrow(/^missing usersCount$/)
+    expect(() => getAssessmentComparativeScore(data)).toThrow(
+      /^missing usersCount$/,
+    )
   })
 
   test('missing usersBelowPointCount param should return a missing usersBelowPointCount error', async () => {
@@ -614,9 +614,9 @@ describe('Assessment module', () => {
       // usersBelowPointCount: 0,
       point: 100,
     }
-    expect(
-      async () => await getAssessmentComparativeScore(data),
-    ).rejects.toThrow(/^missing usersBelowPointCount$/)
+    expect(() => getAssessmentComparativeScore(data)).toThrow(
+      /^missing usersBelowPointCount$/,
+    )
   })
 
   test('missing point param should return a missing point error', async () => {
@@ -625,9 +625,7 @@ describe('Assessment module', () => {
       usersBelowPointCount: 0,
       // point: 100,
     }
-    expect(
-      async () => await getAssessmentComparativeScore(data),
-    ).rejects.toThrow(/^missing point$/)
+    expect(() => getAssessmentComparativeScore(data)).toThrow(/^missing point$/)
   })
 
   test('getAssessmentComparativeScoreLevel fn should return the comparativeScore level', async () => {

@@ -379,7 +379,7 @@ export const getAssessmentQuizPoint = async ({
   return {totalPoint, quizPoints, assignedQuizzes}
 }
 
-export const getAssessmentComparativeScore = async ({
+export const getAssessmentComparativeScore = ({
   usersCount,
   usersBelowPointCount,
   point,
