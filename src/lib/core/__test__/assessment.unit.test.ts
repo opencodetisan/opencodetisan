@@ -35,7 +35,7 @@ const mockAssessment = {
   description: text,
   createdAt: date,
 }
-const assessments = Array(2).fill(mockAssessment)
+const mockAssessments = Array(2).fill(mockAssessment)
 
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
@@ -735,7 +735,7 @@ describe('Assessment module', () => {
     const param: any = {
       userId: uuid,
     }
-    prismaMock.assessment.findMany.mockResolvedValue(assessments)
+    prismaMock.assessment.findMany.mockResolvedValue(mockAssessments)
     expect(await getAssessmentIds(param)).toEqual([uuid, uuid])
   })
 
