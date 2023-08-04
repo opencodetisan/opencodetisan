@@ -39,60 +39,60 @@ const mockAssessments = Array(2).fill(mockAssessment)
 
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
-    const assessmentData: any = {
+    const param: any = {
       userId: uuid,
       title: faker.lorem.text(),
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
     prismaMock.assessment.create.mockResolvedValue(mockAssessment)
-    expect(await createAssessment(assessmentData)).toEqual(mockAssessment)
+    expect(await createAssessment(param)).toEqual(mockAssessment)
   })
 
   test('missing userId parameter should return a missing userId error', async () => {
-    const assessmentData: any = {
+    const param: any = {
       // userId: uuid,
       title: faker.lorem.text(),
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
+    expect(async () => await createAssessment(param)).rejects.toEqual(
       Error('missing userId'),
     )
   })
 
   test('missing title parameter should return a missing title error', async () => {
-    const assessmentData: any = {
+    const param: any = {
       userId: uuid,
       // title: faker.lorem.text(),
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
+    expect(async () => await createAssessment(param)).rejects.toEqual(
       Error('missing title'),
     )
   })
 
   test('missing description parameter should return a missing description error', async () => {
-    const assessmentData: any = {
+    const param: any = {
       userId: uuid,
       title: faker.lorem.text(),
       // description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
+    expect(async () => await createAssessment(param)).rejects.toEqual(
       Error('missing description'),
     )
   })
 
   test('missing quizIds parameter should return a missing quizIds error', async () => {
-    const assessmentData: any = {
+    const param: any = {
       userId: uuid,
       title: faker.lorem.text(),
       description: faker.lorem.text(),
       // quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
+    expect(async () => await createAssessment(param)).rejects.toEqual(
       Error('missing quizIds'),
     )
   })
@@ -201,44 +201,44 @@ describe('Assessment module', () => {
   })
 
   test('updateAssessment fn should save and return the assessment data', async () => {
-    const assessmentData: any = {
+    const param: any = {
       assessmentId: uuid,
       title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
     prismaMock.assessment.update.mockResolvedValue(mockAssessment)
-    expect(await updateAssessment(assessmentData)).toEqual(mockAssessment)
+    expect(await updateAssessment(param)).toEqual(mockAssessment)
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
-    const assessmentData: any = {
+    const param: any = {
       // assessmentId: uuid,
       title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
-    expect(async () => await updateAssessment(assessmentData)).rejects.toEqual(
+    expect(async () => await updateAssessment(param)).rejects.toEqual(
       Error('missing assessmentId'),
     )
   })
 
   test('missing title parameter should return a missing title error', async () => {
-    const assessmentData: any = {
+    const param: any = {
       assessmentId: uuid,
       // title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
-    expect(async () => await updateAssessment(assessmentData)).rejects.toEqual(
+    expect(async () => await updateAssessment(param)).rejects.toEqual(
       Error('missing title'),
     )
   })
 
   test('missing description parameter should return a missing description error', async () => {
-    const assessmentData: any = {
+    const param: any = {
       assessmentId: uuid,
       title: faker.lorem.text(),
       // description: faker.lorem.text(),
     }
-    expect(async () => await updateAssessment(assessmentData)).rejects.toEqual(
+    expect(async () => await updateAssessment(param)).rejects.toEqual(
       Error('missing description'),
     )
   })
