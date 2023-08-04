@@ -1,3 +1,4 @@
+import {IAssessmentQuizProps} from '@/types'
 import {getAssessmentQuizzes, updateAssessmentAcceptance} from './assessment'
 
 const acceptAssessmentService = async ({
@@ -16,8 +17,10 @@ const acceptAssessmentService = async ({
   } else if (!userId) {
     throw Error('missing userId')
   }
-  const assessmentQuizzes = await getAssessmentQuizzes({assessmentId})
-  const assessmentResults = assessmentQuizzes.map((q) => ({
+  const assessmentQuizzes = await getAssessmentQuizzes({
+    assessmentId,
+  })
+  const assessmentResults = assessmentQuizzes.map((q: any) => ({
     candidateId: userId,
     quizId: q.quizId,
   }))
