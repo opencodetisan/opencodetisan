@@ -23,7 +23,7 @@ import {
   getAssessmentQuizzes,
   updateAssessmentAcceptance,
 } from '../assessment'
-import {AssessmentStatus} from '@prisma/client'
+import {AssessmentStatus} from '@/enums'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
