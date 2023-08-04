@@ -56,8 +56,6 @@ describe('Assessment module', () => {
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-
-    prismaMock.assessmentCandidateEmail.create.mockResolvedValue(assessmentData)
     expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
       Error('missing userId'),
     )
@@ -70,8 +68,6 @@ describe('Assessment module', () => {
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-
-    prismaMock.assessmentCandidateEmail.create.mockResolvedValue(assessmentData)
     expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
       Error('missing title'),
     )
@@ -84,8 +80,6 @@ describe('Assessment module', () => {
       // description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-
-    prismaMock.assessmentCandidateEmail.create.mockResolvedValue(assessmentData)
     expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
       Error('missing description'),
     )
@@ -98,8 +92,6 @@ describe('Assessment module', () => {
       description: faker.lorem.text(),
       // quizIds: [uuid, uuid],
     }
-
-    prismaMock.assessmentCandidateEmail.create.mockResolvedValue(assessmentData)
     expect(async () => await createAssessment(assessmentData)).rejects.toEqual(
       Error('missing quizIds'),
     )
@@ -143,9 +135,6 @@ describe('Assessment module', () => {
         errorMessage: faker.lorem.text(),
       },
     ]
-    prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue(
-      candidateEmails,
-    )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
     ).rejects.toThrow(/^missing assessmentId$/)
@@ -166,9 +155,6 @@ describe('Assessment module', () => {
         errorMessage: faker.lorem.text(),
       },
     ]
-    prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue(
-      candidateEmails,
-    )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
     ).rejects.toThrow(/^missing email$/)
@@ -189,9 +175,6 @@ describe('Assessment module', () => {
         errorMessage: faker.lorem.text(),
       },
     ]
-    prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue(
-      candidateEmails,
-    )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
     ).rejects.toThrow(/^missing statusCode$/)
@@ -212,9 +195,6 @@ describe('Assessment module', () => {
         // errorMessage: faker.lorem.text(),
       },
     ]
-    prismaMock.assessmentCandidateEmail.createMany.mockResolvedValue(
-      candidateEmails,
-    )
     expect(
       async () => await createAssessmentCandidateEmails(candidateEmails),
     ).rejects.toThrow(/^missing errorMessage$/)
@@ -236,7 +216,6 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
-    prismaMock.assessment.update.mockResolvedValue(assessmentData)
     expect(async () => await updateAssessment(assessmentData)).rejects.toEqual(
       Error('missing assessmentId'),
     )
@@ -248,7 +227,6 @@ describe('Assessment module', () => {
       // title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
-    prismaMock.assessment.update.mockResolvedValue(assessmentData)
     expect(async () => await updateAssessment(assessmentData)).rejects.toEqual(
       Error('missing title'),
     )
@@ -260,7 +238,6 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       // description: faker.lorem.text(),
     }
-    prismaMock.assessment.update.mockResolvedValue(assessmentData)
     expect(async () => await updateAssessment(assessmentData)).rejects.toEqual(
       Error('missing description'),
     )
@@ -284,9 +261,6 @@ describe('Assessment module', () => {
       // assessmentId: uuid,
       candidateId: uuid,
     }
-    prismaMock.assessmentCandidate.update.mockResolvedValue(
-      assessmentCandidateData,
-    )
     expect(
       async () =>
         await updateAssessmentCandidateStatus(assessmentCandidateData),
@@ -298,9 +272,6 @@ describe('Assessment module', () => {
       assessmentId: uuid,
       // candidateId: uuid,
     }
-    prismaMock.assessmentCandidate.update.mockResolvedValue(
-      assessmentCandidateData,
-    )
     expect(
       async () =>
         await updateAssessmentCandidateStatus(assessmentCandidateData),
@@ -323,7 +294,6 @@ describe('Assessment module', () => {
       // assessmentId: uuid,
       quizIds: [uuid, uuid],
     }
-    prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
     expect(
       async () => await addAssessmentQuizzes(assessmentQuizData),
     ).rejects.toThrow(/^missing assessmentId$/)
@@ -334,7 +304,6 @@ describe('Assessment module', () => {
       assessmentId: uuid,
       // quizIds: [uuid, uuid],
     }
-    prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
     expect(
       async () => await addAssessmentQuizzes(assessmentQuizData),
     ).rejects.toThrow(/^missing quizIds$/)
@@ -345,7 +314,6 @@ describe('Assessment module', () => {
       assessmentId: uuid,
       quizIds: [],
     }
-    prismaMock.assessmentQuiz.createMany.mockResolvedValue(assessmentQuizData)
     expect(
       async () => await addAssessmentQuizzes(assessmentQuizData),
     ).rejects.toThrow(/^0 quizId found$/)
@@ -369,9 +337,6 @@ describe('Assessment module', () => {
       // assessmentId: uuid,
       quizId: uuid,
     }
-    prismaMock.assessmentResult.findFirst.mockResolvedValue(
-      assessmentResultData,
-    )
     expect(
       async () => await getAssessmentResult(assessmentResultData),
     ).rejects.toThrow(/^missing assessmentId$/)
@@ -382,9 +347,6 @@ describe('Assessment module', () => {
       assessmentId: uuid,
       // quizId: uuid,
     }
-    prismaMock.assessmentResult.findFirst.mockResolvedValue(
-      assessmentResultData,
-    )
     expect(
       async () => await getAssessmentResult(assessmentResultData),
     ).rejects.toThrow(/^missing quizId$/)
@@ -404,7 +366,6 @@ describe('Assessment module', () => {
     const data: any = {
       submissionIds: undefined,
     }
-    prismaMock.assessmentQuizSubmission.deleteMany.mockResolvedValue({count: 2})
     expect(
       async () => await deleteAssessmentQuizSubmissions(data),
     ).rejects.toThrow(/^missing submissionIds$/)
@@ -414,7 +375,6 @@ describe('Assessment module', () => {
     const data: any = {
       submissionIds: [],
     }
-    prismaMock.assessmentQuizSubmission.deleteMany.mockResolvedValue({count: 2})
     expect(await deleteAssessmentQuizSubmissions(data)).toBe(null)
   })
 
