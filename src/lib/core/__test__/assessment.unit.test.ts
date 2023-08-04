@@ -64,6 +64,13 @@ const mockAssessmentQuiz = {
 }
 const mockAssessmentQuizzes = Array(2).fill(mockAssessmentQuiz)
 
+const mockAssessmentPoint = {
+  id: uuid,
+  name: text,
+  point: number,
+}
+const mockAssessmentPoints = Array(2).fill(mockAssessmentPoint)
+
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
     const param: any = {
@@ -503,11 +510,12 @@ describe('Assessment module', () => {
   })
 
   test('getAssessmentPoints fn should return the assessmentResult', async () => {
-    const data: any = [{name: 'point', point: 1, id: '1'}]
-    prismaMock.assessmentPoint.findMany.mockResolvedValue(data)
-    expect(await getAssessmentPoints()).toEqual({
-      point: {point: 1, id: '1'},
+    const expected: any = {}
+    mockAssessmentPoints.forEach((obj) => {
+      expected[obj.name] = {point: obj.point, id: obj.id}
     })
+    prismaMock.assessmentPoint.findMany.mockResolvedValue(mockAssessmentPoints)
+    expect(await getAssessmentPoints()).toEqual(expected)
   })
 
   test('getAssessmentQuizPoint fn should return the assessmentResult', async () => {
@@ -531,7 +539,7 @@ describe('Assessment module', () => {
       ],
       assessmentPoints: assessmentPointData,
     }
-    prismaMock.assessmentPoint.findMany.mockResolvedValue(assessmentPointData)
+    prismaMock.assessmentPoint.findMany.mockResolvedValue(mockAssessmentPoints)
     expect(await getAssessmentQuizPoint(data)).toEqual({
       totalPoint: 2.2,
       quizPoints: {quiz1: 2.2},
