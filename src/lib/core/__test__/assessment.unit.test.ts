@@ -71,6 +71,16 @@ const mockAssessmentPoint = {
 }
 const mockAssessmentPoints = Array(2).fill(mockAssessmentPoint)
 
+const mockAssessmentResult = {
+  assessmentId: uuid,
+  candidateId: uuid,
+  timeTaken: number,
+  status: AssessmentStatus.COMPLETED,
+  id: uuid,
+  quizId: uuid,
+}
+const mockAssessmentResults = Array(2).fill(mockAssessmentResult)
+
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
     const param: any = {
@@ -359,10 +369,10 @@ describe('Assessment module', () => {
       quizId: uuid,
     }
     prismaMock.assessmentResult.findFirst.mockResolvedValue(
-      assessmentResultData,
+      mockAssessmentResult,
     )
     expect(await getAssessmentResult(assessmentResultData)).toEqual(
-      assessmentResultData,
+      mockAssessmentResult,
     )
   })
 
@@ -441,8 +451,8 @@ describe('Assessment module', () => {
     const data: any = {
       assessmentResultId: uuid,
     }
-    prismaMock.assessmentResult.delete.mockResolvedValue(data)
-    expect(await deleteAssessmentResult(data)).toEqual(data)
+    prismaMock.assessmentResult.delete.mockResolvedValue(mockAssessmentResult)
+    expect(await deleteAssessmentResult(data)).toEqual(mockAssessmentResult)
   })
 
   test('missing assessmentResultId parameter should return a missing assessmentResultId error', async () => {
@@ -496,8 +506,12 @@ describe('Assessment module', () => {
     const data: any = {
       assessmentId: uuid,
     }
-    prismaMock.assessmentResult.findMany.mockResolvedValue(data)
-    expect(await getAssessmentCompletedQuiz(data)).toEqual(data)
+    prismaMock.assessmentResult.findMany.mockResolvedValue(
+      mockAssessmentResults,
+    )
+    expect(await getAssessmentCompletedQuiz(data)).toEqual(
+      mockAssessmentResults,
+    )
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
@@ -510,6 +524,7 @@ describe('Assessment module', () => {
   })
 
   test('getAssessmentPoints fn should return the assessmentResult', async () => {
+    const data: any = [{name: 'point', point: 1, id: '1'}]
     const expected: any = {}
     mockAssessmentPoints.forEach((obj) => {
       expected[obj.name] = {point: obj.point, id: obj.id}
