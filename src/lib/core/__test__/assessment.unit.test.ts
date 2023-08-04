@@ -25,6 +25,17 @@ import {
 } from '../assessment'
 
 const uuid = faker.string.uuid()
+const text = faker.lorem.text()
+const date = faker.date.anytime()
+
+const mockAssessment = {
+  id: uuid,
+  ownerId: uuid,
+  title: text,
+  description: text,
+  createdAt: date,
+}
+const assessments = Array(2).fill(mockAssessment)
 
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
@@ -34,8 +45,8 @@ describe('Assessment module', () => {
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-    prismaMock.assessment.create.mockResolvedValue(assessmentData)
-    expect(await createAssessment(assessmentData)).toEqual(assessmentData)
+    prismaMock.assessment.create.mockResolvedValue(mockAssessment)
+    expect(await createAssessment(assessmentData)).toEqual(mockAssessment)
   })
 
   test('missing userId parameter should return a missing userId error', async () => {
@@ -215,8 +226,8 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
-    prismaMock.assessment.update.mockResolvedValue(assessmentData)
-    expect(await updateAssessment(assessmentData)).toEqual(assessmentData)
+    prismaMock.assessment.update.mockResolvedValue(mockAssessment)
+    expect(await updateAssessment(assessmentData)).toEqual(mockAssessment)
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
@@ -428,8 +439,8 @@ describe('Assessment module', () => {
     const data: any = {
       assessmentId: uuid,
     }
-    prismaMock.assessment.findUnique.mockResolvedValue(data)
-    expect(await getAssessment(data)).toEqual(data)
+    prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
+    expect(await getAssessment(data)).toEqual(mockAssessment)
   })
 
   test('deleteAssessmentResult fn should delete and return assessmentResult', async () => {
@@ -724,10 +735,8 @@ describe('Assessment module', () => {
     const param: any = {
       userId: uuid,
     }
-    const mockValue: any = [{id: uuid}, {id: uuid}]
-    const returnValue = [uuid, uuid]
-    prismaMock.assessment.findMany.mockResolvedValue(mockValue)
-    expect(await getAssessmentIds(param)).toEqual(returnValue)
+    prismaMock.assessment.findMany.mockResolvedValue(assessments)
+    expect(await getAssessmentIds(param)).toEqual([uuid, uuid])
   })
 
   test('missing point param should return a missing point error', async () => {
@@ -764,8 +773,8 @@ describe('Assessment module', () => {
       ],
       token: uuid,
     }
-    prismaMock.assessment.update.mockResolvedValue(param)
-    expect(await updateAssessmentAcceptance(param)).toEqual(param)
+    prismaMock.assessment.update.mockResolvedValue(mockAssessment)
+    expect(await updateAssessmentAcceptance(param)).toEqual(mockAssessment)
   })
 
   test('missing assessmentId param should return a missing assessmentId error', async () => {
