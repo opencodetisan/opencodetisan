@@ -16,3 +16,8 @@ export enum CandidateActionId {
   Complete,
   Decline,
 }
+
+export enum AssessmentStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+}
