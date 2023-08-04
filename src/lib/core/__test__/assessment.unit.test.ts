@@ -38,6 +38,17 @@ const mockAssessment = {
 }
 const mockAssessments = Array(2).fill(mockAssessment)
 
+const mockAssessmentCandidateEmail = {
+  id: uuid,
+  email: text,
+  statusCode: number,
+  errorMessage: text,
+  assessmentId: uuid,
+}
+const mockAssessmentCandidateEmails = Array(2).fill(
+  mockAssessmentCandidateEmail,
+)
+
 describe('Assessment module', () => {
   test('createAssessment fn should save and return the assessment data', async () => {
     const param: any = {
