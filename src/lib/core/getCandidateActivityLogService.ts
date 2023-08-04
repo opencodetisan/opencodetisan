@@ -17,16 +17,14 @@ const getCandidateActivityLogService = async ({
   } else if (!userId) {
     throw Error('missing userId')
   }
-  try {
-    const assessmentIds = await getAssessmentIds({userId})
-    const activityLogCount = await getActivityLogCount({assessmentIds})
-    const activityLogs = await getActivityLogs({
-      assessmentIds,
-      amount,
-      skip: index,
-    })
-    return {activityLogCount, activityLogs}
-  } catch (error) {}
+  const assessmentIds = await getAssessmentIds({userId})
+  const activityLogCount = await getActivityLogCount({assessmentIds})
+  const activityLogs = await getActivityLogs({
+    assessmentIds,
+    amount,
+    skip: index,
+  })
+  return {activityLogCount, activityLogs}
 }
 
 export default getCandidateActivityLogService

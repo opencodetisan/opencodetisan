@@ -7,50 +7,71 @@ import {
 } from '../candidate'
 
 const uuid = faker.string.uuid()
+const text = faker.lorem.text()
+const date = faker.date.anytime()
+const number = faker.number.int()
+
+const mockSubmission = {
+  id: uuid,
+  userId: uuid,
+  quizId: uuid,
+  code: text,
+  createdAt: date,
+  updatedAt: date,
+}
+
+const mockCandidateActivityLog = {
+  id: uuid,
+  createdAt: date,
+  userId: uuid,
+  assessmentId: uuid,
+  userActionId: number,
+}
+const mockCandidateActivityLogs = new Array(2).map(() => {
+  return mockCandidateActivityLog
+})
 
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
-    const submissionData: any = {
+    const param: any = {
       userId: uuid,
       quizId: uuid,
-      code: faker.lorem.text(),
+      code: text,
     }
-    prismaMock.submission.create.mockResolvedValue(submissionData)
-    expect(await createCandidateQuizSubmission(submissionData)).toEqual(
-      submissionData,
-    )
+    prismaMock.submission.create.mockResolvedValue(mockSubmission)
+    expect(await createCandidateQuizSubmission(param)).toEqual(mockSubmission)
   })
 
   test('Missing userId parameter should raise an missing userId error', async () => {
-    const submissionData: any = {
+    const param: any = {
       // userId: uuid,
       quizId: uuid,
-      code: faker.lorem.text(),
+      code: text,
     }
     expect(
-      async () => await createCandidateQuizSubmission(submissionData),
+      async () => await createCandidateQuizSubmission(param),
     ).rejects.toThrow(/^missing userId$/)
   })
 
   test('Missing quizId parameter should raise an missing quizId error', async () => {
-    const submissionData: any = {
+    const param: any = {
       userId: uuid,
       // quizId: uuid,
-      code: faker.lorem.text(),
+      code: text,
     }
     expect(
-      async () => await createCandidateQuizSubmission(submissionData),
+      async () => await createCandidateQuizSubmission(param),
     ).rejects.toThrow(/^missing quizId$/)
   })
 
   test('Missing code parameter should raise an missing code error', async () => {
-    const submissionData: any = {
+    const param: any = {
       userId: uuid,
       quizId: uuid,
-      // code: faker.lorem.text(),
+      // code: text,
     }
     expect(
-      async () => await createCandidateQuizSubmission(submissionData),
+      async () => await createCandidateQuizSubmission(param),
     ).rejects.toThrow(/^missing code$/)
   })
 
@@ -83,8 +104,10 @@ describe('Candidate module', () => {
     const param: any = {
       assessmentIds: [uuid, uuid],
     }
-    prismaMock.candidateActivityLog.findMany.mockResolvedValue(param)
-    expect(await getActivityLogs(param)).toEqual(param)
+    prismaMock.candidateActivityLog.findMany.mockResolvedValue(
+      mockCandidateActivityLogs,
+    )
+    expect(await getActivityLogs(param)).toEqual(mockCandidateActivityLogs)
   })
 
   test('Missing assessmentIds parameter should raise an missing assessmentIds error', async () => {
