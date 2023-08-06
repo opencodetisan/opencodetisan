@@ -1,4 +1,5 @@
 import {compressSync, strToU8} from 'fflate'
+import {writeFile} from 'node:fs'
 
 export const convertToMinuteSecond = (seconds: number) => {
   if (!seconds) {
@@ -16,4 +17,16 @@ export const compressJsonStr = (jsonStr: string) => {
   const buf = strToU8(jsonStr)
   const compressed = compressSync(buf, {level: 6, mem: 8})
   return compressed
+}
+
+export const writeToLocal = ({path, data}: {path: string; data: string}) => {
+  if (!path) {
+    throw Error('missing path')
+  } else if (!data) {
+    throw Error('missing data')
+  }
+  writeFile(path, data, (err) => {
+    if (err) throw err
+    console.log('Data has been written to the file:', path)
+  })
 }
