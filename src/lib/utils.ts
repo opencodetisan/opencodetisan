@@ -36,14 +36,20 @@ export const createDir = ({
   })
 }
 
-export const writeToLocal = ({path, data}: {path: string; data: string}) => {
+export const writeToLocal = ({
+  path,
+  data,
+}: {
+  path: string
+  data: string | Uint8Array
+}) => {
   if (!path) {
     throw Error('missing path')
   } else if (!data) {
     throw Error('missing data')
   }
-  writeFile(path, data, (err) => {
-    if (err) throw err
+  writeFile(path, data, (error) => {
+    if (error) throw error
     console.log('Data has been written to the file:', path)
   })
 }
