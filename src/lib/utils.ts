@@ -1,5 +1,5 @@
 import {compressSync, strToU8} from 'fflate'
-import {writeFile} from 'node:fs'
+import {mkdir, writeFile} from 'node:fs'
 
 export const convertToMinuteSecond = (seconds: number) => {
   if (!seconds) {
@@ -17,6 +17,23 @@ export const compressJsonStr = (jsonStr: string) => {
   const buf = strToU8(jsonStr)
   const compressed = compressSync(buf, {level: 6, mem: 8})
   return compressed
+}
+
+export const createDir = ({
+  path,
+  recursive,
+}: {
+  path: string
+  recursive: boolean
+}) => {
+  if (!path) {
+    throw Error('missing path')
+  } else if (!recursive) {
+    throw Error('missing recursive')
+  }
+  mkdir(path, {recursive}, (err) => {
+    if (err) throw err
+  })
 }
 
 export const writeToLocal = ({path, data}: {path: string; data: string}) => {
