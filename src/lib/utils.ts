@@ -20,6 +20,14 @@ export const compressJsonStr = (jsonStr: string) => {
   return compressed
 }
 
+export const decompressBuf = (buf: Uint8Array) => {
+  if (!buf) {
+    throw Error('missing buf')
+  }
+  const decompressed = decompressSync(buf)
+  return JSON.parse(strFromU8(decompressed))
+}
+
 export const createDir = ({
   path,
   recursive,
