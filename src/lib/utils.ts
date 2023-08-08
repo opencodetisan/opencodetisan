@@ -70,3 +70,17 @@ export const readLocalFile = async ({pathToFile}: {pathToFile: string}) => {
   const data = await readFile(pathToFile)
   return data
 }
+
+export const getLocalFiles = async ({
+  userId,
+  assessmentQuizSubId,
+}: {
+  userId: string
+  assessmentQuizSubId: string
+}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!assessmentQuizSubId) {
+    throw Error('missing assessmentQuizSubId')
+  }
+}
