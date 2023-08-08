@@ -45,7 +45,7 @@ export const createDir = ({
   })
 }
 
-export const writeToLocal = ({
+export const writeLocalFile = ({
   path,
   data,
 }: {
