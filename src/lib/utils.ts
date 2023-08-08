@@ -1,6 +1,6 @@
 import {compressSync, decompressSync, strFromU8, strToU8} from 'fflate'
-import {mkdir, writeFile} from 'node:fs'
-import {readFile} from 'node:fs/promises'
+import {mkdir} from 'node:fs'
+import {readFile, writeFile} from 'node:fs/promises'
 
 export const convertToMinuteSecond = (seconds: number) => {
   if (!seconds) {
@@ -45,7 +45,7 @@ export const createDir = ({
   })
 }
 
-export const writeLocalFile = ({
+export const writeLocalFile = async ({
   path,
   data,
 }: {
@@ -57,10 +57,7 @@ export const writeLocalFile = ({
   } else if (!data) {
     throw Error('missing data')
   }
-  writeFile(path, data, (error) => {
-    if (error) throw error
-    console.log('Data has been written to the file:', path)
-  })
+  await writeFile(path, data, {encoding: 'binary'})
 }
 
 export const readLocalFile = async ({pathToFile}: {pathToFile: string}) => {
