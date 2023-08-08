@@ -1,5 +1,5 @@
 import {rm} from 'fs/promises'
-import {getLocalFiles, readLocalFile, writeLocalFile} from '../analytic'
+import {getLocalFiles, readLocalFile, writeSessionReplay} from '../analytic'
 import {faker} from '@faker-js/faker'
 
 const uuid = faker.string.uuid()
@@ -13,15 +13,15 @@ const rmFile = async ({path}: {path: string}) => {
 }
 
 describe('Analytic module', () => {
-  describe('creating a new local file', () => {
+  describe('writeSessionReplay should create a new local session-replay file', () => {
     const fakePath = 'test_1'
     const fakeData = [{message: 'Hello World'}]
 
     afterEach(() => rmFile({path: fakePath}))
 
-    test('writeLocalFile fn should create and store data in a new local file', async () => {
+    test('Should save the data in binary', async () => {
       const param: any = {path: fakePath, data: fakeData}
-      // expect(await writeLocalFile(param)).toEqual('Hello World')
+      expect(await writeSessionReplay(param)).toEqual('Hello World')
     })
   })
 
