@@ -25,20 +25,6 @@ describe('Analytic module', () => {
     })
   })
 
-  test('Missing path param should raise an missing path error', async () => {
-    const param: any = {data: text}
-    expect(async () => await readLocalFile(param)).rejects.toThrow(
-      /^missing path$/,
-    )
-  })
-
-  test('Missing data param should raise an missing data error', async () => {
-    const param: any = {path: text}
-    expect(async () => await readLocalFile(param)).rejects.toThrow(
-      /^missing data$/,
-    )
-  })
-
   test('getLocalFiles fn should return an array of filenames', async () => {
     const param = {userId: 'userId', assessmentQuizSubId: 'assessmentQuizSubId'}
     expect(await getLocalFiles(param)).toEqual(filenames)
@@ -65,7 +51,7 @@ describe('Analytic module', () => {
 
   test('Missing pathToFile parameter should raise an missing pathToFile error', async () => {
     const param: any = {}
-    expect(async () => await readLocalFile(param)).toThrow(
+    expect(async () => await readLocalFile(param)).rejects.toThrow(
       /^missing pathToFile$/,
     )
   })
