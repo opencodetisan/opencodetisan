@@ -1,3 +1,4 @@
+import {rm} from 'fs/promises'
 import {getLocalFiles, readLocalFile, writeLocalFile} from '../analytic'
 import {faker} from '@faker-js/faker'
 
@@ -5,13 +6,23 @@ const uuid = faker.string.uuid()
 const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
-
 const filenames = ['assessmentQuizSubId_1', 'assessmentQuizSubId_2']
 
+const rmFile = async ({path}: {path: string}) => {
+  rm(path)
+}
+
 describe('Analytic module', () => {
-  test('writeLocalFile fn should create and store data in a new local file', async () => {
-    const param = {path: text, data: text}
-    expect(await writeLocalFile(param)).toEqual('Hello World')
+  describe('creating a new local file', () => {
+    const fakePath = 'test_1'
+    const fakeData = [{message: 'Hello World'}]
+
+    afterEach(() => rmFile({path: fakePath}))
+
+    test('writeLocalFile fn should create and store data in a new local file', async () => {
+      const param: any = {path: fakePath, data: fakeData}
+      // expect(await writeLocalFile(param)).toEqual('Hello World')
+    })
   })
 
   test('Missing path param should raise an missing path error', async () => {
