@@ -1,4 +1,4 @@
-import {getLocalFiles, readLocalFile, writeLocalFile} from '@/lib/utils'
+import {getLocalFiles, readLocalFile, writeLocalFile} from '../analytic'
 import {faker} from '@faker-js/faker'
 
 const uuid = faker.string.uuid()
