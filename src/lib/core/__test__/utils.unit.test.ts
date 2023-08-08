@@ -1,4 +1,4 @@
-import {convertToMinuteSecond, getLocalFiles} from '@/lib/utils'
+import {convertToMinuteSecond, getLocalFiles, readLocalFile} from '@/lib/utils'
 import {faker} from '@faker-js/faker'
 
 const uuid = faker.string.uuid()
@@ -35,6 +35,18 @@ describe('Candidate module', () => {
     const param: any = {userId: 'userId'}
     expect(async () => await getLocalFiles(param)).toThrow(
       /^missing assessmentQuizSubId$/,
+    )
+  })
+
+  test('readLocalFile fn should return file data', async () => {
+    const param = {pathToFile: text}
+    expect(await readLocalFile(param)).toEqual('Hello World')
+  })
+
+  test('Missing pathToFile parameter should raise an missing pathToFile error', async () => {
+    const param: any = {}
+    expect(async () => await readLocalFile(param)).toThrow(
+      /^missing pathToFile$/,
     )
   })
 })
