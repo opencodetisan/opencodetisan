@@ -1,4 +1,4 @@
-import {compressJsonStr, createDir, writeToLocal} from '../utils'
+import {compressJsonStr, createDir, readLocalFile, writeToLocal} from '../utils'
 
 export const saveSessionReplayService = ({
   data,
@@ -18,3 +18,11 @@ export const saveSessionReplayService = ({
   createDir({path: dir, recursive: true})
   writeToLocal({path: pathToFile, data: compressedData})
 }
+
+export const getSessionReplayService = async ({
+  userId,
+  assessmentQuizSubId,
+}: {
+  userId: string
+  assessmentQuizSubId: string
+}) => {}
