@@ -36,7 +36,7 @@ export const createDir = ({
   })
 }
 
-export const writeLocalFile = async ({
+export const writeSessionReplay = async ({
   path,
   data,
 }: {
