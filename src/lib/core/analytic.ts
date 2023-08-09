@@ -1,6 +1,7 @@
 import {compressSync, decompressSync, strFromU8, strToU8} from 'fflate'
 import {mkdir} from 'node:fs'
 import {readFile, writeFile} from 'node:fs/promises'
+import {glob} from 'glob'
 
 export const compressJsonStr = (jsonStr: string) => {
   if (!jsonStr) {
@@ -37,21 +38,25 @@ export const createDir = ({
 }
 
 export const writeSessionReplay = async ({
-  path,
   data,
+  userId,
+  assessmentQuizSubId,
 }: {
-  path: string
   data: string | Uint8Array
+  userId: string
+  assessmentQuizSubId: string
 }) => {
-  if (!path) {
-    throw Error('missing path')
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!assessmentQuizSubId) {
+    throw Error('missing assessmentQuizSubId')
   } else if (!data) {
     throw Error('missing data')
   }
   const jsonStr = JSON.stringify(data)
   const buf = strToU8(jsonStr)
   const compressed = compressSync(buf, {level: 6, mem: 8})
-  await writeFile(path, compressed)
+  await writeFile(`./src/session/${userId}/${assessmentQuizSubId}`, compressed)
 }
 
 export const readSessionReplay = async ({pathToFile}: {pathToFile: string}) => {

@@ -26,7 +26,11 @@ describe('Analytic module', () => {
     afterAll(() => rmFile({path: fakePath}))
 
     test('Should save the data in binary', async () => {
-      const param: any = {path: fakePath, data: fakeData}
+      const param: any = {
+        userId: 'user1',
+        assessmentQuizSubId: 'test_1',
+        data: fakeData,
+      }
       expect(await writeSessionReplay(param)).toEqual(fakeData)
     })
 
