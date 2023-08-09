@@ -37,11 +37,6 @@ describe('Analytic module', () => {
     })
 
     test('Should the stored session-replay be the same as input', async () => {
-      const param: any = {
-        userId,
-        assessmentQuizSubId,
-        data: fakeData,
-      }
       const pathToFile = await writeSessionReplay({
         data: fakeData,
         userId,
@@ -49,16 +44,6 @@ describe('Analytic module', () => {
       })
       expect(await readSessionReplay({pathToFile})).toEqual(fakeData)
     })
-
-    // test('Should the data be decompress from binary format', async () => {
-    //   const param: any = {pathToFile: fakePath}
-    //   expect(await readSessionReplay(param)).toEqual(fakeData)
-    // })
-    //
-    // test('Should save with conventional filename', async () => {
-    //   const param: any = {pathToFile: fakePath}
-    //   expect(await readSessionReplay(param)).toEqual(fakeData)
-    // })
   })
 
   test('getLocalFiles fn should return an array of filenames', async () => {
