@@ -1,6 +1,7 @@
 import {rm} from 'fs/promises'
 import {
   countSessionReplay,
+  createDir,
   getLocalFiles,
   readSessionReplay,
   writeSessionReplay,
@@ -19,7 +20,7 @@ const rmFile = async ({path}: {path: string}) => {
 
 describe('Analytic module', () => {
   describe('writeSessionReplay should create a new local session-replay file', () => {
-    const fakePath = 'test_1'
+    const fakePath = './src/session/user1/test_1'
     const fakeData = [{message: 'Hello World'}]
 
     afterAll(() => rmFile({path: fakePath}))
