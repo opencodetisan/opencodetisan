@@ -42,7 +42,11 @@ describe('Analytic module', () => {
         userId,
         assessmentQuizSubId,
       })
-      expect(await readSessionReplay({pathToFile})).toEqual(fakeData)
+      expect(await readSessionReplay({userId, assessmentQuizSubId})).toEqual([
+        {message: 'Hello World'},
+        {message: 'Hello World'},
+        {message: 'Hello World'},
+      ])
     })
 
     test('Should the stored session-replay file have the correct index', async () => {
