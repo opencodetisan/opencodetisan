@@ -58,8 +58,9 @@ export const readSessionReplay = async ({pathToFile}: {pathToFile: string}) => {
   if (!pathToFile) {
     throw Error('missing pathToFile')
   }
-  const data = await readFile(pathToFile)
-  return data
+  const buf = await readFile(pathToFile)
+  const decompressed = decompressSync(buf)
+  return JSON.parse(strFromU8(decompressed))
 }
 
 export const getLocalFiles = async ({
