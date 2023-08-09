@@ -27,12 +27,12 @@ const assessmentQuizSubId = 'test'
 describe('Analytic module', () => {
   describe('writeSessionReplay should create a new local session-replay file', () => {
     const fakeData = [{message: 'Hello World'}]
-    beforeAll(async () => {
+    beforeEach(async () => {
       for (let i = 0; i < 1; i++) {
         await writeSessionReplay({data: fakeData, userId, assessmentQuizSubId})
       }
     })
-    afterAll(async () => {
+    afterEach(async () => {
       await rmFiles({userId})
     })
 
