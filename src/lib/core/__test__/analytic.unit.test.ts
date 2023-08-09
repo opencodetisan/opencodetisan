@@ -65,6 +65,29 @@ describe('Analytic module', () => {
     })
   })
 
+  describe('readSessionReplay should return the expected JSON', () => {
+    beforeEach(async () => {
+      for (let i = 1; i <= 3; i++) {
+        const fakeData = [{i}]
+        await writeSessionReplay({
+          data: fakeData,
+          userId,
+          assessmentQuizSubId,
+        })
+      }
+    })
+    afterEach(async () => {
+      await rmFiles({userId})
+    })
+
+    test('Should return the expected JSON', async () => {
+      expect(await readSessionReplay({userId, assessmentQuizSubId})).toEqual([
+        {i: 1},
+        {i: 2},
+        {i: 3},
+      ])
+    })
+  })
   test('getLocalFiles fn should return an array of filenames', async () => {
     const param = {userId: 'userId', assessmentQuizSubId: 'assessmentQuizSubId'}
     expect(await getLocalFiles(param)).toEqual(filenames)
