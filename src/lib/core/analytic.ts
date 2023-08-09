@@ -42,7 +42,7 @@ export const writeSessionReplay = async ({
   userId,
   assessmentQuizSubId,
 }: {
-  data: string | Uint8Array
+  data: {[key: string]: any}
   userId: string
   assessmentQuizSubId: string
 }) => {
