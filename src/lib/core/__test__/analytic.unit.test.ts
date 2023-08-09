@@ -1,5 +1,10 @@
 import {rm} from 'fs/promises'
-import {getLocalFiles, readSessionReplay, writeSessionReplay} from '../analytic'
+import {
+  countSessionReplay,
+  getLocalFiles,
+  readSessionReplay,
+  writeSessionReplay,
+} from '../analytic'
 import {faker} from '@faker-js/faker'
 
 const uuid = faker.string.uuid()
@@ -62,6 +67,18 @@ describe('Analytic module', () => {
   test('Missing pathToFile parameter should raise an missing pathToFile error', async () => {
     const param: any = {}
     expect(async () => await readSessionReplay(param)).rejects.toThrow(
+      /^missing pathToFile$/,
+    )
+  })
+
+  test('countSessionReplay fn should return a number', async () => {
+    const param = {pathToFile: text}
+    expect(await countSessionReplay(param)).toEqual('Hello World')
+  })
+
+  test('Missing pathToFile parameter should raise an missing pathToFile error', async () => {
+    const param: any = {}
+    expect(async () => await countSessionReplay(param)).rejects.toThrow(
       /^missing pathToFile$/,
     )
   })
