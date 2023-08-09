@@ -24,6 +24,11 @@ describe('Analytic module', () => {
       expect(await writeSessionReplay(param)).toEqual(fakeData)
     })
 
+    test('Should the data be decompress from binary format', async () => {
+      const param: any = {pathToFile: fakePath}
+      expect(await readSessionReplay(param)).toEqual(fakeData)
+    })
+
     test('Should save with conventional filename', async () => {
       const param: any = {pathToFile: fakePath}
       expect(await readSessionReplay(param)).toEqual(fakeData)
