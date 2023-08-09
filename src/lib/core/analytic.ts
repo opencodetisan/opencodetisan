@@ -51,7 +51,7 @@ export const writeSessionReplay = async ({
   await writeFile(path, data, {encoding: 'binary'})
 }
 
-export const readLocalFile = async ({pathToFile}: {pathToFile: string}) => {
+export const readSessionReplay = async ({pathToFile}: {pathToFile: string}) => {
   if (!pathToFile) {
     throw Error('missing pathToFile')
   }
