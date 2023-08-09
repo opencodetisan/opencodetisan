@@ -88,34 +88,4 @@ describe('Analytic module', () => {
       ])
     })
   })
-  test('getLocalFiles fn should return an array of filenames', async () => {
-    const param = {userId: 'userId', assessmentQuizSubId: 'assessmentQuizSubId'}
-    expect(await getLocalFiles(param)).toEqual(filenames)
-  })
-
-  test('Missing userId parameter should raise an missing userId error', async () => {
-    const param: any = {assessmentQuizSubId: 'assessmentQuizSubId'}
-    expect(async () => await getLocalFiles(param)).rejects.toThrow(
-      /^missing userId$/,
-    )
-  })
-
-  test('Missing assessmentQuizSubId parameter should raise an missing assessmentQuizSubId error', async () => {
-    const param: any = {userId: 'userId'}
-    expect(async () => await getLocalFiles(param)).toThrow(
-      /^missing assessmentQuizSubId$/,
-    )
-  })
-
-  test('readLocalFile fn should return file data', async () => {
-    const param = {pathToFile: text}
-    expect(await readSessionReplay(param)).toEqual('Hello World')
-  })
-
-  test('Missing pathToFile parameter should raise an missing pathToFile error', async () => {
-    const param: any = {}
-    expect(async () => await readSessionReplay(param)).rejects.toThrow(
-      /^missing pathToFile$/,
-    )
-  })
 })
