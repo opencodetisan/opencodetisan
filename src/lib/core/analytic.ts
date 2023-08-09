@@ -64,13 +64,28 @@ export const writeSessionReplay = async ({
   return writePath
 }
 
-export const readSessionReplay = async ({pathToFile}: {pathToFile: string}) => {
-  if (!pathToFile) {
-    throw Error('missing pathToFile')
+export const readSessionReplay = async ({
+  userId,
+  assessmentQuizSubId,
+}: {
+  userId: string
+  assessmentQuizSubId: string
+}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!assessmentQuizSubId) {
+    throw Error('missing assessmentQuizSubId')
   }
-  const buf = await readFile(pathToFile)
-  const decompressed = decompressSync(buf)
-  return JSON.parse(strFromU8(decompressed))
+  const sessionReplay = []
+  const files = await glob(`src/session/${userId}/${assessmentQuizSubId}_*`)
+  for (let i = 1; i <= files.length; i++) {
+    const readPath = `./src/session/${userId}/${assessmentQuizSubId}_${i}`
+    const buf = await readFile(readPath)
+    const decompressed = decompressSync(buf)
+    const json = JSON.parse(strFromU8(decompressed))
+    sessionReplay.push(...json)
+  }
+  return sessionReplay
 }
 
 export const getLocalFiles = async ({
