@@ -64,8 +64,12 @@ describe('Analytic module', () => {
         userId,
         assessmentQuizSubId,
       })
-      await access(pathToFile)
-      expect('can access').toBe('can access')
+      try {
+        await access(pathToFile)
+        expect(true).toBe(true)
+      } catch (error) {
+        expect(true).toBe(false)
+      }
     })
   })
 
