@@ -28,7 +28,7 @@ describe('Analytic module', () => {
   describe('writeSessionReplay should create a new local session-replay file', () => {
     const fakeData = [{message: 'Hello World'}]
     beforeEach(async () => {
-      for (let i = 0; i < 1; i++) {
+      for (let i = 0; i < 2; i++) {
         await writeSessionReplay({data: fakeData, userId, assessmentQuizSubId})
       }
     })
@@ -43,6 +43,15 @@ describe('Analytic module', () => {
         assessmentQuizSubId,
       })
       expect(await readSessionReplay({pathToFile})).toEqual(fakeData)
+    })
+
+    test('Should the stored session-replay file have the correct index', async () => {
+      const pathToFile = await writeSessionReplay({
+        data: fakeData,
+        userId,
+        assessmentQuizSubId,
+      })
+      expect(pathToFile.split('_')[1]).toBe('3')
     })
   })
 
