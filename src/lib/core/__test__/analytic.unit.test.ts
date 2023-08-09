@@ -1,5 +1,5 @@
 import {rm} from 'fs/promises'
-import {getLocalFiles, readLocalFile, writeSessionReplay} from '../analytic'
+import {getLocalFiles, readSessionReplay, writeSessionReplay} from '../analytic'
 import {faker} from '@faker-js/faker'
 
 const uuid = faker.string.uuid()
@@ -17,11 +17,16 @@ describe('Analytic module', () => {
     const fakePath = 'test_1'
     const fakeData = [{message: 'Hello World'}]
 
-    afterEach(() => rmFile({path: fakePath}))
+    afterAll(() => rmFile({path: fakePath}))
 
     test('Should save the data in binary', async () => {
       const param: any = {path: fakePath, data: fakeData}
-      expect(await writeSessionReplay(param)).toEqual('Hello World')
+      expect(await writeSessionReplay(param)).toEqual(fakeData)
+    })
+
+    test('Should save with conventional filename', async () => {
+      const param: any = {pathToFile: fakePath}
+      expect(await readSessionReplay(param)).toEqual(fakeData)
     })
   })
 
@@ -46,12 +51,12 @@ describe('Analytic module', () => {
 
   test('readLocalFile fn should return file data', async () => {
     const param = {pathToFile: text}
-    expect(await readLocalFile(param)).toEqual('Hello World')
+    expect(await readSessionReplay(param)).toEqual('Hello World')
   })
 
   test('Missing pathToFile parameter should raise an missing pathToFile error', async () => {
     const param: any = {}
-    expect(async () => await readLocalFile(param)).rejects.toThrow(
+    expect(async () => await readSessionReplay(param)).rejects.toThrow(
       /^missing pathToFile$/,
     )
   })
