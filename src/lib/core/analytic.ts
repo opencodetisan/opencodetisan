@@ -48,7 +48,10 @@ export const writeSessionReplay = async ({
   } else if (!data) {
     throw Error('missing data')
   }
-  await writeFile(path, data, {encoding: 'binary'})
+  const jsonStr = JSON.stringify(data)
+  const buf = strToU8(jsonStr)
+  const compressed = compressSync(buf, {level: 6, mem: 8})
+  await writeFile(path, compressed)
 }
 
 export const readSessionReplay = async ({pathToFile}: {pathToFile: string}) => {
