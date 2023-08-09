@@ -54,13 +54,14 @@ export const writeSessionReplay = async ({
     throw Error('missing data')
   }
   const files = await glob(`src/session/${userId}/${assessmentQuizSubId}_*`)
+  const writePath = `./src/session/${userId}/${assessmentQuizSubId}_${
+    files.length + 1
+  }`
   const jsonStr = JSON.stringify(data)
   const buf = strToU8(jsonStr)
   const compressed = compressSync(buf, {level: 6, mem: 8})
-  await writeFile(
-    `./src/session/${userId}/${assessmentQuizSubId}_${files.length + 1}`,
-    compressed,
-  )
+  await writeFile(writePath, compressed)
+  return writePath
 }
 
 export const readSessionReplay = async ({pathToFile}: {pathToFile: string}) => {
