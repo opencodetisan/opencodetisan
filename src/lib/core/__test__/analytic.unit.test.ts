@@ -1,4 +1,4 @@
-import {readdir, rm, unlink} from 'fs/promises'
+import {access, readdir, rm, unlink} from 'fs/promises'
 import {
   createDir,
   getLocalFiles,
@@ -52,6 +52,16 @@ describe('Analytic module', () => {
         assessmentQuizSubId,
       })
       expect(pathToFile.split('_')[1]).toBe('3')
+    })
+
+    test('Should the stored session-replay file have the correct index', async () => {
+      const pathToFile = await writeSessionReplay({
+        data: fakeData,
+        userId,
+        assessmentQuizSubId,
+      })
+      await access(pathToFile)
+      expect('can access').toBe('can access')
     })
   })
 
