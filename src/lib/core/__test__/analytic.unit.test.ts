@@ -21,20 +21,33 @@ const rmFiles = async ({userId}: {userId: string}) => {
   await Promise.all(deleteFilePromises)
 }
 
+const userId = 'user1'
+const assessmentQuizSubId = 'test'
+
 describe('Analytic module', () => {
   describe('writeSessionReplay should create a new local session-replay file', () => {
     const fakeData = [{message: 'Hello World'}]
-    const userId = 'user1'
-    const assessmentQuizSubId = 'test'
-    afterAll(() => rmFiles({userId}))
+    beforeAll(async () => {
+      for (let i = 0; i < 1; i++) {
+        await writeSessionReplay({data: fakeData, userId, assessmentQuizSubId})
+      }
+    })
+    afterAll(async () => {
+      await rmFiles({userId})
+    })
 
-    test('Should save the data in binary', async () => {
+    test('Should the stored session-replay be the same as input', async () => {
       const param: any = {
         userId,
         assessmentQuizSubId,
         data: fakeData,
       }
-      expect(await writeSessionReplay(param)).toEqual(fakeData)
+      const pathToFile = await writeSessionReplay({
+        data: fakeData,
+        userId,
+        assessmentQuizSubId,
+      })
+      expect(await readSessionReplay({pathToFile})).toEqual(fakeData)
     })
 
     // test('Should the data be decompress from binary format', async () => {
