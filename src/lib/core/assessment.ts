@@ -447,3 +447,13 @@ export const updateAssessmentAcceptance = async ({
   })
   return assessment
 }
+
+export const getAssessmentForReport = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+}
