@@ -4,9 +4,11 @@ import {glob} from 'glob'
 import {
   IAssessmentPointsProps,
   IGetAssessmentComparativeScoreProps,
+  IGetAssessmentQuizPointProps,
 } from '@/types'
 import prisma from '../db/client'
-import {AssessmentComparativeScoreLevel} from '@/enums'
+import {AssessmentComparativeScoreLevel, AssessmentPoint} from '@/enums'
+import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
 
 export const writeSessionReplay = async ({
   data,
@@ -113,4 +115,32 @@ export const getAssessmentComparativeScoreLevel = ({
   } else {
     return AssessmentComparativeScoreLevel.High
   }
+}
+
+export const getAssessmentQuizPoint = async ({
+  assessmentQuizzes,
+  assessmentPoints,
+}: IGetAssessmentQuizPointProps) => {
+  if (!assessmentQuizzes) {
+    throw Error('missing assessmentQuizzes')
+  } else if (assessmentQuizzes.length === 0) {
+    throw Error('assessmentQuizzes is empty')
+  } else if (!assessmentPoints) {
+    throw Error('missing assessmentPoints')
+  }
+  const assignedQuizzes: any = []
+  let totalPoint = 0
+  let quizPoints: {[index: string]: number} = {}
+  assessmentQuizzes.forEach((q) => {
+    const assessmentPointName = `${q.quiz.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
+    const difficultyPoint = assessmentPoints[assessmentPointName]?.point
+    const speedPoint =
+      assessmentPoints[AssessmentPoint.SpeedPoint]?.point *
+      MAX_SPEED_POINT_MULTIPLIER
+    const sum = difficultyPoint + speedPoint
+    assignedQuizzes.push(q.quiz)
+    totalPoint += sum
+    quizPoints[q.quiz.id] = sum
+  })
+  return {totalPoint, quizPoints, assignedQuizzes}
 }
