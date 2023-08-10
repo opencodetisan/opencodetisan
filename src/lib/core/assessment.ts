@@ -466,4 +466,86 @@ export const getAssessmentForReport = async ({
   if (!assessmentId) {
     throw Error('missing assessmentId')
   }
+  const selections = {
+    owner: {
+      select: {
+        id: true,
+        name: true,
+      },
+    },
+    assessmentCandidates: {
+      select: {
+        status: true,
+        candidate: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            assessmentResults: {
+              where: {
+                assessmentId: assessmentId,
+              },
+              include: {
+                quiz: {
+                  select: {
+                    id: true,
+                    codeLanguageId: true,
+                    difficultyLevelId: true,
+                    title: true,
+                  },
+                },
+                assessmentQuizSubmissions: {
+                  where: {
+                    submissionId: {
+                      not: null,
+                    },
+                  },
+                  select: {
+                    id: true,
+                    submission: {
+                      select: {
+                        submissionPoint: {
+                          include: {
+                            assessmentPoint: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                  orderBy: {
+                    start: 'desc',
+                  },
+                  take: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    assessmentQuizzes: {
+      select: {
+        quizId: true,
+        submissionId: true,
+        quiz: {
+          select: {
+            id: true,
+            codeLanguageId: true,
+            difficultyLevelId: true,
+            title: true,
+            difficultyLevel: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  }
+  const assessment = await getAssessment({
+    assessmentId,
+    callerSelections: selections,
+  })
+  return assessment
 }
