@@ -22,7 +22,7 @@ export const acceptAssessmentService = async ({
     throw Error('missing userId')
   }
   const assessmentQuizzes = await getAssessmentQuizzes({assessmentId})
-  const assessmentResults = assessmentQuizzes.map((q) => ({
+  const assessmentResults = assessmentQuizzes.map((q: any) => ({
     candidateId: userId,
     quizId: q.quizId,
   }))
