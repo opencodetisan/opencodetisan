@@ -135,8 +135,18 @@ describe('Analytic module', () => {
       userId: uuid,
       // assessmentQuizSubId: uuid,
     }
-    expect(async () => await writeSessionReplay(param)).rejects.toThrow(
+    expect(async () => await readSessionReplay(param)).rejects.toThrow(
       /^missing assessmentQuizSubId$/,
+    )
+  })
+
+  test('Missing userId parameter should return a missing userId error', async () => {
+    const param: any = {
+      // userId: uuid,
+      assessmentQuizSubId: uuid,
+    }
+    expect(async () => await readSessionReplay(param)).rejects.toThrow(
+      /^missing userId$/,
     )
   })
 })
