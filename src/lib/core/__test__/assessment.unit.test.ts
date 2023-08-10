@@ -16,6 +16,7 @@ import {
   getAssessmentIds,
   getAssessmentQuizzes,
   updateAssessmentAcceptance,
+  getAssessmentForReport,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
 
@@ -625,6 +626,23 @@ describe('Assessment module', () => {
     }
     expect(async () => await updateAssessmentAcceptance(param)).rejects.toThrow(
       /^missing token$/,
+    )
+  })
+
+  test('getAssessmentForReport fn should return an assessment', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.update.mockResolvedValue(mockAssessment)
+    expect(await getAssessmentForReport(param)).toEqual(mockAssessment)
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getAssessmentForReport(param)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 })
