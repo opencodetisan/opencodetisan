@@ -1,6 +1,5 @@
 import {
   IAddAssessmentQuizzesProps,
-  IAssessmentPointsProps,
   ICandidateEmailStatusProps,
   IDeleteAssessmentQuizSubmissionsProps,
   IGetAssessmentComparativeScoreProps,
@@ -336,19 +335,6 @@ export const getAssessmentCompletedQuiz = async ({
   })
 
   return assessmentResults
-}
-
-export const getAssessmentPoints = async () => {
-  let object: IAssessmentPointsProps = {}
-  const assessmentPoints = await prisma.assessmentPoint.findMany()
-  if (assessmentPoints.length === 0) {
-    return {}
-  } else {
-    assessmentPoints.forEach(
-      (p: any) => (object[p.name] = {point: p.point, id: p.id}),
-    )
-  }
-  return object
 }
 
 export const getAssessmentQuizPoint = async ({

@@ -1,6 +1,8 @@
 import {compressSync, decompressSync, strFromU8, strToU8} from 'fflate'
 import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {glob} from 'glob'
+import {IAssessmentPointsProps} from '@/types'
+import prisma from '../db/client'
 
 export const writeSessionReplay = async ({
   data,
@@ -52,4 +54,17 @@ export const readSessionReplay = async ({
     sessionReplay.push(...json)
   }
   return sessionReplay
+}
+
+export const getAssessmentPoints = async () => {
+  let object: IAssessmentPointsProps = {}
+  const assessmentPoints = await prisma.assessmentPoint.findMany()
+  if (assessmentPoints.length === 0) {
+    return {}
+  } else {
+    assessmentPoints.forEach(
+      (p: any) => (object[p.name] = {point: p.point, id: p.id}),
+    )
+  }
+  return object
 }
