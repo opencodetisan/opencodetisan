@@ -1,25 +1,11 @@
-import {access, readdir, rm, rmdir, unlink} from 'fs/promises'
-import {
-  createDir,
-  getLocalFiles,
-  readSessionReplay,
-  writeSessionReplay,
-} from '../analytic'
+import {access, rm} from 'fs/promises'
+import {readSessionReplay, writeSessionReplay} from '../analytic'
 import {faker} from '@faker-js/faker'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
-const filenames = ['assessmentQuizSubId_1', 'assessmentQuizSubId_2']
-
-const rmFiles = async ({userId}: {userId: string}) => {
-  // const files = await readdir(`./src/session/${userId}/`)
-  // const deleteFilePromises = files.map((file) =>
-  //   unlink(`./src/session/${userId}/${file}`),
-  // )
-  // await Promise.all(deleteFilePromises)
-}
 
 const userId = 'user1'
 const assessmentQuizSubId = 'test'
@@ -33,12 +19,11 @@ describe('Analytic module', () => {
       }
     })
     afterEach(async () => {
-      // await rmFiles({userId})
       await rm(`./src/session/${userId}`, {recursive: true, force: true})
     })
 
     test('Should the stored session-replay be the same as input', async () => {
-      const pathToFile = await writeSessionReplay({
+      await writeSessionReplay({
         data: fakeData,
         userId,
         assessmentQuizSubId,
@@ -119,7 +104,6 @@ describe('Analytic module', () => {
       }
     })
     afterEach(async () => {
-      // await rmFiles({userId})
       await rm(`./src/session/${userId}`, {recursive: true, force: true})
     })
 
