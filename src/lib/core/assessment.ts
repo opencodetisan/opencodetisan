@@ -330,29 +330,6 @@ export const getAssessmentCompletedQuiz = async ({
   return assessmentResults
 }
 
-export const getAssessmentUsersCount = async ({
-  userId,
-  quizId,
-}: {
-  userId: string
-  quizId: string
-}) => {
-  if (!userId) {
-    throw Error('missing userId')
-  } else if (!quizId) {
-    throw Error('missing quizId')
-  }
-  const usersCount = await prisma.quizPointCollection.count({
-    where: {
-      quizId,
-      userId: {
-        not: userId,
-      },
-    },
-  })
-  return usersCount
-}
-
 export const getAssessmentUsersBelowPointCount = async ({
   userId,
   quizId,
