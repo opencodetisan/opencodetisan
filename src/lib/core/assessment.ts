@@ -2,7 +2,6 @@ import {
   IAddAssessmentQuizzesProps,
   ICandidateEmailStatusProps,
   IDeleteAssessmentQuizSubmissionsProps,
-  IGetAssessmentComparativeScoreProps,
   IGetAssessmentQuizPointProps,
   IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentCandidateStatusProps,
@@ -10,11 +9,7 @@ import {
   IcreateAssessmentProps,
 } from '@/types'
 import prisma from '../db/client'
-import {
-  AssessmentPoint,
-  AssessmentComparativeScoreLevel,
-  CandidateActionId,
-} from '@/enums'
+import {AssessmentPoint, CandidateActionId} from '@/enums'
 import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
 
 export const createAssessment = async ({
@@ -363,48 +358,6 @@ export const getAssessmentQuizPoint = async ({
     quizPoints[q.quiz.id] = sum
   })
   return {totalPoint, quizPoints, assignedQuizzes}
-}
-
-export const getAssessmentComparativeScore = ({
-  usersCount,
-  usersBelowPointCount,
-  point,
-  quizPoint,
-}: IGetAssessmentComparativeScoreProps) => {
-  if (usersCount === undefined) {
-    throw Error('missing usersCount')
-  } else if (usersBelowPointCount === undefined) {
-    throw Error('missing usersBelowPointCount')
-  } else if (point === undefined) {
-    throw Error('missing point')
-  }
-  let comparativeScore = 100
-  if (point && !usersCount) {
-    comparativeScore = 100
-  } else if (!point) {
-    comparativeScore = 0
-  } else if (point !== quizPoint) {
-    comparativeScore = Math.round(+((usersBelowPointCount / usersCount) * 100))
-  }
-
-  return {comparativeScore, usersBelowPointCount}
-}
-
-export const getAssessmentComparativeScoreLevel = ({
-  comparativeScore,
-}: {
-  comparativeScore: number
-}) => {
-  if (comparativeScore === undefined) {
-    throw Error('missing comparativeScore')
-  }
-  if (comparativeScore < 49) {
-    return AssessmentComparativeScoreLevel.Low
-  } else if (comparativeScore < 79) {
-    return AssessmentComparativeScoreLevel.Medium
-  } else {
-    return AssessmentComparativeScoreLevel.High
-  }
 }
 
 export const getAssessmentUsersCount = async ({

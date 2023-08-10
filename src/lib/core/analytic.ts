@@ -1,8 +1,12 @@
 import {compressSync, decompressSync, strFromU8, strToU8} from 'fflate'
 import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {glob} from 'glob'
-import {IAssessmentPointsProps} from '@/types'
+import {
+  IAssessmentPointsProps,
+  IGetAssessmentComparativeScoreProps,
+} from '@/types'
 import prisma from '../db/client'
+import {AssessmentComparativeScoreLevel} from '@/enums'
 
 export const writeSessionReplay = async ({
   data,
@@ -67,4 +71,46 @@ export const getAssessmentPoints = async () => {
     )
   }
   return object
+}
+
+export const getAssessmentComparativeScore = ({
+  usersCount,
+  usersBelowPointCount,
+  point,
+  quizPoint,
+}: IGetAssessmentComparativeScoreProps) => {
+  if (usersCount === undefined) {
+    throw Error('missing usersCount')
+  } else if (usersBelowPointCount === undefined) {
+    throw Error('missing usersBelowPointCount')
+  } else if (point === undefined) {
+    throw Error('missing point')
+  }
+  let comparativeScore = 100
+  if (point && !usersCount) {
+    comparativeScore = 100
+  } else if (!point) {
+    comparativeScore = 0
+  } else if (point !== quizPoint) {
+    comparativeScore = Math.round(+((usersBelowPointCount / usersCount) * 100))
+  }
+
+  return {comparativeScore, usersBelowPointCount}
+}
+
+export const getAssessmentComparativeScoreLevel = ({
+  comparativeScore,
+}: {
+  comparativeScore: number
+}) => {
+  if (comparativeScore === undefined) {
+    throw Error('missing comparativeScore')
+  }
+  if (comparativeScore < 49) {
+    return AssessmentComparativeScoreLevel.Low
+  } else if (comparativeScore < 79) {
+    return AssessmentComparativeScoreLevel.Medium
+  } else {
+    return AssessmentComparativeScoreLevel.High
+  }
 }
