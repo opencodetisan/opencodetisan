@@ -633,7 +633,7 @@ describe('Assessment module', () => {
     const param: any = {
       assessmentId: uuid,
     }
-    prismaMock.assessment.update.mockResolvedValue(mockAssessment)
+    prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
     expect(await getAssessmentForReport(param)).toEqual(mockAssessment)
   })
 
