@@ -95,6 +95,17 @@ describe('Analytic module', () => {
     )
   })
 
+  test('Missing assessmentQuizSubId parameter should return a missing assessmentQuizSubId error', async () => {
+    const param: any = {
+      data: {message: 'Hello'},
+      userId: uuid,
+      // assessmentQuizSubId: uuid,
+    }
+    expect(async () => await writeSessionReplay(param)).rejects.toThrow(
+      /^missing assessmentQuizSubId$/,
+    )
+  })
+
   describe('readSessionReplay should return the expected JSON', () => {
     beforeEach(async () => {
       for (let i = 1; i <= 3; i++) {
