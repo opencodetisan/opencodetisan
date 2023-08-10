@@ -1,6 +1,5 @@
 import {compressSync, decompressSync, strFromU8, strToU8} from 'fflate'
-import {mkdir} from 'node:fs'
-import {readFile, writeFile} from 'node:fs/promises'
+import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {glob} from 'glob'
 
 export const compressJsonStr = (jsonStr: string) => {
@@ -53,6 +52,7 @@ export const writeSessionReplay = async ({
   } else if (!data) {
     throw Error('missing data')
   }
+  await mkdir(`./src/session/${userId}`, {recursive: true})
   const files = await glob(`src/session/${userId}/${assessmentQuizSubId}_*`)
   const writePath = `./src/session/${userId}/${assessmentQuizSubId}_${
     files.length + 1
