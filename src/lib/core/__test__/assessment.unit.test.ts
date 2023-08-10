@@ -100,8 +100,8 @@ describe('Assessment module', () => {
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(param)).rejects.toEqual(
-      Error('missing userId'),
+    expect(async () => await createAssessment(param)).rejects.toThrow(
+      /^missing userId$/,
     )
   })
 
@@ -112,8 +112,8 @@ describe('Assessment module', () => {
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(param)).rejects.toEqual(
-      Error('missing title'),
+    expect(async () => await createAssessment(param)).rejects.toThrow(
+      /^missing title$/,
     )
   })
 
@@ -124,8 +124,8 @@ describe('Assessment module', () => {
       // description: faker.lorem.text(),
       quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(param)).rejects.toEqual(
-      Error('missing description'),
+    expect(async () => await createAssessment(param)).rejects.toThrow(
+      /^missing description$/,
     )
   })
 
@@ -136,8 +136,8 @@ describe('Assessment module', () => {
       description: faker.lorem.text(),
       // quizIds: [uuid, uuid],
     }
-    expect(async () => await createAssessment(param)).rejects.toEqual(
-      Error('missing quizIds'),
+    expect(async () => await createAssessment(param)).rejects.toThrow(
+      /^missing quizIds$/,
     )
   })
 
@@ -260,8 +260,8 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
-    expect(async () => await updateAssessment(param)).rejects.toEqual(
-      Error('missing assessmentId'),
+    expect(async () => await updateAssessment(param)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 
@@ -271,8 +271,8 @@ describe('Assessment module', () => {
       // title: faker.lorem.text(),
       description: faker.lorem.text(),
     }
-    expect(async () => await updateAssessment(param)).rejects.toEqual(
-      Error('missing title'),
+    expect(async () => await updateAssessment(param)).rejects.toThrow(
+      /^missing title$/,
     )
   })
 
@@ -282,8 +282,8 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       // description: faker.lorem.text(),
     }
-    expect(async () => await updateAssessment(param)).rejects.toEqual(
-      Error('missing description'),
+    expect(async () => await updateAssessment(param)).rejects.toThrow(
+      /^missing description$/,
     )
   })
 
@@ -434,8 +434,8 @@ describe('Assessment module', () => {
     const data: any = {
       userId: undefined,
     }
-    expect(async () => await getAssessments(data)).rejects.toEqual(
-      Error('missing userId'),
+    expect(async () => await getAssessments(data)).rejects.toThrow(
+      /^missing userId$/,
     )
   })
 
@@ -497,8 +497,8 @@ describe('Assessment module', () => {
     const data: any = {
       // assessmentId: uuid,
     }
-    expect(async () => await getAssessment(data)).rejects.toEqual(
-      Error('missing assessmentId'),
+    expect(async () => await getAssessment(data)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 
@@ -518,8 +518,8 @@ describe('Assessment module', () => {
     const data: any = {
       // assessmentId: uuid,
     }
-    expect(async () => await getAssessmentCompletedQuiz(data)).rejects.toEqual(
-      Error('missing assessmentId'),
+    expect(async () => await getAssessmentCompletedQuiz(data)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 
@@ -594,8 +594,8 @@ describe('Assessment module', () => {
       assessmentQuizzes: [],
       assessmentPoints: assessmentPointData,
     }
-    expect(async () => await getAssessmentQuizPoint(data)).rejects.toEqual(
-      Error('assessmentQuizzes is empty'),
+    expect(async () => await getAssessmentQuizPoint(data)).rejects.toThrow(
+      /^assessmentQuizzes is empty$/,
     )
   })
 
@@ -603,8 +603,8 @@ describe('Assessment module', () => {
     const data: any = {
       assessmentQuizzes: [''],
     }
-    expect(async () => await getAssessmentQuizPoint(data)).rejects.toEqual(
-      Error('missing assessmentPoints'),
+    expect(async () => await getAssessmentQuizPoint(data)).rejects.toThrow(
+      /^missing assessmentPoints$/,
     )
   })
 
