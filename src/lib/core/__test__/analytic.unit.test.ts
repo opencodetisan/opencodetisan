@@ -58,7 +58,7 @@ describe('Analytic module', () => {
       expect(pathToFile.split('_')[1]).toBe('3')
     })
 
-    test('Should the stored session-replay file have the correct index', async () => {
+    test('Should the new session-replay file be accesible', async () => {
       const pathToFile = await writeSessionReplay({
         data: fakeData,
         userId,
