@@ -129,4 +129,14 @@ describe('Analytic module', () => {
       ])
     })
   })
+
+  test('Missing assessmentQuizSubId parameter should return a missing assessmentQuizSubId error', async () => {
+    const param: any = {
+      userId: uuid,
+      // assessmentQuizSubId: uuid,
+    }
+    expect(async () => await writeSessionReplay(param)).rejects.toThrow(
+      /^missing assessmentQuizSubId$/,
+    )
+  })
 })
