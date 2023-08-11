@@ -1,6 +1,7 @@
 import {
   getAssessmentIds,
   getAssessmentQuizzes,
+  getAssessments,
   updateAssessmentAcceptance,
 } from './assessment'
 import {getActivityLogCount, getActivityLogs} from './candidate'
@@ -59,4 +60,12 @@ export const getCandidateActivityLogService = async ({
     skip: index,
   })
   return {activityLogCount, activityLogs}
+}
+
+export const getAssessmentsService = async ({userId}: {userId: string}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  }
+  const assessments = await getAssessments({userId})
+  return assessments
 }
