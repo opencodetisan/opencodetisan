@@ -7,8 +7,11 @@ import {
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
 } from '@/types'
-import prisma from '../db/client'
+// import prisma from '../db/client'
 import {CandidateActionId} from '@/enums'
+import {PrismaClient} from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const createAssessment = async ({
   userId,
