@@ -66,14 +66,14 @@ export interface ICreateCandidateQuizSubmissionProps {
   code: string
 }
 
-export interface IcreateAssessmentProps {
+export interface ICreateAssessmentProps {
   userId: string
   title: string
   description: string
   quizIds: string[]
 }
 
-export interface ICreateAssessmentServiceProps extends IcreateAssessmentProps {}
+export interface ICreateAssessmentServiceProps extends ICreateAssessmentProps {}
 
 export interface ICandidateEmailStatusProps {
   assessmentId: string
