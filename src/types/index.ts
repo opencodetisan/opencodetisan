@@ -73,6 +73,8 @@ export interface IcreateAssessmentProps {
   quizIds: string[]
 }
 
+export interface ICreateAssessmentServiceProps extends IcreateAssessmentProps {}
+
 export interface ICandidateEmailStatusProps {
   assessmentId: string
   email: string

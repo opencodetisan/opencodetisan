@@ -1,4 +1,6 @@
+import {ICreateAssessmentServiceProps} from '@/types'
 import {
+  createAssessment,
   getAssessmentIds,
   getAssessmentQuizzes,
   getAssessments,
@@ -68,4 +70,30 @@ export const getAssessmentsService = async ({userId}: {userId: string}) => {
   }
   const assessments = await getAssessments({userId})
   return assessments
+}
+
+export const createAssessmentService = async ({
+  userId,
+  title,
+  description,
+  quizIds,
+}: ICreateAssessmentServiceProps) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!title) {
+    throw Error('missing title')
+  } else if (!description) {
+    throw Error('missing description')
+  } else if (!quizIds) {
+    throw Error('missing quizIds')
+  } else if (quizIds.length === 0) {
+    throw Error('empty quizIds')
+  }
+  const assessment = await createAssessment({
+    userId,
+    title,
+    description,
+    quizIds,
+  })
+  return assessment
 }
