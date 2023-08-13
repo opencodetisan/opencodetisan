@@ -156,3 +156,10 @@ export interface IGetActivityLogsProps {
   amount?: number
   skip?: number
 }
+
+export interface IUpdateAssessmentAcceptanceProps {
+  assessmentId: string
+  candidateId: string
+  assessmentResults: {candidateId: string; quizId: string}[]
+  token: string
+}

@@ -5,12 +5,17 @@ import {
   IDeleteAssessmentQuizSubmissionsProps,
   IGetAssessmentComparativeScoreProps,
   IGetAssessmentQuizPointProps,
+  IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
   IcreateAssessmentProps,
 } from '@/types'
 import prisma from '../db/client'
-import {AssessmentPoint, AssessmentComparativeScoreLevel} from '@/enums'
+import {
+  AssessmentPoint,
+  AssessmentComparativeScoreLevel,
+  CandidateActionId,
+} from '@/enums'
 import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
 
 export const createAssessment = async ({
@@ -374,7 +379,7 @@ export const getAssessmentQuizPoint = async ({
   return {totalPoint, quizPoints, assignedQuizzes}
 }
 
-export const getAssessmentComparativeScore = async ({
+export const getAssessmentComparativeScore = ({
   usersCount,
   usersBelowPointCount,
   point,
@@ -527,4 +532,62 @@ export const getAssessmentIds = async ({
   })
 
   return assessments.map((a) => a.id)
+}
+
+export const getAssessmentQuizzes = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const quiz = await prisma.assessmentQuiz.findMany({
+    where: {
+      assessmentId,
+    },
+  })
+  return quiz
+}
+
+export const updateAssessmentAcceptance = async ({
+  assessmentId,
+  candidateId,
+  assessmentResults,
+  token,
+}: IUpdateAssessmentAcceptanceProps) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!candidateId) {
+    throw Error('missing candidateId')
+  } else if (!assessmentResults) {
+    throw Error('missing assessmentResults')
+  } else if (assessmentResults.length === 0) {
+    throw Error('empty assessmentResults')
+  } else if (!token) {
+    throw Error('missing token')
+  }
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      assessmentCandidates: {
+        create: {
+          candidateId,
+          token: token,
+        },
+      },
+      assessmentResults: {
+        create: assessmentResults,
+      },
+      candidateActivityLog: {
+        create: {
+          userId: candidateId,
+          userActionId: CandidateActionId.Accept,
+        },
+      },
+    },
+  })
+  return assessment
 }

@@ -10,3 +10,14 @@ export enum AssessmentComparativeScoreLevel {
   Medium = 'medium',
   High = 'high',
 }
+
+export enum CandidateActionId {
+  Accept = 1,
+  Complete,
+  Decline,
+}
+
+export enum AssessmentStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+}
