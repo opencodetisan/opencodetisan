@@ -1,6 +1,11 @@
 import {convertToMinuteSecond} from '@/lib/utils'
 import {faker} from '@faker-js/faker'
 
+const uuid = faker.string.uuid()
+const text = faker.lorem.text()
+const date = faker.date.anytime()
+const number = faker.number.int()
+
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
     const data = 1

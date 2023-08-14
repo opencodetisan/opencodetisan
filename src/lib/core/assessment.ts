@@ -1,22 +1,14 @@
 import {
   IAddAssessmentQuizzesProps,
-  IAssessmentPointsProps,
   ICandidateEmailStatusProps,
   IDeleteAssessmentQuizSubmissionsProps,
-  IGetAssessmentComparativeScoreProps,
-  IGetAssessmentQuizPointProps,
   IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
   IcreateAssessmentProps,
 } from '@/types'
 import prisma from '../db/client'
-import {
-  AssessmentPoint,
-  AssessmentComparativeScoreLevel,
-  CandidateActionId,
-} from '@/enums'
-import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
+import {CandidateActionId} from '@/enums'
 
 export const createAssessment = async ({
   userId,
@@ -336,142 +328,6 @@ export const getAssessmentCompletedQuiz = async ({
   })
 
   return assessmentResults
-}
-
-export const getAssessmentPoints = async () => {
-  let object: IAssessmentPointsProps = {}
-  const assessmentPoints = await prisma.assessmentPoint.findMany()
-  if (assessmentPoints.length === 0) {
-    return {}
-  } else {
-    assessmentPoints.forEach(
-      (p: any) => (object[p.name] = {point: p.point, id: p.id}),
-    )
-  }
-  return object
-}
-
-export const getAssessmentQuizPoint = async ({
-  assessmentQuizzes,
-  assessmentPoints,
-}: IGetAssessmentQuizPointProps) => {
-  if (!assessmentQuizzes) {
-    throw Error('missing assessmentQuizzes')
-  } else if (assessmentQuizzes.length === 0) {
-    throw Error('assessmentQuizzes is empty')
-  } else if (!assessmentPoints) {
-    throw Error('missing assessmentPoints')
-  }
-  const assignedQuizzes: any = []
-  let totalPoint = 0
-  let quizPoints: {[index: string]: number} = {}
-  assessmentQuizzes.forEach((q) => {
-    const assessmentPointName = `${q.quiz.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
-    const difficultyPoint = assessmentPoints[assessmentPointName]?.point
-    const speedPoint =
-      assessmentPoints[AssessmentPoint.SpeedPoint]?.point *
-      MAX_SPEED_POINT_MULTIPLIER
-    const sum = difficultyPoint + speedPoint
-    assignedQuizzes.push(q.quiz)
-    totalPoint += sum
-    quizPoints[q.quiz.id] = sum
-  })
-  return {totalPoint, quizPoints, assignedQuizzes}
-}
-
-export const getAssessmentComparativeScore = ({
-  usersCount,
-  usersBelowPointCount,
-  point,
-  quizPoint,
-}: IGetAssessmentComparativeScoreProps) => {
-  if (usersCount === undefined) {
-    throw Error('missing usersCount')
-  } else if (usersBelowPointCount === undefined) {
-    throw Error('missing usersBelowPointCount')
-  } else if (point === undefined) {
-    throw Error('missing point')
-  }
-  let comparativeScore = 100
-  if (point && !usersCount) {
-    comparativeScore = 100
-  } else if (!point) {
-    comparativeScore = 0
-  } else if (point !== quizPoint) {
-    comparativeScore = Math.round(+((usersBelowPointCount / usersCount) * 100))
-  }
-
-  return {comparativeScore, usersBelowPointCount}
-}
-
-export const getAssessmentComparativeScoreLevel = ({
-  comparativeScore,
-}: {
-  comparativeScore: number
-}) => {
-  if (comparativeScore === undefined) {
-    throw Error('missing comparativeScore')
-  }
-  if (comparativeScore < 49) {
-    return AssessmentComparativeScoreLevel.Low
-  } else if (comparativeScore < 79) {
-    return AssessmentComparativeScoreLevel.Medium
-  } else {
-    return AssessmentComparativeScoreLevel.High
-  }
-}
-
-export const getAssessmentUsersCount = async ({
-  userId,
-  quizId,
-}: {
-  userId: string
-  quizId: string
-}) => {
-  if (!userId) {
-    throw Error('missing userId')
-  } else if (!quizId) {
-    throw Error('missing quizId')
-  }
-  const usersCount = await prisma.quizPointCollection.count({
-    where: {
-      quizId,
-      userId: {
-        not: userId,
-      },
-    },
-  })
-  return usersCount
-}
-
-export const getAssessmentUsersBelowPointCount = async ({
-  userId,
-  quizId,
-  point,
-}: {
-  userId: string
-  quizId: string
-  point: number
-}) => {
-  if (!userId) {
-    throw Error('missing userId')
-  } else if (!quizId) {
-    throw Error('missing quizId')
-  } else if (!point) {
-    throw Error('missing point')
-  }
-  const usersCount = await prisma.quizPointCollection.count({
-    where: {
-      quizId,
-      userId: {
-        not: userId,
-      },
-      point: {
-        lt: point,
-      },
-    },
-  })
-  return usersCount
 }
 
 export const deleteAssessmentResult = async ({
