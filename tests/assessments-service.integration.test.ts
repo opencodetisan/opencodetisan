@@ -1,8 +1,7 @@
 import {createAssessmentService} from '@/lib/core/service'
+import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
-import {PrismaClient} from '@prisma/client'
 
-const prisma = new PrismaClient()
 const uuid = faker.string.uuid()
 const word = faker.lorem.word()
 
