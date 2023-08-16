@@ -5,10 +5,8 @@ import {faker} from '@faker-js/faker'
 describe('Integration test: Quiz ', () => {
   describe('Integration test: createQuizService', () => {
     const word = faker.lorem.word()
-    const number = faker.number.int(10)
-
-    const codeLanguageId = faker.number.int(1000)
-    const difficultyLevelId = faker.number.int(1000)
+    const codeLanguageId = faker.number.int({min: 1, max: 1000})
+    const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
 
     let quizId: string, solutionId: string
@@ -46,7 +44,7 @@ describe('Integration test: Quiz ', () => {
         },
         quizSolution: {
           code: word,
-          sequence: number,
+          sequence: 1,
           testRunner: word,
           importDirectives: word,
         },
