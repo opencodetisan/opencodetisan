@@ -171,5 +171,5 @@ export interface ICreateQuizServiceProps {
     ICreateQuizSolutionProps,
     'code' | 'sequence' | 'testRunner' | 'importDirectives'
   >
-  quizTestCases: ICreateQuizTestCaseProps[]
+  quizTestCases: ITestCaseClientProps
 }
