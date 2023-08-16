@@ -1,6 +1,6 @@
 import {
   createAssessmentService,
-  getAssessmentsService,
+  getManyAssessmentService,
 } from '@/lib/core/service'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
@@ -193,12 +193,14 @@ describe('Integration test: Assessment', () => {
         )
       }
 
-      expect(await getAssessmentsService({userId})).toEqual(expectedAssessments)
+      expect(await getManyAssessmentService({userId})).toEqual(
+        expectedAssessments,
+      )
     })
 
     test('missing userId param should return an empty quizIds error', async () => {
       const param: any = {}
-      expect(async () => await getAssessmentsService(param)).rejects.toThrow(
+      expect(async () => await getManyAssessmentService(param)).rejects.toThrow(
         /^missing userId$/,
       )
     })

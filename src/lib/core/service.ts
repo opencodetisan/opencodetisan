@@ -65,7 +65,7 @@ export const getCandidateActivityLogService = async ({
   return {activityLogCount, activityLogs}
 }
 
-export const getAssessmentsService = async ({userId}: {userId: string}) => {
+export const getManyAssessmentService = async ({userId}: {userId: string}) => {
   if (!userId) {
     throw Error('missing userId')
   }
