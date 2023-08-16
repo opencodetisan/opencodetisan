@@ -14,7 +14,6 @@ export interface ITestCaseClientProps {
 }
 
 export interface ICreateQuizProps {
-  id: string
   title: string
   codeLanguageId: number
   difficultyLevelId: number
