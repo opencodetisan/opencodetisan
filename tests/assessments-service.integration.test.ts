@@ -135,28 +135,39 @@ describe('Integration test: Assessment', () => {
   describe('Integration test: createAssessmentService', () => {
     let assessments: Record<string, any> = {}
 
+    const word = faker.lorem.word()
+    const userId = faker.string.uuid()
+    const assessmentId_1 = faker.string.uuid()
+    const assessmentId_2 = faker.string.uuid()
+    const assessmentIds = [
+      {assessmentId: assessmentId_1},
+      {assessmentId: assessmentId_2},
+    ]
+
     beforeAll(async () => {
-      await prisma.user.create({data: {id: uuid, name: word}})
+      await prisma.user.create({data: {id: userId, name: word}})
       assessments = await prisma.assessment.createMany({
         data: [
-          {id: uuid + 1, title: word, description: word, ownerId: uuid},
-          {id: uuid + 2, title: word, description: word, ownerId: uuid},
+          {id: assessmentId_1, title: word, description: word, ownerId: userId},
+          {id: assessmentId_2, title: word, description: word, ownerId: userId},
         ],
       })
     })
 
     afterAll(async () => {
-      await prisma.assessment.deleteMany()
-      await prisma.user.deleteMany()
+      await prisma.assessment.deleteMany({
+        where: {id: {in: [assessmentId_1, assessmentId_2]}},
+      })
+      await prisma.user.delete({where: {id: userId}})
     })
 
     test('empty quizIds param should return an empty quizIds error', async () => {
       const expectedAssessments: any = []
 
-      for (let i = 1; i <= assessments.count; i++) {
+      for (let i = 0; i < assessments.count; i++) {
         expectedAssessments.push(
           await prisma.assessment.findUnique({
-            where: {id: uuid + i},
+            where: {id: assessmentIds[i].assessmentId},
             select: {
               id: true,
               title: true,
@@ -182,9 +193,7 @@ describe('Integration test: Assessment', () => {
         )
       }
 
-      expect(await getAssessmentsService({userId: uuid})).toEqual(
-        expectedAssessments,
-      )
+      expect(await getAssessmentsService({userId})).toEqual(expectedAssessments)
     })
 
     test('missing userId param should return an empty quizIds error', async () => {
