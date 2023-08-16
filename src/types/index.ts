@@ -165,3 +165,12 @@ export interface IUpdateAssessmentAcceptanceProps {
   assessmentResults: {candidateId: string; quizId: string}[]
   token: string
 }
+
+export interface ICreateQuizServiceProps {
+  quizData: ICreateQuizProps
+  quizSolution: Pick<
+    ICreateQuizSolutionProps,
+    'code' | 'sequence' | 'testRunner' | 'importDirectives'
+  >
+  quizTestCases: ICreateQuizTestCaseProps[]
+}
