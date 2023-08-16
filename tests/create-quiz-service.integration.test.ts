@@ -1,4 +1,4 @@
-import {createQuizService} from '@/lib/core/service'
+import {createQuizService, getQuizService} from '@/lib/core/service'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
 
@@ -71,6 +71,81 @@ describe('Integration test: Quiz ', () => {
         solution: expectedQuizSolution,
         testCases: {count: expectedQuizTestCaseCount},
       })
+    })
+  })
+
+  describe('Integration test: getQuizService', () => {
+    const word = faker.lorem.word()
+    const codeLanguageId = faker.number.int({min: 1, max: 1000})
+    const difficultyLevelId = faker.number.int({min: 1, max: 1000})
+    const userId = faker.string.uuid()
+    const quizId = faker.string.uuid()
+
+    let expectedQuiz: Record<string, any>
+
+    beforeAll(async () => {
+      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.codeLanguage.create({
+        data: {id: codeLanguageId, name: word},
+      })
+      await prisma.difficultyLevel.create({
+        data: {id: difficultyLevelId, name: word},
+      })
+      expectedQuiz = await prisma.quiz.create({
+        data: {
+          id: quizId,
+          title: word,
+          userId,
+          codeLanguageId,
+          difficultyLevelId,
+        },
+        select: {
+          id: true,
+          title: true,
+          instruction: true,
+          submissionCachedCount: true,
+          difficultyLevelId: true,
+          codeLanguageId: true,
+          codeLanguage: {
+            select: {
+              id: true,
+              prettyName: true,
+            },
+          },
+          status: true,
+          locale: true,
+          createdAt: true,
+          updatedAt: true,
+          defaultCode: true,
+          solutions: {
+            select: {
+              id: true,
+              code: true,
+              testCases: {
+                select: {
+                  id: true,
+                  input: true,
+                  output: true,
+                },
+              },
+              importDirectives: true,
+              testRunner: true,
+            },
+          },
+        },
+      })
+    })
+
+    afterAll(async () => {
+      await prisma.quiz.delete({where: {id: quizId}})
+      await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
+      await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
+      await prisma.user.delete({where: {id: userId}})
+    })
+
+    test('it should return quiz', async () => {
+      const param = {quizId}
+      expect(await getQuizService(param)).toEqual(expectedQuiz)
     })
   })
 })
