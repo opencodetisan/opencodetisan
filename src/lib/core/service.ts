@@ -7,7 +7,12 @@ import {
   updateAssessmentAcceptance,
 } from './assessment'
 import {getActivityLogCount, getActivityLogs} from './candidate'
-import {createQuiz, createQuizSolution, createQuizTestCases} from './quiz'
+import {
+  createQuiz,
+  createQuizSolution,
+  createQuizTestCases,
+  getQuiz,
+} from './quiz'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -97,6 +102,11 @@ export const createQuizService = async ({
   }
   const testCases = await createQuizTestCases(testCaseData)
   return {quiz, solution, testCases}
+}
+
+export const getQuizService = async ({quizId}: {quizId: string}) => {
+  const quiz = await getQuiz({quizId})
+  return quiz
 }
 
 export const createAssessmentService = async ({
