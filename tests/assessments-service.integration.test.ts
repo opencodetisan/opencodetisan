@@ -5,42 +5,52 @@ import {
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
 
-const uuid = faker.string.uuid()
-const word = faker.lorem.word()
-
 describe('Integration test: Assessment', () => {
   describe('Integration test: createAssessmentService', () => {
+    const uuid = faker.string.uuid()
+    const word = faker.lorem.word()
+    const userId = faker.string.uuid()
+    const codeLanguageId = faker.number.int(1000)
+    const difficultyLevelId = faker.number.int(1000)
+    const quizId = faker.string.uuid()
+
+    let assessmentId: string
+
     beforeAll(async () => {
-      await prisma.user.create({data: {id: uuid, name: word}})
-      await prisma.codeLanguage.create({data: {id: 1, name: word}})
-      await prisma.difficultyLevel.create({data: {id: 1, name: word}})
+      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
+      await prisma.difficultyLevel.create({
+        data: {id: difficultyLevelId, name: word},
+      })
       await prisma.quiz.create({
         data: {
-          id: uuid,
+          id: quizId,
           title: word,
-          userId: uuid,
-          codeLanguageId: 1,
-          difficultyLevelId: 1,
+          userId,
+          codeLanguageId,
+          difficultyLevelId,
         },
       })
     })
 
     afterAll(async () => {
-      await prisma.assessmentQuiz.deleteMany()
-      await prisma.assessment.deleteMany()
-      await prisma.quiz.deleteMany()
-      await prisma.codeLanguage.deleteMany()
-      await prisma.difficultyLevel.deleteMany()
-      await prisma.user.deleteMany()
+      await prisma.assessmentQuiz.deleteMany({where: {quizId}})
+      await prisma.assessment.delete({where: {id: assessmentId}})
+      await prisma.quiz.delete({where: {id: quizId}})
+      await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
+      await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
+      await prisma.user.delete({where: {id: userId}})
     })
 
     test('it should create a new assessment', async () => {
       const assessment = await createAssessmentService({
-        userId: uuid,
+        userId,
         title: word,
         description: word,
-        quizIds: [uuid],
+        quizIds: [quizId],
       })
+
+      assessmentId = assessment.id
 
       expect(
         await prisma.assessment.findUnique({
