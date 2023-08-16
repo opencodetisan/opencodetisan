@@ -130,6 +130,21 @@ export const updateQuizSolution = async ({
   return updatedSolution
 }
 
+export const getQuizTestCases = async ({solutionId}: {solutionId: string}) => {
+  if (!solutionId) {
+    throw Error('missing solutionId')
+  }
+  const testCases = await prisma.testCase.findMany({
+    where: {
+      solutionId,
+    },
+    orderBy: {
+      sequence: 'asc',
+    },
+  })
+  return testCases
+}
+
 export const updateQuizTestCases = async ({
   existingTests,
   newTests,
