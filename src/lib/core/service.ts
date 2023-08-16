@@ -1,4 +1,4 @@
-import {ICreateAssessmentServiceProps} from '@/types'
+import {ICreateAssessmentServiceProps, ICreateQuizServiceProps} from '@/types'
 import {
   createAssessment,
   getAssessmentIds,
@@ -7,6 +7,7 @@ import {
   updateAssessmentAcceptance,
 } from './assessment'
 import {getActivityLogCount, getActivityLogs} from './candidate'
+import {createQuiz, createQuizSolution, createQuizTestCases} from './quiz'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -70,6 +71,32 @@ export const getAssessmentsService = async ({userId}: {userId: string}) => {
   }
   const assessments = await getAssessments({userId})
   return assessments
+}
+
+export const createQuizService = async ({
+  quizData,
+  quizSolution,
+  quizTestCases,
+}: ICreateQuizServiceProps) => {
+  const quiz = await createQuiz(quizData)
+  const solution = await createQuizSolution({
+    quizId: quiz.id,
+    code: quizSolution.code,
+    sequence: quizSolution.sequence,
+    importDirectives: quizSolution.importDirectives,
+    testRunner: quizSolution.testRunner,
+  })
+  const testCaseData = []
+  for (let i = 0; i < quizTestCases.input.length; i++) {
+    testCaseData.push({
+      solutionId: solution.id,
+      input: quizTestCases.input[i],
+      output: quizTestCases.output[i],
+      sequence: i,
+    })
+  }
+  const testCases = await createQuizTestCases(testCaseData)
+  return {quiz, solution, testCases}
 }
 
 export const createAssessmentService = async ({
