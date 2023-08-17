@@ -71,11 +71,32 @@ describe('Integration test: Quiz ', () => {
     const codeLanguageId = faker.number.int({min: 1, max: 1000})
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
-    const quizId = faker.string.uuid()
 
     let expectedQuiz: Record<string, any>
+    let quizId: string
+    let solutionId: string
 
     beforeAll(async () => {
+      const createQuizParam = {
+        quizData: {
+          title: word,
+          userId,
+          codeLanguageId,
+          difficultyLevelId,
+          instruction: word,
+          answer: word,
+          defaultCode: word,
+          locale: word,
+        },
+        quizSolution: {
+          code: word,
+          sequence: faker.number.int({min: 1, max: 1000}),
+          testRunner: word,
+          importDirectives: word,
+        },
+        quizTestCases: {input: [word, word], output: [word, word]},
+      }
+
       await prisma.user.create({data: {id: userId, name: word}})
       await prisma.codeLanguage.create({
         data: {id: codeLanguageId, name: word},
@@ -83,52 +104,15 @@ describe('Integration test: Quiz ', () => {
       await prisma.difficultyLevel.create({
         data: {id: difficultyLevelId, name: word},
       })
-      expectedQuiz = await prisma.quiz.create({
-        data: {
-          id: quizId,
-          title: word,
-          userId,
-          codeLanguageId,
-          difficultyLevelId,
-        },
-        select: {
-          id: true,
-          title: true,
-          instruction: true,
-          submissionCachedCount: true,
-          difficultyLevelId: true,
-          codeLanguageId: true,
-          codeLanguage: {
-            select: {
-              id: true,
-              prettyName: true,
-            },
-          },
-          status: true,
-          locale: true,
-          createdAt: true,
-          updatedAt: true,
-          defaultCode: true,
-          solutions: {
-            select: {
-              id: true,
-              code: true,
-              testCases: {
-                select: {
-                  id: true,
-                  input: true,
-                  output: true,
-                },
-              },
-              importDirectives: true,
-              testRunner: true,
-            },
-          },
-        },
-      })
+      expectedQuiz = await createQuizService(createQuizParam)
+
+      quizId = expectedQuiz.quizData.id
+      solutionId = expectedQuiz.quizSolution[0].id
     })
 
     afterAll(async () => {
+      await prisma.testCase.deleteMany({where: {solutionId}})
+      await prisma.solution.delete({where: {id: solutionId}})
       await prisma.quiz.delete({where: {id: quizId}})
       await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
       await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
@@ -137,7 +121,8 @@ describe('Integration test: Quiz ', () => {
 
     test('it should return quiz', async () => {
       const param = {quizId}
-      expect(await getQuizService(param)).toEqual(expectedQuiz)
+      const receivedQuiz = await getQuizService(param)
+      expect(receivedQuiz).toEqual(expectedQuiz)
     })
   })
 
