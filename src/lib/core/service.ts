@@ -129,7 +129,7 @@ export const updateQuizService = async ({
     newTests: quizTestCases,
     existingTests,
   })
-  return {quizData: quiz, quizSolution: solution, quizTestCases: testCases}
+  return {quizData: quiz, quizSolution: [solution], quizTestCases: testCases}
 }
 
 export const createAssessmentService = async ({
