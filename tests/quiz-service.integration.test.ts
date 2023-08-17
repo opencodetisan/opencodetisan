@@ -1,5 +1,6 @@
 import {
   createQuizService,
+  deleteQuizService,
   getQuizService,
   updateQuizService,
 } from '@/lib/core/service'
@@ -208,6 +209,64 @@ describe('Integration test: Quiz ', () => {
       const expectedQuiz = await getQuizService({quizId})
 
       expect(updatedQuiz).toEqual(expectedQuiz)
+    })
+  })
+
+  describe('Integration test: deleteQuizService', () => {
+    const word = faker.lorem.word()
+    const codeLanguageId = faker.number.int({min: 1, max: 1000})
+    const difficultyLevelId = faker.number.int({min: 1, max: 1000})
+    const userId = faker.string.uuid()
+
+    let quizId: string
+    let solutionId: string
+
+    beforeAll(async () => {
+      const createQuizParam = {
+        quizData: {
+          title: word,
+          userId,
+          codeLanguageId,
+          difficultyLevelId,
+          instruction: word,
+          answer: word,
+          defaultCode: word,
+          locale: word,
+        },
+        quizSolution: {
+          code: word,
+          sequence: faker.number.int({min: 1, max: 1000}),
+          testRunner: word,
+          importDirectives: word,
+        },
+        quizTestCases: {input: [word, word], output: [word, word]},
+      }
+
+      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.codeLanguage.create({
+        data: {id: codeLanguageId, name: word},
+      })
+      await prisma.difficultyLevel.create({
+        data: {id: difficultyLevelId, name: word},
+      })
+      const createdQuiz = await createQuizService(createQuizParam)
+
+      quizId = createdQuiz.quizData.id
+      solutionId = createdQuiz.quizSolution[0].id
+    })
+
+    afterAll(async () => {
+      await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
+      await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
+      await prisma.user.delete({where: {id: userId}})
+    })
+
+    test('it should update and return quiz', async () => {
+      await deleteQuizService({quizId, solutionId})
+      const receivedQuiz = await getQuizService({quizId})
+      const expectedResult = {quizData: {}, quizSolution: [], quizTestCases: []}
+
+      expect(receivedQuiz).toEqual(expectedResult)
     })
   })
 })
