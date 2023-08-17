@@ -2,6 +2,8 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
+  IQuizDataProps,
+  IQuizProps,
   ITestCaseClientProps,
   ITestCaseProps,
   IUpdateQuizProps,
@@ -269,45 +271,36 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
   if (!quizId) {
     throw Error('missing quizId')
   }
+
+  let output: IQuizProps = {quizData: {}, quizSolution: [], quizTestCases: []}
+
   const quiz = await prisma.quiz.findUnique({
     where: {
       id: quizId,
     },
-    select: {
-      id: true,
-      title: true,
-      instruction: true,
-      submissionCachedCount: true,
-      difficultyLevelId: true,
-      codeLanguageId: true,
-      codeLanguage: {
-        select: {
-          id: true,
-          prettyName: true,
-        },
-      },
-      status: true,
-      locale: true,
-      createdAt: true,
-      updatedAt: true,
-      defaultCode: true,
-      solutions: {
-        select: {
-          id: true,
-          code: true,
-          //entryFunction: true,
-          testCases: {
-            select: {
-              id: true,
-              input: true,
-              output: true,
-            },
-          },
-          importDirectives: true,
-          testRunner: true,
-        },
-      },
-    },
+    include: {codeLanguage: true, solutions: {include: {testCases: true}}},
   })
-  return quiz
+
+  if (!quiz) {
+    return output
+  }
+
+  for (const prop in quiz) {
+    if (prop !== 'solutions') {
+      // @ts-ignore
+      output.quizData[prop] = quiz[prop]
+    }
+  }
+
+  quiz.solutions.forEach((solution) => {
+    for (const prop in solution) {
+      if (prop !== 'testCases') {
+        // @ts-ignore
+        output.quizSolution[prop] = solution[prop]
+      }
+    }
+    solution.testCases.forEach((test) => output.quizTestCases.push(test))
+  })
+
+  return output
 }
