@@ -223,9 +223,3 @@ export interface IUpdateQuizServiceProps {
   quizSolution: IUpdateQuizSolutionProps
   quizTestCases: ITestCaseClientProps
 }
-
-export interface IQuizProps {
-  quizData: IUpdateQuizProps
-  quizSolution: IUpdateQuizSolutionProps
-  quizTestCases: ITestCaseClientProps
-}
