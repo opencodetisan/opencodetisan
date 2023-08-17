@@ -109,7 +109,7 @@ export const createQuizService = async ({
     })
   }
   const testCases = await createQuizTestCases(testCaseData)
-  return {quiz, solution, testCases}
+  return {quizData: quiz, quizSolution: [solution], quizTestCases: testCases}
 }
 
 export const getQuizService = async ({quizId}: {quizId: string}) => {
