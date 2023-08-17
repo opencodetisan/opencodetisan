@@ -287,6 +287,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
 
   for (const prop in quiz) {
     if (prop !== 'solutions') {
+      // TODO
       // @ts-ignore
       output.quizData[prop] = quiz[prop]
     }
@@ -295,6 +296,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
   quiz.solutions.forEach((solution) => {
     for (const prop in solution) {
       if (prop !== 'testCases') {
+        // TODO
         // @ts-ignore
         output.quizSolution[prop] = solution[prop]
       }
