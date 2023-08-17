@@ -1,4 +1,8 @@
-import {createQuizService, getQuizService} from '@/lib/core/service'
+import {
+  createQuizService,
+  getQuizService,
+  updateQuizService,
+} from '@/lib/core/service'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
 
@@ -146,6 +150,89 @@ describe('Integration test: Quiz ', () => {
     test('it should return quiz', async () => {
       const param = {quizId}
       expect(await getQuizService(param)).toEqual(expectedQuiz)
+    })
+  })
+
+  describe('Integration test: updateQuizService', () => {
+    const codeLanguageId = faker.number.int({min: 1, max: 1000})
+    const difficultyLevelId = faker.number.int({min: 1, max: 1000})
+    const userId = faker.string.uuid()
+
+    let solutionId: string
+    let quizId: string
+    let createQuizResult: Record<string, any>
+
+    beforeAll(async () => {
+      const word = faker.lorem.word()
+
+      const param = {
+        quizData: {
+          title: word,
+          userId,
+          codeLanguageId,
+          difficultyLevelId,
+          instruction: word,
+          answer: word,
+          defaultCode: word,
+          locale: word,
+        },
+        quizSolution: {
+          code: word,
+          sequence: faker.number.int({min: 1, max: 10}),
+          testRunner: word,
+          importDirectives: word,
+        },
+        quizTestCases: {input: [word, word], output: [word, word]},
+      }
+
+      await prisma.codeLanguage.create({
+        data: {id: codeLanguageId, name: word},
+      })
+      await prisma.difficultyLevel.create({
+        data: {id: difficultyLevelId, name: word},
+      })
+      await prisma.user.create({data: {id: userId, name: word}})
+      createQuizResult = await createQuizService(param)
+    })
+
+    // afterAll(async () => {
+    //   await prisma.testCase.deleteMany({where: {solutionId: solutionId}})
+    //   await prisma.solution.delete({where: {id: solutionId}})
+    //   await prisma.quiz.delete({where: {id: quizId}})
+    //   await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
+    //   await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
+    //   await prisma.user.delete({where: {id: userId}})
+    // })
+
+    test('it should update existing quiz and return quiz, solution, and testCases objects', async () => {
+      const word = faker.lorem.word()
+
+      const updateQuizParam = {
+        quizData: {
+          title: word,
+          userId,
+          codeLanguageId,
+          difficultyLevelId,
+          instruction: word,
+          answer: word,
+          defaultCode: word,
+          locale: word,
+        },
+        quizSolution: {
+          code: word,
+          sequence: faker.number.int({min: 1, max: 10}),
+          testRunner: word,
+          importDirectives: word,
+        },
+        quizTestCases: {input: [word, word], output: [word, word]},
+      }
+
+      // const updateQuizResult = await updateQuizService(param)
+      // const {quiz, solution, testCases} = updateQuizResult
+      // quizId = quiz.id
+      // solutionId = solution.id
+      //
+      // expect(updateQuizResult).toEqual(createQuizResult)
     })
   })
 })
