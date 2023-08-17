@@ -13,7 +13,8 @@ describe('Integration test: Quiz ', () => {
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
 
-    let quizId: string, solutionId: string
+    let quizId: string
+    let solutionId: string
 
     beforeAll(async () => {
       await prisma.codeLanguage.create({
@@ -48,33 +49,20 @@ describe('Integration test: Quiz ', () => {
         },
         quizSolution: {
           code: word,
-          sequence: 1,
+          sequence: faker.number.int({min: 1, max: 1000}),
           testRunner: word,
           importDirectives: word,
         },
         quizTestCases: {input: [word, word], output: [word, word]},
       }
 
-      const createQuizResult = await createQuizService(param)
-      const {quiz, solution, testCases} = createQuizResult
-      quizId = quiz.id
-      solutionId = solution.id
+      const createdQuiz = await createQuizService(param)
+      const {quizData, quizSolution, quizTestCases} = createdQuiz
+      quizId = quizData.id
+      solutionId = quizSolution[0].id
+      const expectedQuiz = await getQuizService({quizId})
 
-      const expectedQuizData = await prisma.quiz.findUnique({
-        where: {id: quiz.id},
-      })
-      const expectedQuizSolution = await prisma.solution.findUnique({
-        where: {id: solution.id},
-      })
-      const expectedQuizTestCaseCount = await prisma.testCase.count({
-        where: {solutionId: solution.id},
-      })
-
-      expect(createQuizResult).toEqual({
-        quiz: expectedQuizData,
-        solution: expectedQuizSolution,
-        testCases: {count: expectedQuizTestCaseCount},
-      })
+      expect(createdQuiz).toEqual(expectedQuiz)
     })
   })
 
