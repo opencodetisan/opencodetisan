@@ -1,4 +1,8 @@
-import {ICreateAssessmentServiceProps, ICreateQuizServiceProps} from '@/types'
+import {
+  ICreateAssessmentServiceProps,
+  ICreateQuizServiceProps,
+  IUpdateQuizServiceProps,
+} from '@/types'
 import {
   createAssessment,
   getAssessmentIds,
@@ -12,6 +16,10 @@ import {
   createQuizSolution,
   createQuizTestCases,
   getQuiz,
+  getQuizTestCases,
+  updateQuiz,
+  updateQuizSolution,
+  updateQuizTestCases,
 } from './quiz'
 
 export const acceptAssessmentService = async ({
@@ -107,6 +115,21 @@ export const createQuizService = async ({
 export const getQuizService = async ({quizId}: {quizId: string}) => {
   const quiz = await getQuiz({quizId})
   return quiz
+}
+
+export const updateQuizService = async ({
+  quizData,
+  quizSolution,
+  quizTestCases,
+}: IUpdateQuizServiceProps) => {
+  const quiz = await updateQuiz(quizData)
+  const solution = await updateQuizSolution(quizSolution)
+  const existingTests = await getQuizTestCases({solutionId: solution.id})
+  const testCases = await updateQuizTestCases({
+    newTests: quizTestCases,
+    existingTests,
+  })
+  return {quiz, solution, testCases}
 }
 
 export const createAssessmentService = async ({
