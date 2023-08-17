@@ -290,7 +290,10 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
     where: {
       id: quizId,
     },
-    include: {codeLanguage: true, solutions: {include: {testCases: true}}},
+    include: {
+      codeLanguage: true,
+      solutions: {include: {testCases: {orderBy: {sequence: 'asc'}}}},
+    },
   })
 
   if (!quiz) {
@@ -306,13 +309,25 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
   }
 
   quiz.solutions.forEach((solution) => {
+    const quizSolution: IQuizSolutionProps = {
+      quizId: '',
+      id: '',
+      importDirectives: '',
+      code: '',
+      sequence: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      testRunner: '',
+    }
+
     for (const prop in solution) {
       if (prop !== 'testCases') {
         // TODO
         // @ts-ignore
-        output.quizSolution[prop] = solution[prop]
+        quizSolution[prop] = solution[prop]
       }
     }
+    output.quizSolution.push(quizSolution)
     solution.testCases.forEach((test) => output.quizTestCases.push(test))
   })
 
