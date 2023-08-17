@@ -4,6 +4,7 @@ import {
   ICreateQuizTestCaseProps,
   IQuizDataProps,
   IQuizProps,
+  IQuizSolutionProps,
   ITestCaseClientProps,
   ITestCaseProps,
   IUpdateQuizProps,
@@ -60,7 +61,9 @@ export const createQuizTestCases = async (
   if (!testCaseData || testCaseData.length === 0) {
     throw Error('test case not found')
   }
+
   let missingField
+
   const hasAllProps = testCaseData.every((testCase) => {
     return ['solutionId', 'input', 'output', 'sequence'].every((prop) => {
       if (!Object.hasOwn(testCase, prop)) {
@@ -70,10 +73,19 @@ export const createQuizTestCases = async (
       return true
     })
   })
+
   if (!hasAllProps) {
     throw Error(`test case missing ${missingField}`)
   }
-  const testCases = await prisma.testCase.createMany({data: testCaseData})
+
+  const testCasePromises: Promise<any>[] = []
+
+  testCaseData.forEach((test) =>
+    testCasePromises.push(prisma.testCase.create({data: test})),
+  )
+
+  const testCases = Promise.all(testCasePromises)
+
   return testCases
 }
 
