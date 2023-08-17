@@ -133,7 +133,6 @@ describe('Integration test: Quiz ', () => {
 
     let solutionId: string
     let quizId: string
-    let createQuizResult: Record<string, any>
 
     beforeAll(async () => {
       const word = faker.lorem.word()
@@ -165,23 +164,27 @@ describe('Integration test: Quiz ', () => {
         data: {id: difficultyLevelId, name: word},
       })
       await prisma.user.create({data: {id: userId, name: word}})
-      createQuizResult = await createQuizService(param)
+      const createdQuiz = await createQuizService(param)
+
+      quizId = createdQuiz.quizData.id
+      solutionId = createdQuiz.quizSolution[0].id
     })
 
-    // afterAll(async () => {
-    //   await prisma.testCase.deleteMany({where: {solutionId: solutionId}})
-    //   await prisma.solution.delete({where: {id: solutionId}})
-    //   await prisma.quiz.delete({where: {id: quizId}})
-    //   await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
-    //   await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
-    //   await prisma.user.delete({where: {id: userId}})
-    // })
+    afterAll(async () => {
+      await prisma.testCase.deleteMany({where: {solutionId: solutionId}})
+      await prisma.solution.delete({where: {id: solutionId}})
+      await prisma.quiz.delete({where: {id: quizId}})
+      await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
+      await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
+      await prisma.user.delete({where: {id: userId}})
+    })
 
-    test('it should update existing quiz and return quiz, solution, and testCases objects', async () => {
+    test('it should update and return quiz', async () => {
       const word = faker.lorem.word()
 
       const updateQuizParam = {
         quizData: {
+          id: quizId,
           title: word,
           userId,
           codeLanguageId,
@@ -192,6 +195,7 @@ describe('Integration test: Quiz ', () => {
           locale: word,
         },
         quizSolution: {
+          solutionId,
           code: word,
           sequence: faker.number.int({min: 1, max: 10}),
           testRunner: word,
@@ -200,12 +204,10 @@ describe('Integration test: Quiz ', () => {
         quizTestCases: {input: [word, word], output: [word, word]},
       }
 
-      // const updateQuizResult = await updateQuizService(param)
-      // const {quiz, solution, testCases} = updateQuizResult
-      // quizId = quiz.id
-      // solutionId = solution.id
-      //
-      // expect(updateQuizResult).toEqual(createQuizResult)
+      const updatedQuiz = await updateQuizService(updateQuizParam)
+      const expectedQuiz = await getQuizService({quizId})
+
+      expect(updatedQuiz).toEqual(expectedQuiz)
     })
   })
 })
