@@ -1,3 +1,47 @@
+export interface IQuizDataProps {
+  id: string
+  title: string
+  userId: string
+  codeLanguageId: number
+  createdAt: Date
+  updatedAt: Date
+  instruction: string
+  answer: string
+  submissionCachedCount: number
+  defaultCode: string
+  difficultyLevelId: number
+  locale: string
+  status: string
+  codeLanguage: {id: number; name: string; prettyName: string}
+}
+
+export interface IQuizSolutionProps {
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  code: string
+  sequence: number
+  importDirectives: string
+  testRunner: string
+  quizId: string
+}
+
+export interface IQuizTestCaseProps {
+  id: string
+  input: string
+  output: string
+  sequence: number
+  createdAt: Date
+  updatedAt: Date
+  solutionId: string
+}
+
+export interface IQuizProps {
+  quizData: IQuizDataProps | {}
+  quizSolution: IQuizSolutionProps[]
+  quizTestCases: IQuizTestCaseProps[]
+}
+
 export interface ITestCaseProps {
   id: string
   input: string
@@ -175,6 +219,12 @@ export interface ICreateQuizServiceProps {
 }
 
 export interface IUpdateQuizServiceProps {
+  quizData: IUpdateQuizProps
+  quizSolution: IUpdateQuizSolutionProps
+  quizTestCases: ITestCaseClientProps
+}
+
+export interface IQuizProps {
   quizData: IUpdateQuizProps
   quizSolution: IUpdateQuizSolutionProps
   quizTestCases: ITestCaseClientProps
