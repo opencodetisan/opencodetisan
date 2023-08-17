@@ -15,6 +15,9 @@ import {
   createQuiz,
   createQuizSolution,
   createQuizTestCases,
+  deleteQuiz,
+  deleteQuizSolution,
+  deleteQuizTestCases,
   getQuiz,
   getQuizTestCases,
   updateQuiz,
@@ -156,4 +159,16 @@ export const createAssessmentService = async ({
     quizIds,
   })
   return assessment
+}
+
+export const deleteQuizService = async ({
+  quizId,
+  solutionId,
+}: {
+  quizId: string
+  solutionId: string
+}) => {
+  await deleteQuizTestCases({solutionId})
+  await deleteQuizSolution({quizId})
+  await deleteQuiz({quizId})
 }
