@@ -173,3 +173,9 @@ export interface ICreateQuizServiceProps {
   >
   quizTestCases: ITestCaseClientProps
 }
+
+export interface IUpdateQuizServiceProps {
+  quizData: IUpdateQuizProps
+  quizSolution: IUpdateQuizSolutionProps
+  quizTestCases: ITestCaseClientProps
+}
