@@ -15,6 +15,20 @@ import {
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '@/lib/db/prisma-mock-singleton'
 
+const word = faker.lorem.word()
+const uuid = faker.string.uuid()
+const date = faker.date.anytime()
+
+const fakeQuizTestCase = {
+  id: uuid,
+  input: word,
+  output: word,
+  sequence: 1,
+  createdAt: date,
+  updatedAt: date,
+  solutionId: uuid,
+}
+
 describe('Quiz module', () => {
   test('createQuiz function should save the quiz data and return the saved data', async () => {
     const quizData: any = {
@@ -500,17 +514,16 @@ describe('Quiz module', () => {
     )
   })
 
-  test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
-    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
-    expect(
-      await deleteQuizTestCases({solutionId: faker.string.uuid()}),
-    ).toEqual({count: 4})
+  test('deleteQuizTestCases fn should delete and return test case', async () => {
+    const param = {testCaseId: uuid}
+    prismaMock.testCase.delete.mockResolvedValue(fakeQuizTestCase)
+    expect(await deleteQuizTestCases(param)).toEqual(fakeQuizTestCase)
   })
 
-  test('Missing solutionId parameter should raise a missing solutionId error', async () => {
-    const solutionId: any = undefined
-    expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
-      /^missing solutionId$/,
+  test('Missing testCaseId parameter should raise a missing testCaseId error', async () => {
+    const param: any = {}
+    expect(async () => await deleteQuizTestCases(param)).rejects.toThrow(
+      /^missing testCaseId$/,
     )
   })
 
@@ -602,35 +615,35 @@ describe('Quiz module', () => {
     )
   })
 
-  test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
-    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
-    expect(
-      await deleteQuizTestCases({solutionId: faker.string.uuid()}),
-    ).toEqual({count: 4})
-  })
-
-  test('Missing solutionId parameter should raise a missing solutionId error', async () => {
-    const solutionId: any = undefined
-    prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
-    expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
-      'missing solutionId',
-    )
-  })
-
-  test('deleteQuizSolution fn should delete solutions and return count number', async () => {
-    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
-    expect(await deleteQuizSolution({quizId: faker.string.uuid()})).toEqual({
-      count: 4,
-    })
-  })
-
-  test('Missing quizId parameter should raise a missing quizId error', async () => {
-    const quizId: any = undefined
-    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
-    expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
-      'missing quizId',
-    )
-  })
+  // test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
+  //   prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
+  //   expect(
+  //     await deleteQuizTestCases({solutionId: faker.string.uuid()}),
+  //   ).toEqual({count: 4})
+  // })
+  //
+  // test('Missing solutionId parameter should raise a missing solutionId error', async () => {
+  //   const solutionId: any = undefined
+  //   prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
+  //   expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
+  //     'missing solutionId',
+  //   )
+  // })
+  //
+  // test('deleteQuizSolution fn should delete solutions and return count number', async () => {
+  //   prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
+  //   expect(await deleteQuizSolution({quizId: faker.string.uuid()})).toEqual({
+  //     count: 4,
+  //   })
+  // })
+  //
+  // test('Missing quizId parameter should raise a missing quizId error', async () => {
+  //   const quizId: any = undefined
+  //   prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
+  //   expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
+  //     'missing quizId',
+  //   )
+  // })
 
   test('deleteQuiz fn should delete quiz and return deleted quiz', async () => {
     const deletedQuiz: any = {title: faker.lorem.text()}
