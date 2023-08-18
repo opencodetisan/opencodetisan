@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/run-integration.sh
+# scripts/run-integration-test.sh
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
