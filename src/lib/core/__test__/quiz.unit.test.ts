@@ -18,12 +18,13 @@ import {prismaMock} from '@/lib/db/prisma-mock-singleton'
 const word = faker.lorem.word()
 const uuid = faker.string.uuid()
 const date = faker.date.anytime()
+const number = faker.number.int(1000)
 
 const fakeQuizTestCase = {
   id: uuid,
   input: word,
   output: word,
-  sequence: 1,
+  sequence: number,
   createdAt: date,
   updatedAt: date,
   solutionId: uuid,
@@ -34,10 +35,91 @@ const fakeQuizSolution = {
   id: uuid,
   importDirectives: word,
   code: word,
-  sequence: 1,
+  sequence: number,
   createdAt: date,
   updatedAt: date,
   testRunner: word,
+}
+
+const fakeQuiz: any = {
+  id: uuid,
+  title: word,
+  userId: uuid,
+  codeLanguageId: number,
+  createdAt: date,
+  updatedAt: date,
+  instruction: word,
+  answer: word,
+  submissionCachedCount: number,
+  defaultCode: word,
+  difficultyLevelId: number,
+  locale: word,
+  status: word,
+  solutions: [
+    {
+      quizId: uuid,
+      id: uuid,
+      importDirectives: word,
+      code: word,
+      sequence: number,
+      createdAt: date,
+      updatedAt: date,
+      testRunner: word,
+
+      testCases: [
+        {
+          id: uuid,
+          input: word,
+          output: word,
+          sequence: number,
+          createdAt: date,
+          updatedAt: date,
+          solutionId: uuid,
+        },
+      ],
+    },
+  ],
+}
+
+const fakeGetQuizOutput = {
+  quizData: {
+    id: uuid,
+    title: word,
+    userId: uuid,
+    codeLanguageId: number,
+    createdAt: date,
+    updatedAt: date,
+    instruction: word,
+    answer: word,
+    submissionCachedCount: number,
+    defaultCode: word,
+    difficultyLevelId: number,
+    locale: word,
+    status: word,
+  },
+  quizSolution: [
+    {
+      quizId: uuid,
+      id: uuid,
+      importDirectives: word,
+      code: word,
+      sequence: number,
+      createdAt: date,
+      updatedAt: date,
+      testRunner: word,
+    },
+  ],
+  quizTestCases: [
+    {
+      id: uuid,
+      input: word,
+      output: word,
+      sequence: number,
+      createdAt: date,
+      updatedAt: date,
+      solutionId: uuid,
+    },
+  ],
 }
 
 describe('Quiz module', () => {
@@ -717,15 +799,13 @@ describe('Quiz module', () => {
   })
 
   test('getQuiz fn should return quiz', async () => {
-    const quizData: any = {quizId: 1}
-    prismaMock.quiz.findUnique.mockResolvedValue(quizData)
-    expect(await getQuiz(quizData)).toEqual(quizData)
+    const param: any = {quizId: uuid}
+    prismaMock.quiz.findUnique.mockResolvedValue(fakeQuiz)
+    expect(await getQuiz(param)).toEqual(fakeGetQuizOutput)
   })
 
   test('Missing locale parameter should raise a missing locale error', async () => {
-    const quizData: any = {quizId: undefined}
-    expect(async () => await getQuiz(quizData)).rejects.toThrow(
-      'missing quizId',
-    )
+    const param: any = {}
+    expect(async () => await getQuiz(param)).rejects.toThrow(/^missing quizId$/)
   })
 })
