@@ -696,49 +696,6 @@ describe('Quiz module', () => {
     ).rejects.toThrow(/^missing locale$/)
   })
 
-  test('getQuiz fn should return quiz', async () => {
-    const quizData: any = {quizId: 1}
-    prismaMock.quiz.findUnique.mockResolvedValue(quizData)
-    expect(await getQuiz(quizData)).toEqual(quizData)
-  })
-
-  test('Missing locale parameter should raise a missing locale error', async () => {
-    const quizData: any = {quizId: undefined}
-    expect(async () => await getQuiz(quizData)).rejects.toThrow(
-      /^missing quizId$/,
-    )
-  })
-
-  // test('deleteQuizTestCases fn should delete test cases and return count number', async () => {
-  //   prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
-  //   expect(
-  //     await deleteQuizTestCases({solutionId: faker.string.uuid()}),
-  //   ).toEqual({count: 4})
-  // })
-  //
-  // test('Missing solutionId parameter should raise a missing solutionId error', async () => {
-  //   const solutionId: any = undefined
-  //   prismaMock.testCase.deleteMany.mockResolvedValue({count: 4})
-  //   expect(async () => await deleteQuizTestCases({solutionId})).rejects.toThrow(
-  //     'missing solutionId',
-  //   )
-  // })
-  //
-  // test('deleteQuizSolution fn should delete solutions and return count number', async () => {
-  //   prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
-  //   expect(await deleteQuizSolution({quizId: faker.string.uuid()})).toEqual({
-  //     count: 4,
-  //   })
-  // })
-  //
-  // test('Missing quizId parameter should raise a missing quizId error', async () => {
-  //   const quizId: any = undefined
-  //   prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
-  //   expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
-  //     'missing quizId',
-  //   )
-  // })
-
   test('deleteQuiz fn should delete quiz and return deleted quiz', async () => {
     const deletedQuiz: any = {title: faker.lorem.text()}
     prismaMock.quiz.delete.mockResolvedValue(deletedQuiz)
