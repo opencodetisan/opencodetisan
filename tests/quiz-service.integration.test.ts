@@ -262,7 +262,7 @@ describe('Integration test: Quiz ', () => {
     })
 
     test('it should update and return quiz', async () => {
-      await deleteQuizService({quizId, solutionId})
+      await deleteQuizService({quizId})
       const receivedQuiz = await getQuizService({quizId})
       const expectedResult = {quizData: {}, quizSolution: [], quizTestCases: []}
 
