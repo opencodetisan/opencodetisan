@@ -342,7 +342,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
     }
   }
 
-  quiz.solutions.forEach((solution) => {
+  quiz.solutions.forEach((solution: Record<string, any>) => {
     const quizSolution: IQuizSolutionProps = {
       quizId: '',
       id: '',
