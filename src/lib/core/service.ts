@@ -142,17 +142,6 @@ export const createAssessmentService = async ({
   description,
   quizIds,
 }: ICreateAssessmentServiceProps) => {
-  if (!userId) {
-    throw Error('missing userId')
-  } else if (!title) {
-    throw Error('missing title')
-  } else if (!description) {
-    throw Error('missing description')
-  } else if (!quizIds) {
-    throw Error('missing quizIds')
-  } else if (quizIds.length === 0) {
-    throw Error('empty quizIds')
-  }
   const assessment = await createAssessment({
     userId,
     title,
