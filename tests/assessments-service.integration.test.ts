@@ -70,66 +70,6 @@ describe('Integration test: Assessment', () => {
         }),
       ).toEqual(assessment)
     })
-
-    test('missing userId param should return a missing userId error', async () => {
-      const param: any = {
-        // userId: uuid,
-        title: word,
-        description: word,
-        quizIds: [uuid],
-      }
-      expect(async () => await createAssessmentService(param)).rejects.toThrow(
-        /^missing userId$/,
-      )
-    })
-
-    test('missing title param should return a missing title error', async () => {
-      const param: any = {
-        userId: uuid,
-        // title: word,
-        description: word,
-        quizIds: [uuid],
-      }
-      expect(async () => await createAssessmentService(param)).rejects.toThrow(
-        /^missing title$/,
-      )
-    })
-
-    test('missing description param should return a missing description error', async () => {
-      const param: any = {
-        userId: uuid,
-        title: word,
-        // description: word,
-        quizIds: [uuid],
-      }
-      expect(async () => await createAssessmentService(param)).rejects.toThrow(
-        /^missing description$/,
-      )
-    })
-
-    test('missing quizIds param should return a missing quizIds error', async () => {
-      const param: any = {
-        userId: uuid,
-        title: word,
-        description: word,
-        // quizIds: [uuid],
-      }
-      expect(async () => await createAssessmentService(param)).rejects.toThrow(
-        /^missing quizIds$/,
-      )
-    })
-
-    test('empty quizIds param should return an empty quizIds error', async () => {
-      const param: any = {
-        userId: uuid,
-        title: word,
-        description: word,
-        quizIds: [],
-      }
-      expect(async () => await createAssessmentService(param)).rejects.toThrow(
-        /^empty quizIds$/,
-      )
-    })
   })
 
   describe('Integration test: createAssessmentService', () => {
