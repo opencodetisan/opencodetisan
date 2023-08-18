@@ -172,9 +172,24 @@ export const deleteQuizService = async ({quizId}: {quizId: string}) => {
     throw Error('Quiz does not exits')
   }
 
-  const quizTestCase = await deleteQuizTestCases({testCaseId: quiz.testCaseId})
-  const quizSolution = await deleteQuizSolution({solutionId: quiz.solutionId})
+  const testCasePromises: Promise<any>[] = []
+  const solutionPromises: Promise<any>[] = []
+
+  quiz.testCaseId.forEach((id) =>
+    testCasePromises.push(deleteQuizTestCases({testCaseId: id})),
+  )
+  const quizTestCase = await Promise.all(testCasePromises)
+
+  quiz.solutionId.forEach((id) =>
+    solutionPromises.push(deleteQuizSolution({solutionId: id})),
+  )
+  const quizSolution = await Promise.all(solutionPromises)
+
   const quizData = await deleteQuiz({quizId})
 
-  return {quizData, quizSolution, quizTestCase}
+  return {
+    quizData,
+    quizSolution,
+    quizTestCase,
+  }
 }
