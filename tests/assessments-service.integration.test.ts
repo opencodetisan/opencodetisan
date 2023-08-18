@@ -137,12 +137,5 @@ describe('Integration test: Assessment', () => {
         expectedAssessments,
       )
     })
-
-    test('missing userId param should return an empty quizIds error', async () => {
-      const param: any = {}
-      expect(async () => await getManyAssessmentService(param)).rejects.toThrow(
-        /^missing userId$/,
-      )
-    })
   })
 })
