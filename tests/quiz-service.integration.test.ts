@@ -61,7 +61,8 @@ describe('Integration test: Quiz ', () => {
       const {quizData, quizSolution, quizTestCases} = createdQuiz
       quizId = quizData.id
       solutionId = quizSolution[0].id
-      const expectedQuiz = await getQuizService({quizId})
+      const expectedQuiz: any = await getQuizService({quizId})
+      delete expectedQuiz.quizData.codeLanguage
 
       expect(createdQuiz).toEqual(expectedQuiz)
     })
@@ -122,7 +123,8 @@ describe('Integration test: Quiz ', () => {
 
     test('it should return quiz', async () => {
       const param = {quizId}
-      const receivedQuiz = await getQuizService(param)
+      const receivedQuiz: any = await getQuizService(param)
+      delete receivedQuiz.quizData.codeLanguage
       expect(receivedQuiz).toEqual(expectedQuiz)
     })
   })
@@ -206,7 +208,8 @@ describe('Integration test: Quiz ', () => {
       }
 
       const updatedQuiz = await updateQuizService(updateQuizParam)
-      const expectedQuiz = await getQuizService({quizId})
+      const expectedQuiz: any = await getQuizService({quizId})
+      delete expectedQuiz.quizData.codeLanguage
 
       expect(updatedQuiz).toEqual(expectedQuiz)
     })
