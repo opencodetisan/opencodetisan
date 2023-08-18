@@ -210,6 +210,7 @@ describe('Integration test: Quiz ', () => {
       const updatedQuiz = await updateQuizService(updateQuizParam)
       const expectedQuiz: any = await getQuizService({quizId})
       delete expectedQuiz.quizData.codeLanguage
+      console.log(expectedQuiz)
 
       expect(updatedQuiz).toEqual(expectedQuiz)
     })

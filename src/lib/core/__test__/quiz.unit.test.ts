@@ -29,6 +29,17 @@ const fakeQuizTestCase = {
   solutionId: uuid,
 }
 
+const fakeQuizSolution = {
+  quizId: uuid,
+  id: uuid,
+  importDirectives: word,
+  code: word,
+  sequence: 1,
+  createdAt: date,
+  updatedAt: date,
+  testRunner: word,
+}
+
 describe('Quiz module', () => {
   test('createQuiz function should save the quiz data and return the saved data', async () => {
     const quizData: any = {
@@ -527,17 +538,16 @@ describe('Quiz module', () => {
     )
   })
 
-  test('deleteQuizSolution fn should delete solutions and return count number', async () => {
-    prismaMock.solution.deleteMany.mockResolvedValue({count: 4})
-    expect(await deleteQuizSolution({quizId: faker.string.uuid()})).toEqual({
-      count: 4,
-    })
+  test('deleteQuizSolution fn should delete and return solution', async () => {
+    const param = {solutionId: uuid}
+    prismaMock.solution.delete.mockResolvedValue(fakeQuizSolution)
+    expect(await deleteQuizSolution(param)).toEqual(fakeQuizSolution)
   })
 
-  test('Missing quizId parameter should raise a missing quizId error', async () => {
-    const quizId: any = undefined
-    expect(async () => await deleteQuizSolution({quizId})).rejects.toThrow(
-      /^missing quizId$/,
+  test('Missing solutionId parameter should raise a missing solutionId error', async () => {
+    const param: any = {}
+    expect(async () => await deleteQuizSolution(param)).rejects.toThrow(
+      /^missing solutionId$/,
     )
   })
 
