@@ -2,7 +2,10 @@
 # scripts/run-integration.sh
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-source $DIR/setenv.sh
+
+# Export env vars
+export $(grep -v '^#' .env.test | xargs)
+
 docker compose -f ./docker/integration-test-docker.yml up -d
 echo '🟡 - Waiting for database to be ready...'
 $DIR/wait-for-it.sh "${DATABASE_URL}" -- echo '🟢 - Database is ready!'
