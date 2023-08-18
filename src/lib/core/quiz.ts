@@ -228,6 +228,21 @@ export const getSolutionAndTestId = async ({quizId}: {quizId: string}) => {
 }
 
 export const deleteQuizTestCases = async ({
+  testCaseId,
+}: {
+  testCaseId: string[]
+}) => {
+  if (!testCaseId) {
+    throw Error('missing testCaseId')
+  }
+  const promises: Promise<any>[] = []
+  testCaseId.forEach((id) =>
+    promises.push(prisma.testCase.delete({where: {id}})),
+  )
+  return Promise.all(promises)
+}
+
+export const deleteQuizSolution = async ({
   solutionId,
 }: {
   solutionId: string[]
@@ -237,17 +252,9 @@ export const deleteQuizTestCases = async ({
   }
   const promises: Promise<any>[] = []
   solutionId.forEach((id) =>
-    promises.push(prisma.testCase.delete({where: {id}})),
+    promises.push(prisma.solution.delete({where: {id}})),
   )
   return Promise.all(promises)
-}
-
-export const deleteQuizSolution = async ({quizId}: {quizId: string}) => {
-  if (!quizId) {
-    throw Error('missing quizId')
-  }
-  const result = await prisma.solution.deleteMany({where: {quizId}})
-  return result
 }
 
 export const deleteQuiz = async ({quizId}: {quizId: string}) => {
