@@ -216,10 +216,10 @@ export const getSolutionAndTestId = async ({quizId}: {quizId: string}) => {
     return {}
   }
 
-  quiz.solutions.forEach((solution) => {
+  quiz.solutions.forEach((solution: Record<string, any>) => {
     output.solutionId.push(solution.id)
 
-    solution.testCases.forEach((test) => {
+    solution.testCases.forEach((test: Record<string, any>) => {
       output.testCaseId.push(test.id)
     })
   })
