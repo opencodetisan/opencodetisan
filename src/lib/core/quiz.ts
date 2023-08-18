@@ -80,9 +80,9 @@ export const createQuizTestCases = async (
 
   const testCasePromises: Promise<any>[] = []
 
-  testCaseData.forEach((test) =>
-    testCasePromises.push(prisma.testCase.create({data: test})),
-  )
+  testCaseData.forEach((test) => {
+    testCasePromises.push(prisma.testCase.create({data: test}))
+  })
 
   const testCases = Promise.all(testCasePromises)
 
