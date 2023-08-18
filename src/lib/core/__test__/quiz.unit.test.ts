@@ -355,23 +355,25 @@ describe('Quiz module', () => {
   })
 
   test('createQuizTestCases fn should save and return test cases', async () => {
-    const testCaseData: any = [
+    const param: any = [
       {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
+        solutionId: uuid,
+        input: word,
+        output: word,
+        sequence: number,
       },
       {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
+        solutionId: uuid,
+        input: word,
+        output: word,
+        sequence: number,
       },
     ]
-    prismaMock.testCase.createMany.mockResolvedValue(testCaseData)
-    const saveQuizTestCases = await createQuizTestCases(testCaseData)
-    expect(saveQuizTestCases).toEqual(testCaseData)
+    prismaMock.testCase.create.mockResolvedValue(fakeQuizTestCase)
+    const createdQuizTestCase = await createQuizTestCases(param)
+    const expectedTestCase = [fakeQuizTestCase, fakeQuizTestCase]
+
+    expect(createdQuizTestCase).toEqual(expectedTestCase)
   })
 
   test('Missing solutionId should raise a test case missing solutionId error', async () => {
