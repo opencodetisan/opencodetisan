@@ -337,7 +337,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
   })
 
   if (!quiz) {
-    return output
+    return {}
   }
 
   for (const prop in quiz) {
