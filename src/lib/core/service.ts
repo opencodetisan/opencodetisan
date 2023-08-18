@@ -20,6 +20,7 @@ import {
   deleteQuizTestCases,
   getQuiz,
   getQuizTestCases,
+  getSolutionAndTestId,
   updateQuiz,
   updateQuizSolution,
   updateQuizTestCases,
@@ -161,14 +162,19 @@ export const createAssessmentService = async ({
   return assessment
 }
 
-export const deleteQuizService = async ({
-  quizId,
-  solutionId,
-}: {
-  quizId: string
-  solutionId: string
-}) => {
-  await deleteQuizTestCases({solutionId})
-  await deleteQuizSolution({quizId})
-  await deleteQuiz({quizId})
+export const deleteQuizService = async ({quizId}: {quizId: string}) => {
+  const quiz = (await getSolutionAndTestId({quizId})) as {
+    solutionId: string[]
+    testCaseId: string[]
+  }
+
+  if (!Object.keys(quiz).length) {
+    throw Error('Quiz does not exits')
+  }
+
+  const quizTestCase = await deleteQuizTestCases({testCaseId: quiz.testCaseId})
+  const quizSolution = await deleteQuizSolution({solutionId: quiz.solutionId})
+  const quizData = await deleteQuiz({quizId})
+
+  return {quizData, quizSolution, quizTestCase}
 }
