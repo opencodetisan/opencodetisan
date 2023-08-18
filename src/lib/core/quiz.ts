@@ -197,6 +197,36 @@ export const updateQuizTestCases = async ({
   return txn
 }
 
+export const getSolutionAndTestId = async ({quizId}: {quizId: string}) => {
+  if (!quizId) {
+    throw Error('missing quizId')
+  }
+
+  let output: {solutionId: string[]; testCaseId: string[]} = {
+    solutionId: [],
+    testCaseId: [],
+  }
+
+  const quiz = await prisma.quiz.findUnique({
+    where: {id: quizId},
+    select: {solutions: {select: {id: true, testCases: {select: {id: true}}}}},
+  })
+
+  if (!quiz) {
+    return {}
+  }
+
+  quiz.solutions.forEach((solution) => {
+    output.solutionId.push(solution.id)
+
+    solution.testCases.forEach((test) => {
+      output.testCaseId.push(test.id)
+    })
+  })
+
+  return output
+}
+
 export const deleteQuizTestCases = async ({
   solutionId,
 }: {
