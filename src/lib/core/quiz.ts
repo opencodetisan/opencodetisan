@@ -343,7 +343,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
       }
     }
     output.quizSolution.push(quizSolution)
-    solution.testCases.forEach((test: keyof IQuizTestCaseProps) =>
+    solution.testCases.forEach((test: IQuizTestCaseProps) =>
       output.quizTestCase.push(test),
     )
   })
