@@ -77,7 +77,7 @@ describe('Integration test: Quiz ', () => {
       }
 
       const createdQuiz = await createQuizService(param)
-      const {quizData, quizSolution, quizTestCases} = createdQuiz
+      const {quizData, quizSolution, quizTestCase} = createdQuiz
       quizId = quizData.id
       solutionId = quizSolution[0].id
       const expectedQuiz: any = await getQuizService({quizId})
