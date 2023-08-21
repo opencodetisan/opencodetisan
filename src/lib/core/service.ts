@@ -24,7 +24,7 @@ import {
   getSolutionAndTestId,
   updateQuiz,
   updateQuizSolution,
-  updateQuizTestCases,
+  updateQuizTestCase,
 } from './quiz'
 
 export const acceptAssessmentService = async ({
