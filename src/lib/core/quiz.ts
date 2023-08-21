@@ -290,7 +290,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
     throw Error('missing quizId')
   }
 
-  let output: IQuizProps = {quizData: {}, quizSolution: [], quizTestCases: []}
+  let output: IQuizProps = {quizData: {}, quizSolution: [], quizTestCase: []}
 
   const quiz = await prisma.quiz.findUnique({
     where: {
@@ -334,7 +334,9 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
       }
     }
     output.quizSolution.push(quizSolution)
-    solution.testCases.forEach((test) => output.quizTestCases.push(test))
+    solution.testCases.forEach((test: keyof IQuizTestCaseProps) =>
+      output.quizTestCase.push(test),
+    )
   })
 
   return output
