@@ -133,7 +133,7 @@ export const createQuizService = async ({
   return {
     quizData: quiz,
     quizSolution: solutions,
-    quizTestCases: testCases,
+    quizTestCase: testCases,
   }
 }
 
