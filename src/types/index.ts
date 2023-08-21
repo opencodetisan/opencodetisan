@@ -39,7 +39,7 @@ export interface IQuizTestCaseProps {
 export interface IQuizProps {
   quizData: IQuizDataProps | {}
   quizSolution: IQuizSolutionProps[]
-  quizTestCases: IQuizTestCaseProps[]
+  quizTestCase: IQuizTestCaseProps[]
 }
 
 export interface ITestCaseProps {
