@@ -243,7 +243,7 @@ describe('Integration test: Quiz ', () => {
     })
   })
 
-  describe('Integration test: updateQuizService', () => {
+  describe('Integration test: updateQuizDataService', () => {
     const codeLanguageId = faker.number.int({min: 1, max: 1000})
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
@@ -304,7 +304,7 @@ describe('Integration test: Quiz ', () => {
       await prisma.user.delete({where: {id: userId}})
     })
 
-    test('it should update and return quiz', async () => {
+    test('it should update and return quiz data', async () => {
       const word = faker.lorem.word()
 
       const updateQuizParam = {
@@ -319,21 +319,13 @@ describe('Integration test: Quiz ', () => {
           defaultCode: word,
           locale: word,
         },
-        quizSolution: {
-          solutionId,
-          code: word,
-          sequence: faker.number.int({min: 1, max: 10}),
-          testRunner: word,
-          importDirectives: word,
-        },
-        quizTestCases: {input: [word, word], output: [word, word]},
       }
 
-      const updatedQuiz = await updateQuizService(updateQuizParam)
+      const updatedQuiz = await updateQuizDataService(updateQuizParam)
       const expectedQuiz: any = await getQuizService({quizId})
       delete expectedQuiz.quizData.codeLanguage
 
-      expect(updatedQuiz).toEqual(expectedQuiz)
+      expect(updatedQuiz).toEqual(expectedQuiz.quizData)
     })
   })
 
