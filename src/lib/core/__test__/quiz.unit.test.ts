@@ -10,7 +10,7 @@ import {
   getQuizSolutionIds,
   updateQuiz,
   updateQuizSolution,
-  updateQuizTestCases,
+  updateQuizTestCase,
 } from '@/lib/core/quiz'
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '@/lib/db/prisma-mock-singleton'
@@ -481,83 +481,47 @@ describe('Quiz module', () => {
     )
   })
 
-  test('updateQuizTestCases fn should update and return updated quiz test cases', async () => {
-    const testCaseData: any = {
-      existingTests: [faker.lorem.text(), faker.lorem.text()],
-      newTests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
+  test('updateQuizTestCase fn should update and return updated quiz test cases', async () => {
+    const param: any = {
+      testCaseId: uuid,
+      input: word,
+      output: word,
     }
-    prismaMock.testCase.update.mockResolvedValue(testCaseData)
-    prismaMock.$transaction.mockResolvedValue(testCaseData)
-    expect(await updateQuizTestCases(testCaseData)).toEqual(testCaseData)
+    prismaMock.testCase.update.mockResolvedValue(param)
+    prismaMock.$transaction.mockResolvedValue(param)
+    expect(await updateQuizTestCase(param)).toEqual(param)
   })
 
-  test('Missing existingTests parameter should raise a missing existingTests error', async () => {
-    const testCaseData: any = {
-      // existingTests: [faker.lorem.text(), faker.lorem.text()],
-      newTests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
+  test('Missing testCaseId parameter should raise a missing testCaseId error', async () => {
+    const param: any = {
+      // testCaseId: uuid,
+      input: word,
+      output: word,
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      /^missing existingTests$/,
+    expect(async () => await updateQuizTestCase(param)).rejects.toThrow(
+      /^missing testCaseId$/,
     )
   })
 
-  test('Empty existingTests parameter should raise a 0 existingTest found error', async () => {
-    const testCaseData: any = {
-      existingTests: [],
-      newTests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
+  test('Missing input parameter should raise a missing input error', async () => {
+    const param: any = {
+      testCaseId: uuid,
+      // input: word,
+      output: word,
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      /^0 existingTest found$/,
+    expect(async () => await updateQuizTestCase(param)).rejects.toThrow(
+      /^missing input$/,
     )
   })
 
-  test('Missing newTests parameter should raise a missing tests error', async () => {
-    const testCaseData: any = {
-      existingTests: [faker.lorem.text(), faker.lorem.text()],
-      // newTests: {input: [faker.lorem.text], output: [faker.lorem.text()]},
+  test('Missing output parameter should raise a missing output error', async () => {
+    const param: any = {
+      testCaseId: uuid,
+      input: word,
+      // output:word
     }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      /^missing newTests$/,
-    )
-  })
-
-  test('Missing newTests input field should raise a missing tests input field error', async () => {
-    const testCaseData: any = {
-      existingTests: [faker.lorem.text(), faker.lorem.text()],
-      newTests: {output: [faker.lorem.text()]},
-    }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      /^missing newTests input field$/,
-    )
-  })
-
-  test('Empty newTests input field should raise a 0 tests input found error', async () => {
-    const testCaseData: any = {
-      existingTests: [faker.lorem.text(), faker.lorem.text()],
-      newTests: {input: [], output: [faker.lorem.text()]},
-    }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      /^0 newTests input found$/,
-    )
-  })
-
-  test('Missing newTests output field should raise a missing tests output field error', async () => {
-    const testCaseData: any = {
-      existingTests: [faker.lorem.text(), faker.lorem.text()],
-      newTests: {input: [faker.lorem.text]},
-    }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      /^missing newTests output field$/,
-    )
-  })
-
-  test('Empty newTests output field should raise a 0 tests output found error', async () => {
-    const testCaseData: any = {
-      existingTests: [faker.lorem.text(), faker.lorem.text()],
-      newTests: {input: [faker.lorem.text()], output: []},
-    }
-    expect(async () => await updateQuizTestCases(testCaseData)).rejects.toThrow(
-      /^0 newTests output found$/,
+    expect(async () => await updateQuizTestCase(param)).rejects.toThrow(
+      /^missing output$/,
     )
   })
 
