@@ -108,13 +108,21 @@ describe('Integration test: Quiz ', () => {
           defaultCode: word,
           locale: word,
         },
-        quizSolution: {
-          code: word,
-          sequence: faker.number.int({min: 1, max: 1000}),
-          testRunner: word,
-          importDirectives: word,
-        },
-        quizTestCases: {input: [word, word], output: [word, word]},
+        quizSolution: [
+          {
+            code: word,
+            sequence: faker.number.int({min: 1, max: 1000}),
+            testRunner: word,
+            importDirectives: word,
+          },
+        ],
+        quizTestCases: [
+          [
+            {input: word, output: word},
+            {input: word, output: word},
+            {input: word, output: word},
+          ],
+        ],
       }
 
       await prisma.user.create({data: {id: userId, name: word}})
@@ -169,13 +177,21 @@ describe('Integration test: Quiz ', () => {
           defaultCode: word,
           locale: word,
         },
-        quizSolution: {
-          code: word,
-          sequence: faker.number.int({min: 1, max: 10}),
-          testRunner: word,
-          importDirectives: word,
-        },
-        quizTestCases: {input: [word, word], output: [word, word]},
+        quizSolution: [
+          {
+            code: word,
+            sequence: faker.number.int({min: 1, max: 1000}),
+            testRunner: word,
+            importDirectives: word,
+          },
+        ],
+        quizTestCases: [
+          [
+            {input: word, output: word},
+            {input: word, output: word},
+            {input: word, output: word},
+          ],
+        ],
       }
 
       await prisma.codeLanguage.create({
@@ -254,13 +270,21 @@ describe('Integration test: Quiz ', () => {
           defaultCode: word,
           locale: word,
         },
-        quizSolution: {
-          code: word,
-          sequence: faker.number.int({min: 1, max: 1000}),
-          testRunner: word,
-          importDirectives: word,
-        },
-        quizTestCases: {input: [word, word], output: [word, word]},
+        quizSolution: [
+          {
+            code: word,
+            sequence: faker.number.int({min: 1, max: 1000}),
+            testRunner: word,
+            importDirectives: word,
+          },
+        ],
+        quizTestCases: [
+          [
+            {input: word, output: word},
+            {input: word, output: word},
+            {input: word, output: word},
+          ],
+        ],
       }
 
       await prisma.user.create({data: {id: userId, name: word}})
