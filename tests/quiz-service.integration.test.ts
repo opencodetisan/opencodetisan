@@ -15,8 +15,7 @@ describe('Integration test: Quiz ', () => {
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
 
-    let quizId: string
-    let solutionId: string
+    let createdQuiz: any
 
     beforeAll(async () => {
       await prisma.codeLanguage.create({
@@ -29,9 +28,9 @@ describe('Integration test: Quiz ', () => {
     })
 
     afterAll(async () => {
-      await prisma.testCase.deleteMany({where: {solutionId: solutionId}})
-      await prisma.solution.delete({where: {id: solutionId}})
-      await prisma.quiz.delete({where: {id: quizId}})
+      const {quizData, quizSolution, quizTestCase} = createdQuiz
+
+      await deleteQuizService({quizId: quizData.id})
       await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
       await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
       await prisma.user.delete({where: {id: userId}})
@@ -76,10 +75,8 @@ describe('Integration test: Quiz ', () => {
         ],
       }
 
-      const createdQuiz = await createQuizService(param)
-      const {quizData, quizSolution, quizTestCase} = createdQuiz
-      quizId = quizData.id
-      solutionId = quizSolution[0].id
+      createdQuiz = await createQuizService(param)
+      const quizId = createdQuiz.quizData.id
       const expectedQuiz: any = await getQuizService({quizId})
       delete expectedQuiz.quizData.codeLanguage
 
