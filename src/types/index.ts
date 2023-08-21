@@ -178,9 +178,10 @@ export interface IGetAssessmentQuizPointProps {
   assessmentPoints: IAssessmentPointsProps
 }
 
-export interface IUpdateQuizTestCasesProps {
-  existingTests: ITestCaseProps[]
-  newTests: ITestCaseClientProps
+export interface IUpdateQuizTestCaseProps {
+  testCaseId: string
+  input: string
+  output: string
 }
 
 export interface ICreateCandidateQuizSubmissionProps {
