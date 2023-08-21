@@ -43,7 +43,7 @@ export const createQuizSolution = async (
     throw Error('missing quizId')
   } else if (!solutionData.code) {
     throw Error('missing code')
-  } else if (!solutionData.sequence) {
+  } else if (typeof solutionData.sequence !== 'number') {
     throw Error('missing sequence')
   } else if (!solutionData.importDirectives) {
     throw Error('missing importDirectives')
