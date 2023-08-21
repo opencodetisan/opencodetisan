@@ -221,3 +221,8 @@ export interface ICreateQuizServiceProps {
 export interface IUpdateQuizDataServiceProps {
   quizData: IUpdateQuizProps
 }
+
+export interface IUpdateQuizSolutionServiceProps {
+  quizSolution: IUpdateQuizSolutionProps
+  quizTestCase: ITestCaseClientProps
+}
