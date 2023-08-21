@@ -48,13 +48,31 @@ describe('Integration test: Quiz ', () => {
           defaultCode: word,
           locale: word,
         },
-        quizSolution: {
-          code: word,
-          sequence: faker.number.int({min: 1, max: 1000}),
-          testRunner: word,
-          importDirectives: word,
-        },
-        quizTestCases: {input: [word, word], output: [word, word]},
+        quizSolution: [
+          {
+            code: word,
+            sequence: faker.number.int({min: 1, max: 1000}),
+            testRunner: word,
+            importDirectives: word,
+          },
+          {
+            code: word,
+            sequence: faker.number.int({min: 1, max: 1000}),
+            testRunner: word,
+            importDirectives: word,
+          },
+        ],
+        quizTestCases: [
+          [
+            {input: word, output: word},
+            {input: word, output: word},
+            {input: word, output: word},
+          ],
+          [
+            {input: word, output: word},
+            {input: word, output: word},
+          ],
+        ],
       }
 
       const createdQuiz = await createQuizService(param)
