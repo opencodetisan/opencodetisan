@@ -53,8 +53,8 @@ export interface ITestCaseProps {
 }
 
 export interface ITestCaseClientProps {
-  input: string[]
-  output: string[]
+  input: string
+  output: string
 }
 
 export interface ICreateQuizProps {
@@ -214,8 +214,8 @@ export interface ICreateQuizServiceProps {
   quizSolution: Pick<
     ICreateQuizSolutionProps,
     'code' | 'sequence' | 'testRunner' | 'importDirectives'
-  >
-  quizTestCases: ITestCaseClientProps
+  >[]
+  quizTestCases: ITestCaseClientProps[][]
 }
 
 export interface IUpdateQuizServiceProps {
