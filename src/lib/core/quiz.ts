@@ -56,7 +56,7 @@ export const createQuizSolution = async (
   return solution
 }
 
-export const createQuizTestCases = async (
+export const createQuizTestCase = async (
   testCase: ICreateQuizTestCaseProps,
 ) => {
   if (!testCase.solutionId) {
@@ -65,7 +65,7 @@ export const createQuizTestCases = async (
     throw Error('missing input')
   } else if (!testCase.output) {
     throw Error('missing output')
-  } else if (!testCase.sequence) {
+  } else if (typeof testCase.sequence !== 'number') {
     throw Error('missing sequence')
   }
 
