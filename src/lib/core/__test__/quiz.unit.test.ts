@@ -1,7 +1,7 @@
 import {
   createQuiz,
   createQuizSolution,
-  createQuizTestCases,
+  createQuizTestCase,
   deleteQuiz,
   deleteQuizSolution,
   deleteQuizTestCases,
@@ -354,111 +354,63 @@ describe('Quiz module', () => {
     )
   })
 
-  test('createQuizTestCases fn should save and return test cases', async () => {
-    const param: any = [
-      {
-        solutionId: uuid,
-        input: word,
-        output: word,
-        sequence: number,
-      },
-      {
-        solutionId: uuid,
-        input: word,
-        output: word,
-        sequence: number,
-      },
-    ]
+  test('createQuizTestCase fn should save and return test cases', async () => {
+    const param: any = {
+      solutionId: uuid,
+      input: word,
+      output: word,
+      sequence: number,
+    }
     prismaMock.testCase.create.mockResolvedValue(fakeQuizTestCase)
-    const createdQuizTestCase = await createQuizTestCases(param)
-    const expectedTestCase = [fakeQuizTestCase, fakeQuizTestCase]
+    const createdQuizTestCase = await createQuizTestCase(param)
 
-    expect(createdQuizTestCase).toEqual(expectedTestCase)
+    expect(createdQuizTestCase).toEqual(fakeQuizTestCase)
   })
 
-  test('Missing solutionId should raise a test case missing solutionId error', async () => {
-    const testCaseData: any = [
-      {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
-      },
-      {
-        // solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
-      },
-    ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      /^test case missing solutionId$/,
+  test('Missing solutionId should raise a missing solutionId error', async () => {
+    const param: any = {
+      // solutionId: faker.string.uuid(),
+      input: faker.lorem.text(),
+      output: faker.lorem.text(),
+      sequence: 1,
+    }
+    expect(async () => await createQuizTestCase(param)).rejects.toThrow(
+      /^missing solutionId$/,
     )
   })
 
-  test('Missing input should raise a test case missing input error', async () => {
-    const testCaseData: any = [
-      {
-        solutionId: faker.string.uuid(),
-        // input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
-      },
-      {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
-      },
-    ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      /^test case missing input$/,
+  test('Missing input should raise a missing input error', async () => {
+    const param: any = {
+      solutionId: faker.string.uuid(),
+      // input: faker.lorem.text(),
+      output: faker.lorem.text(),
+      sequence: 1,
+    }
+    expect(async () => await createQuizTestCase(param)).rejects.toThrow(
+      /^missing input$/,
     )
   })
 
-  test('Missing output should raise a test case missing output error', async () => {
-    const testCaseData: any = [
-      {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        // output: faker.lorem.text(),
-        sequence: 1,
-      },
-      {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        // output: faker.lorem.text(),
-        sequence: 1,
-      },
-    ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      /^test case missing output$/,
+  test('Missing output should raise a missing output error', async () => {
+    const param: any = {
+      solutionId: faker.string.uuid(),
+      input: faker.lorem.text(),
+      // output: faker.lorem.text(),
+      sequence: 1,
+    }
+    expect(async () => await createQuizTestCase(param)).rejects.toThrow(
+      /^missing output$/,
     )
   })
-  test('Missing sequence should raise a test case missing sequence error', async () => {
-    const testCaseData: any = [
-      {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        sequence: 1,
-      },
-      {
-        solutionId: faker.string.uuid(),
-        input: faker.lorem.text(),
-        output: faker.lorem.text(),
-        // sequence: 1,
-      },
-    ]
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      /^test case missing sequence$/,
-    )
-  })
-
-  test('Undefined testCaseData should raise a test case not found error', async () => {
-    const testCaseData: any = undefined
-    expect(async () => await createQuizTestCases(testCaseData)).rejects.toThrow(
-      /^test case not found$/,
+  test('Missing sequence should raise a missing sequence error', async () => {
+    const param: any = {
+      solutionId: faker.string.uuid(),
+      input: faker.lorem.text(),
+      output: faker.lorem.text(),
+      // sequence: 1,
+    }
+    expect(async () => await createQuizTestCase(param)).rejects.toThrow(
+      /^missing sequence$/,
     )
   })
 
