@@ -101,12 +101,12 @@ export const createQuizService = async ({
   const solutionPromises: Promise<any>[] = []
   const testCasePromises: Promise<any>[] = []
 
-  quizSolution.forEach((solution) => {
+  quizSolution.forEach((solution, i) => {
     solutionPromises.push(
       createQuizSolution({
         quizId: quiz.id,
         code: solution.code,
-        sequence: solution.sequence,
+        sequence: i,
         importDirectives: solution.importDirectives,
         testRunner: solution.testRunner,
       }),
