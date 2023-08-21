@@ -14,7 +14,7 @@ import {getActivityLogCount, getActivityLogs} from './candidate'
 import {
   createQuiz,
   createQuizSolution,
-  createQuizTestCases,
+  createQuizTestCase,
   deleteQuiz,
   deleteQuizSolution,
   deleteQuizTestCases,
@@ -96,24 +96,44 @@ export const createQuizService = async ({
   quizTestCases,
 }: ICreateQuizServiceProps) => {
   const quiz = await createQuiz(quizData)
-  const solution = await createQuizSolution({
-    quizId: quiz.id,
-    code: quizSolution.code,
-    sequence: quizSolution.sequence,
-    importDirectives: quizSolution.importDirectives,
-    testRunner: quizSolution.testRunner,
+
+  const solutionPromises: Promise<any>[] = []
+  const testCasePromises: Promise<any>[] = []
+
+  quizSolution.forEach((solution) => {
+    solutionPromises.push(
+      createQuizSolution({
+        quizId: quiz.id,
+        code: solution.code,
+        sequence: solution.sequence,
+        importDirectives: solution.importDirectives,
+        testRunner: solution.testRunner,
+      }),
+    )
   })
-  const testCaseData = []
-  for (let i = 0; i < quizTestCases.input.length; i++) {
-    testCaseData.push({
-      solutionId: solution.id,
-      input: quizTestCases.input[i],
-      output: quizTestCases.output[i],
-      sequence: i,
+
+  const solutions = await Promise.all(solutionPromises)
+
+  solutions.forEach((solution, solutionIndex) => {
+    quizTestCases[solutionIndex].forEach((test, testIndex) => {
+      testCasePromises.push(
+        createQuizTestCase({
+          solutionId: solution.id,
+          input: test.input,
+          output: test.output,
+          sequence: testIndex,
+        }),
+      )
     })
+  })
+
+  const testCases = await Promise.all(testCasePromises)
+
+  return {
+    quizData: quiz,
+    quizSolution: solutions,
+    quizTestCases: testCases,
   }
-  const testCases = await createQuizTestCases(testCaseData)
-  return {quizData: quiz, quizSolution: [solution], quizTestCases: testCases}
 }
 
 export const getQuizService = async ({quizId}: {quizId: string}) => {
