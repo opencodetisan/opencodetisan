@@ -5,6 +5,7 @@ import {
   IQuizDataProps,
   IQuizProps,
   IQuizSolutionProps,
+  IQuizTestCaseProps,
   ITestCaseClientProps,
   ITestCaseProps,
   IUpdateQuizProps,
@@ -56,37 +57,21 @@ export const createQuizSolution = async (
 }
 
 export const createQuizTestCases = async (
-  testCaseData: ICreateQuizTestCaseProps[],
+  testCase: ICreateQuizTestCaseProps,
 ) => {
-  if (!testCaseData || testCaseData.length === 0) {
-    throw Error('test case not found')
+  if (!testCase.solutionId) {
+    throw Error('missing solutionId')
+  } else if (!testCase.input) {
+    throw Error('missing input')
+  } else if (!testCase.output) {
+    throw Error('missing output')
+  } else if (!testCase.sequence) {
+    throw Error('missing sequence')
   }
 
-  let missingField
+  const result = await prisma.testCase.create({data: testCase})
 
-  const hasAllProps = testCaseData.every((testCase) => {
-    return ['solutionId', 'input', 'output', 'sequence'].every((prop) => {
-      if (!Object.hasOwn(testCase, prop)) {
-        missingField = prop
-        return false
-      }
-      return true
-    })
-  })
-
-  if (!hasAllProps) {
-    throw Error(`test case missing ${missingField}`)
-  }
-
-  const testCasePromises: Promise<any>[] = []
-
-  testCaseData.forEach((test) => {
-    testCasePromises.push(prisma.testCase.create({data: test}))
-  })
-
-  const testCases = Promise.all(testCasePromises)
-
-  return testCases
+  return result
 }
 
 export const updateQuiz = async ({
