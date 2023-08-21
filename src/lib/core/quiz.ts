@@ -10,7 +10,7 @@ import {
   ITestCaseProps,
   IUpdateQuizProps,
   IUpdateQuizSolutionProps,
-  IUpdateQuizTestCasesProps,
+  IUpdateQuizTestCaseProps,
 } from '@/types/index'
 import prisma from '@/lib/db/client'
 
@@ -144,42 +144,29 @@ export const getQuizTestCases = async ({solutionId}: {solutionId: string}) => {
   return testCases
 }
 
-export const updateQuizTestCases = async ({
-  existingTests,
-  newTests,
-}: IUpdateQuizTestCasesProps) => {
-  if (!existingTests) {
-    throw Error('missing existingTests')
-  } else if (existingTests.length === 0) {
-    throw Error('0 existingTest found')
-  } else if (!newTests) {
-    throw Error('missing newTests')
-  } else if (!newTests.input) {
-    throw Error('missing newTests input field')
-  } else if (newTests.input.length === 0) {
-    throw Error('0 newTests input found')
-  } else if (!newTests.output) {
-    throw Error('missing newTests output field')
-  } else if (newTests.output.length === 0) {
-    throw Error('0 newTests output found')
+export const updateQuizTestCase = async ({
+  testCaseId,
+  input,
+  output,
+}: IUpdateQuizTestCaseProps) => {
+  if (!testCaseId) {
+    throw Error('missing testCaseId')
+  } else if (!input) {
+    throw Error('missing input')
+  } else if (!output) {
+    throw Error('missing output')
   }
+  const testCase = await prisma.testCase.update({
+    where: {
+      id: testCaseId,
+    },
+    data: {
+      input: input,
+      output: output,
+    },
+  })
 
-  let i = -1
-  const txn = await prisma.$transaction(
-    existingTests.map((test: any) => {
-      i++
-      return prisma.testCase.update({
-        where: {
-          id: test.id,
-        },
-        data: {
-          input: newTests.input[i],
-          output: newTests.output[i],
-        },
-      })
-    }),
-  )
-  return txn
+  return testCase
 }
 
 export const getSolutionAndTestId = async ({quizId}: {quizId: string}) => {
