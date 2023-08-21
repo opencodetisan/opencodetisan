@@ -51,13 +51,13 @@ describe('Integration test: Quiz ', () => {
         quizSolution: [
           {
             code: word,
-            sequence: faker.number.int({min: 1, max: 1000}),
+            sequence: 0,
             testRunner: word,
             importDirectives: word,
           },
           {
             code: word,
-            sequence: faker.number.int({min: 1, max: 1000}),
+            sequence: 1,
             testRunner: word,
             importDirectives: word,
           },
