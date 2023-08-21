@@ -109,7 +109,7 @@ const fakeGetQuizOutput = {
       testRunner: word,
     },
   ],
-  quizTestCases: [
+  quizTestCase: [
     {
       id: uuid,
       input: word,
