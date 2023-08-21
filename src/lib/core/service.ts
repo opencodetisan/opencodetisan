@@ -2,6 +2,7 @@ import {
   ICreateAssessmentServiceProps,
   ICreateQuizServiceProps,
   IUpdateQuizDataServiceProps,
+  IUpdateQuizSolutionServiceProps,
 } from '@/types'
 import {
   createAssessment,
@@ -146,6 +147,42 @@ export const updateQuizDataService = async ({
 }: IUpdateQuizDataServiceProps) => {
   const quiz = await updateQuiz(quizData)
   return quiz
+}
+
+export const updateQuizSolutionService = async ({
+  quizSolution,
+  quizTestCase,
+}: IUpdateQuizSolutionServiceProps) => {
+  const solutionPromises: Promise<any>[] = []
+  const testCasePromises: Promise<any>[] = []
+
+  quizSolution.forEach((solution) => {
+    solutionPromises.push(
+      updateQuizSolution({
+        solutionId: solution.solutionId,
+        code: solution.code,
+        importDirectives: solution.importDirectives,
+        testRunner: solution.testRunner,
+        defaultCode: solution.defaultCode,
+      }),
+    )
+  })
+
+  const solutions = await Promise.all(solutionPromises)
+
+  quizTestCase.forEach((test) => {
+    testCasePromises.push(
+      updateQuizTestCase({
+        testCaseId: test.testCaseId,
+        input: test.input,
+        output: test.output,
+      }),
+    )
+  })
+
+  const testCases = await Promise.all(testCasePromises)
+
+  return {quizSolution: solutions, quizTestCase: testCases}
 }
 
 export const createAssessmentService = async ({
