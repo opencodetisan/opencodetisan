@@ -298,7 +298,16 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
     },
     include: {
       codeLanguage: true,
-      solutions: {include: {testCases: {orderBy: {sequence: 'asc'}}}},
+      solutions: {
+        orderBy: {sequence: 'asc'},
+        include: {
+          testCases: {
+            orderBy: {
+              sequence: 'asc',
+            },
+          },
+        },
+      },
     },
   })
 
