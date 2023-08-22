@@ -34,18 +34,6 @@ export const createAssessment = async ({
         create: quizIds.map((q) => ({quizId: q})),
       },
     },
-    include: {
-      assessmentCandidateEmail: true,
-      owner: {
-        select: {
-          adminContact: {
-            select: {
-              companyName: true,
-            },
-          },
-        },
-      },
-    },
   })
   return assessment
 }
