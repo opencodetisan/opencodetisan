@@ -315,7 +315,36 @@ export const getAssessment = async ({
       ...selections,
     },
   })
-  return assessment
+
+  const data: Record<string, string | Date | number> = {}
+  const candidates: Record<string, any>[] = []
+  const submissions: Record<string, any>[] = []
+
+  for (let key in assessment) {
+    if (typeof assessment[key] !== 'object') {
+      data[key] = assessment[key]
+    }
+  }
+
+  assessment?.assessmentCandidates.forEach((c) => {
+    const candidateData = {}
+    const submissionData = {name: '', data: []}
+    const candidate = c.candidate
+
+    for (let key in candidate) {
+      if (typeof candidate[key] === 'string') {
+        candidateData[key] = candidate[key]
+      }
+    }
+
+    submissionData.name = candidate.name
+    submissionData.data = candidate.assessmentResults
+
+    candidates.push(candidateData)
+    submissions.push(submissionData)
+  })
+
+  return {data, candidates, submissions}
 }
 
 export const getAssessmentCompletedQuiz = async ({
