@@ -72,7 +72,7 @@ describe('Integration test: Assessment', () => {
     })
   })
 
-  describe('Integration test: createAssessmentService', () => {
+  describe('Integration test: createManyAssessmentService', () => {
     let assessments: Record<string, any> = {}
 
     const word = faker.lorem.word()
@@ -101,7 +101,7 @@ describe('Integration test: Assessment', () => {
       await prisma.user.delete({where: {id: userId}})
     })
 
-    test('empty quizIds param should return an empty quizIds error', async () => {
+    test('it should return many assessments', async () => {
       const expectedAssessments: any = []
 
       for (let i = 0; i < assessments.count; i++) {
