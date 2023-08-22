@@ -1,3 +1,4 @@
+import {getAssessment} from '@/lib/core/assessment'
 import {
   createAssessmentService,
   getManyAssessmentService,
@@ -13,62 +14,61 @@ describe('Integration test: Assessment', () => {
     const codeLanguageId = faker.number.int(1000)
     const difficultyLevelId = faker.number.int(1000)
     const quizId = faker.string.uuid()
+    let quizzes: any[]
 
     let assessmentId: string
 
     beforeAll(async () => {
+      const createQuizPromises: Promise<any>[] = []
+
       await prisma.user.create({data: {id: userId, name: word}})
       await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
       await prisma.difficultyLevel.create({
         data: {id: difficultyLevelId, name: word},
       })
-      await prisma.quiz.create({
-        data: {
-          id: quizId,
-          title: word,
-          userId,
-          codeLanguageId,
-          difficultyLevelId,
-        },
+      Array(2).forEach(() => {
+        createQuizPromises.push(
+          prisma.quiz.create({
+            data: {
+              id: quizId,
+              title: word,
+              userId,
+              codeLanguageId,
+              difficultyLevelId,
+            },
+          }),
+        )
       })
+      quizzes = await Promise.all(createQuizPromises)
     })
 
     afterAll(async () => {
+      const deleteQuizPromises: Promise<any>[] = []
+
       await prisma.assessmentQuiz.deleteMany({where: {quizId}})
       await prisma.assessment.delete({where: {id: assessmentId}})
-      await prisma.quiz.delete({where: {id: quizId}})
+      quizzes.forEach((q) => {
+        deleteQuizPromises.push(prisma.quiz.delete({where: {id: q.id}}))
+      })
+      await Promise.all(deleteQuizPromises)
       await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
       await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
       await prisma.user.delete({where: {id: userId}})
     })
 
     test('it should create a new assessment', async () => {
+      const quizIds = quizzes.map((q) => q.id)
       const assessment = await createAssessmentService({
         userId,
         title: word,
         description: word,
-        quizIds: [quizId],
+        quizIds,
       })
 
       assessmentId = assessment.id
+      const expectedAssessment = await getAssessment({assessmentId})
 
-      expect(
-        await prisma.assessment.findUnique({
-          where: {id: assessment.id},
-          include: {
-            assessmentCandidateEmail: true,
-            owner: {
-              select: {
-                adminContact: {
-                  select: {
-                    companyName: true,
-                  },
-                },
-              },
-            },
-          },
-        }),
-      ).toEqual(assessment)
+      expect(assessment).toEqual(expectedAssessment.data)
     })
   })
 
