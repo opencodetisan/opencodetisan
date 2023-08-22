@@ -311,7 +311,7 @@ export const getAssessment = async ({
   const submissions: Record<string, any>[] = []
 
   for (let key in assessment) {
-    if (typeof assessment[key] !== 'object') {
+    if (typeof assessment[key] === 'string' || key === 'createdAt') {
       data[key] = assessment[key]
     }
   }
