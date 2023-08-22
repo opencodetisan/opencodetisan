@@ -297,6 +297,8 @@ export const getAssessment = async ({
       id: assessmentId,
     },
     select: {
+      id: true,
+      ownerId: true,
       title: true,
       description: true,
       createdAt: true,
