@@ -1,9 +1,31 @@
 import {
+  ICreateAssessmentServiceProps,
+  ICreateQuizServiceProps,
+  IUpdateQuizDataServiceProps,
+  IUpdateQuizSolutionServiceProps,
+} from '@/types'
+import {
+  createAssessment,
   getAssessmentIds,
   getAssessmentQuizzes,
+  getAssessments,
   updateAssessmentAcceptance,
 } from './assessment'
 import {getActivityLogCount, getActivityLogs} from './candidate'
+import {
+  createQuiz,
+  createQuizSolution,
+  createQuizTestCase,
+  deleteQuiz,
+  deleteQuizSolution,
+  deleteQuizTestCases,
+  getQuiz,
+  getQuizTestCases,
+  getSolutionAndTestId,
+  updateQuiz,
+  updateQuizSolution,
+  updateQuizTestCase,
+} from './quiz'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -59,4 +81,153 @@ export const getCandidateActivityLogService = async ({
     skip: index,
   })
   return {activityLogCount, activityLogs}
+}
+
+export const getManyAssessmentService = async ({userId}: {userId: string}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  }
+  const assessments = await getAssessments({userId})
+  return assessments
+}
+
+export const createQuizService = async ({
+  quizData,
+  quizSolution,
+  quizTestCases,
+}: ICreateQuizServiceProps) => {
+  const quiz = await createQuiz(quizData)
+
+  const solutionPromises: Promise<any>[] = []
+  const testCasePromises: Promise<any>[] = []
+
+  quizSolution.forEach((solution, i) => {
+    solutionPromises.push(
+      createQuizSolution({
+        quizId: quiz.id,
+        code: solution.code,
+        sequence: i,
+        importDirectives: solution.importDirectives,
+        testRunner: solution.testRunner,
+      }),
+    )
+  })
+
+  const solutions = await Promise.all(solutionPromises)
+
+  solutions.forEach((solution, solutionIndex) => {
+    quizTestCases[solutionIndex].forEach((test, testIndex) => {
+      testCasePromises.push(
+        createQuizTestCase({
+          solutionId: solution.id,
+          input: test.input,
+          output: test.output,
+          sequence: testIndex,
+        }),
+      )
+    })
+  })
+
+  const testCases = await Promise.all(testCasePromises)
+
+  return {
+    quizData: quiz,
+    quizSolution: solutions,
+    quizTestCase: testCases,
+  }
+}
+
+export const getQuizService = async ({quizId}: {quizId: string}) => {
+  const quiz = await getQuiz({quizId})
+  return quiz
+}
+
+export const updateQuizDataService = async ({
+  quizData,
+}: IUpdateQuizDataServiceProps) => {
+  const quiz = await updateQuiz(quizData)
+  return quiz
+}
+
+export const updateQuizSolutionService = async ({
+  quizSolution,
+  quizTestCase,
+}: IUpdateQuizSolutionServiceProps) => {
+  const solutionPromises: Promise<any>[] = []
+  const testCasePromises: Promise<any>[] = []
+
+  quizSolution.forEach((solution) => {
+    solutionPromises.push(
+      updateQuizSolution({
+        solutionId: solution.solutionId,
+        code: solution.code,
+        importDirectives: solution.importDirectives,
+        testRunner: solution.testRunner,
+        defaultCode: solution.defaultCode,
+      }),
+    )
+  })
+
+  const solutions = await Promise.all(solutionPromises)
+
+  quizTestCase.forEach((test) => {
+    testCasePromises.push(
+      updateQuizTestCase({
+        testCaseId: test.testCaseId,
+        input: test.input,
+        output: test.output,
+      }),
+    )
+  })
+
+  const testCases = await Promise.all(testCasePromises)
+
+  return {quizSolution: solutions, quizTestCase: testCases}
+}
+
+export const createAssessmentService = async ({
+  userId,
+  title,
+  description,
+  quizIds,
+}: ICreateAssessmentServiceProps) => {
+  const assessment = await createAssessment({
+    userId,
+    title,
+    description,
+    quizIds,
+  })
+  return assessment
+}
+
+export const deleteQuizService = async ({quizId}: {quizId: string}) => {
+  const quiz = (await getSolutionAndTestId({quizId})) as {
+    solutionId: string[]
+    testCaseId: string[]
+  }
+
+  if (!Object.keys(quiz).length) {
+    throw Error('Quiz does not exits')
+  }
+
+  const testCasePromises: Promise<any>[] = []
+  const solutionPromises: Promise<any>[] = []
+
+  quiz.testCaseId.forEach((id) =>
+    testCasePromises.push(deleteQuizTestCases({testCaseId: id})),
+  )
+  const quizTestCase = await Promise.all(testCasePromises)
+
+  quiz.solutionId.forEach((id) =>
+    solutionPromises.push(deleteQuizSolution({solutionId: id})),
+  )
+  const quizSolution = await Promise.all(solutionPromises)
+
+  const quizData = await deleteQuiz({quizId})
+
+  return {
+    quizData,
+    quizSolution,
+    quizTestCase,
+  }
 }

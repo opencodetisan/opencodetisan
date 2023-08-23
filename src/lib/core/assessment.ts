@@ -1,11 +1,11 @@
 import {
   IAddAssessmentQuizzesProps,
   ICandidateEmailStatusProps,
+  ICreateAssessmentProps,
   IDeleteAssessmentQuizSubmissionsProps,
   IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
-  IcreateAssessmentProps,
 } from '@/types'
 import prisma from '../db/client'
 import {CandidateActionId} from '@/enums'
@@ -15,7 +15,7 @@ export const createAssessment = async ({
   title,
   description,
   quizIds,
-}: IcreateAssessmentProps) => {
+}: ICreateAssessmentProps) => {
   if (!userId) {
     throw Error('missing userId')
   } else if (!title) {

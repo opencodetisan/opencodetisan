@@ -2,11 +2,15 @@ import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
   ICreateQuizTestCaseProps,
+  IQuizDataProps,
+  IQuizProps,
+  IQuizSolutionProps,
+  IQuizTestCaseProps,
   ITestCaseClientProps,
   ITestCaseProps,
   IUpdateQuizProps,
   IUpdateQuizSolutionProps,
-  IUpdateQuizTestCasesProps,
+  IUpdateQuizTestCaseProps,
 } from '@/types/index'
 import prisma from '@/lib/db/client'
 
@@ -39,7 +43,7 @@ export const createQuizSolution = async (
     throw Error('missing quizId')
   } else if (!solutionData.code) {
     throw Error('missing code')
-  } else if (!solutionData.sequence) {
+  } else if (typeof solutionData.sequence !== 'number') {
     throw Error('missing sequence')
   } else if (!solutionData.importDirectives) {
     throw Error('missing importDirectives')
@@ -52,27 +56,22 @@ export const createQuizSolution = async (
   return solution
 }
 
-export const createQuizTestCases = async (
-  testCaseData: ICreateQuizTestCaseProps[],
+export const createQuizTestCase = async (
+  testCase: ICreateQuizTestCaseProps,
 ) => {
-  if (!testCaseData || testCaseData.length === 0) {
-    throw Error('test case not found')
+  if (!testCase.solutionId) {
+    throw Error('missing solutionId')
+  } else if (!testCase.input) {
+    throw Error('missing input')
+  } else if (!testCase.output) {
+    throw Error('missing output')
+  } else if (typeof testCase.sequence !== 'number') {
+    throw Error('missing sequence')
   }
-  let missingField
-  const hasAllProps = testCaseData.every((testCase) => {
-    return ['solutionId', 'input', 'output', 'sequence'].every((prop) => {
-      if (!Object.hasOwn(testCase, prop)) {
-        missingField = prop
-        return false
-      }
-      return true
-    })
-  })
-  if (!hasAllProps) {
-    throw Error(`test case missing ${missingField}`)
-  }
-  const testCases = await prisma.testCase.createMany({data: testCaseData})
-  return testCases
+
+  const result = await prisma.testCase.create({data: testCase})
+
+  return result
 }
 
 export const updateQuiz = async ({
@@ -130,45 +129,89 @@ export const updateQuizSolution = async ({
   return updatedSolution
 }
 
-export const updateQuizTestCases = async ({
-  existingTests,
-  newTests,
-}: IUpdateQuizTestCasesProps) => {
-  if (!existingTests) {
-    throw Error('missing existingTests')
-  } else if (existingTests.length === 0) {
-    throw Error('0 existingTest found')
-  } else if (!newTests) {
-    throw Error('missing newTests')
-  } else if (!newTests.input) {
-    throw Error('missing newTests input field')
-  } else if (newTests.input.length === 0) {
-    throw Error('0 newTests input found')
-  } else if (!newTests.output) {
-    throw Error('missing newTests output field')
-  } else if (newTests.output.length === 0) {
-    throw Error('0 newTests output found')
+export const getQuizTestCases = async ({solutionId}: {solutionId: string}) => {
+  if (!solutionId) {
+    throw Error('missing solutionId')
+  }
+  const testCases = await prisma.testCase.findMany({
+    where: {
+      solutionId,
+    },
+    orderBy: {
+      sequence: 'asc',
+    },
+  })
+  return testCases
+}
+
+export const updateQuizTestCase = async ({
+  testCaseId,
+  input,
+  output,
+}: IUpdateQuizTestCaseProps) => {
+  if (!testCaseId) {
+    throw Error('missing testCaseId')
+  } else if (!input) {
+    throw Error('missing input')
+  } else if (!output) {
+    throw Error('missing output')
+  }
+  const testCase = await prisma.testCase.update({
+    where: {
+      id: testCaseId,
+    },
+    data: {
+      input: input,
+      output: output,
+    },
+  })
+
+  return testCase
+}
+
+export const getSolutionAndTestId = async ({quizId}: {quizId: string}) => {
+  if (!quizId) {
+    throw Error('missing quizId')
   }
 
-  let i = -1
-  const txn = await prisma.$transaction(
-    existingTests.map((test: any) => {
-      i++
-      return prisma.testCase.update({
-        where: {
-          id: test.id,
-        },
-        data: {
-          input: newTests.input[i],
-          output: newTests.output[i],
-        },
-      })
-    }),
-  )
-  return txn
+  let output: {solutionId: string[]; testCaseId: string[]} = {
+    solutionId: [],
+    testCaseId: [],
+  }
+
+  const quiz = await prisma.quiz.findUnique({
+    where: {id: quizId},
+    select: {solutions: {select: {id: true, testCases: {select: {id: true}}}}},
+  })
+
+  if (!quiz) {
+    return {}
+  }
+
+  quiz.solutions.forEach((solution: Record<string, any>) => {
+    output.solutionId.push(solution.id)
+
+    solution.testCases.forEach((test: Record<string, any>) => {
+      output.testCaseId.push(test.id)
+    })
+  })
+
+  return output
 }
 
 export const deleteQuizTestCases = async ({
+  testCaseId,
+}: {
+  testCaseId: string
+}) => {
+  if (!testCaseId) {
+    throw Error('missing testCaseId')
+  }
+  const testCase = await prisma.testCase.delete({where: {id: testCaseId}})
+  return testCase
+}
+
+export const deleteQuizSolution = async ({
   solutionId,
 }: {
   solutionId: string
@@ -176,16 +219,8 @@ export const deleteQuizTestCases = async ({
   if (!solutionId) {
     throw Error('missing solutionId')
   }
-  const result = await prisma.testCase.deleteMany({where: {solutionId}})
-  return result
-}
-
-export const deleteQuizSolution = async ({quizId}: {quizId: string}) => {
-  if (!quizId) {
-    throw Error('missing quizId')
-  }
-  const result = await prisma.solution.deleteMany({where: {quizId}})
-  return result
+  const solution = await prisma.solution.delete({where: {id: solutionId}})
+  return solution
 }
 
 export const deleteQuiz = async ({quizId}: {quizId: string}) => {
@@ -254,45 +289,64 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
   if (!quizId) {
     throw Error('missing quizId')
   }
+
+  let output: IQuizProps = {quizData: {}, quizSolution: [], quizTestCase: []}
+
   const quiz = await prisma.quiz.findUnique({
     where: {
       id: quizId,
     },
-    select: {
-      id: true,
-      title: true,
-      instruction: true,
-      submissionCachedCount: true,
-      difficultyLevelId: true,
-      codeLanguageId: true,
-      codeLanguage: {
-        select: {
-          id: true,
-          prettyName: true,
-        },
-      },
-      status: true,
-      locale: true,
-      createdAt: true,
-      updatedAt: true,
-      defaultCode: true,
+    include: {
+      codeLanguage: true,
       solutions: {
-        select: {
-          id: true,
-          code: true,
-          //entryFunction: true,
+        orderBy: {sequence: 'asc'},
+        include: {
           testCases: {
-            select: {
-              id: true,
-              input: true,
-              output: true,
+            orderBy: {
+              sequence: 'asc',
             },
           },
-          importDirectives: true,
-          testRunner: true,
         },
       },
     },
   })
-  return quiz
+
+  if (!quiz) {
+    return {}
+  }
+
+  for (const prop in quiz) {
+    if (prop !== 'solutions') {
+      // TODO
+      // @ts-ignore
+      output.quizData[prop] = quiz[prop]
+    }
+  }
+
+  quiz.solutions.forEach((solution: Record<string, any>) => {
+    const quizSolution: IQuizSolutionProps = {
+      quizId: '',
+      id: '',
+      importDirectives: '',
+      code: '',
+      sequence: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      testRunner: '',
+    }
+
+    for (const prop in solution) {
+      if (prop !== 'testCases') {
+        // TODO
+        // @ts-ignore
+        quizSolution[prop] = solution[prop]
+      }
+    }
+    output.quizSolution.push(quizSolution)
+    solution.testCases.forEach((test: IQuizTestCaseProps) =>
+      output.quizTestCase.push(test),
+    )
+  })
+
+  return output
 }
