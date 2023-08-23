@@ -15,9 +15,15 @@ const createFakeQuizzes = async ({userId}: {userId: string}) => {
   const difficultyLevelId = faker.number.int(1000)
   const createQuizPromises: Promise<any>[] = []
 
+  await prisma.assessmentPoint.createMany({
+    data: [
+      {name: 'easyQuizCompletionPoint', point: 1000},
+      {name: 'speedPoint', point: 500},
+    ],
+  })
   await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
   await prisma.difficultyLevel.create({
-    data: {id: difficultyLevelId, name: word},
+    data: {id: difficultyLevelId, name: 'easy'},
   })
 
   for (let i = 0; i < 2; i++) {
@@ -123,7 +129,6 @@ describe('Integration test: Assessment', () => {
       const users = await createFakeUsers()
       const quizzes = await createFakeQuizzes({userId: users[0].id})
       const quizIds = quizzes.map((q) => q.id)
-      console.log(quizzes)
 
       createadAssessment = await createAssessmentService({
         userId: users[0].id,
@@ -145,13 +150,13 @@ describe('Integration test: Assessment', () => {
       const receivedAssessment = await getAssessmentService({
         assessmentId: createadAssessment.id,
       })
-      console.log(
-        inspect(receivedAssessment, {
-          showHidden: false,
-          depth: null,
-          colors: true,
-        }),
-      )
+      // console.log(
+      //   inspect(receivedAssessment, {
+      //     showHidden: false,
+      //     depth: null,
+      //     colors: true,
+      //   }),
+      // )
 
       // expect(assessment).toEqual(expectedAssessment.data)
     })
