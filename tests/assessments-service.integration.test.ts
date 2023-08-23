@@ -1,10 +1,52 @@
 import {getAssessment} from '@/lib/core/assessment'
 import {
+  acceptAssessmentService,
   createAssessmentService,
+  getAssessmentService,
   getManyAssessmentService,
 } from '@/lib/core/service'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
+import {inspect} from 'node:util'
+
+const createFakeQuizzes = async ({userId}: {userId: string}) => {
+  const word = faker.lorem.word()
+  const codeLanguageId = faker.number.int(1000)
+  const difficultyLevelId = faker.number.int(1000)
+  const createQuizPromises: Promise<any>[] = []
+
+  await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
+  await prisma.difficultyLevel.create({
+    data: {id: difficultyLevelId, name: word},
+  })
+
+  for (let i = 0; i < 2; i++) {
+    createQuizPromises.push(
+      prisma.quiz.create({
+        data: {
+          title: word,
+          userId,
+          codeLanguageId,
+          difficultyLevelId,
+        },
+      }),
+    )
+  }
+
+  const quizzes = await Promise.all(createQuizPromises)
+
+  return quizzes
+}
+
+const createFakeUsers = async () => {
+  const promises: Promise<any>[] = []
+  const uuids = [(faker.string.uuid(), faker.string.uuid())]
+  uuids.forEach((id) => {
+    const word = faker.lorem.word()
+    promises.push(prisma.user.create({data: {id, name: word}}))
+  })
+  return Promise.all(promises)
+}
 
 describe('Integration test: Assessment', () => {
   describe('Integration test: createAssessmentService', () => {
