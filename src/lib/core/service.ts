@@ -6,6 +6,7 @@ import {
 } from '@/types'
 import {
   createAssessment,
+  getAssessment,
   getAssessmentIds,
   getAssessmentQuizzes,
   getAssessments,
@@ -26,6 +27,9 @@ import {
   updateQuizSolution,
   updateQuizTestCase,
 } from './quiz'
+import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
+import {getAssessmentPoints} from './analytic'
+import {AssessmentPoint} from '@/enums'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -197,6 +201,45 @@ export const createAssessmentService = async ({
     description,
     quizIds,
   })
+  return assessment
+}
+
+export const getAssessmentService = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  const assessment = await getAssessment({
+    assessmentId,
+  })
+
+  if (!assessment) {
+    return {}
+  } else if (!assessment.candidates.length) {
+    return assessment
+  }
+
+  let totalPoint = 0
+  let quizPoints: Record<string, number> = {}
+  const assignedQuizzes: any = []
+
+  const assessmentPoints = await getAssessmentPoints()
+
+  assessment.quizzes?.forEach((q) => {
+    const assessmentPointName = `${q.quiz.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
+    const difficultyPoint = assessmentPoints[assessmentPointName]?.point
+    const speedPoint =
+      assessmentPoints[AssessmentPoint.SpeedPoint]?.point *
+      MAX_SPEED_POINT_MULTIPLIER
+
+    const sum = difficultyPoint + speedPoint
+
+    assignedQuizzes.push(q.quiz)
+    totalPoint += sum
+    quizPoints[q.quiz.id] = sum
+  })
+  console.log(quizPoints)
+
   return assessment
 }
 
