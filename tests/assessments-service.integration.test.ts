@@ -114,6 +114,49 @@ describe('Integration test: Assessment', () => {
     })
   })
 
+  describe('Integration test: getAssessmentService', () => {
+    const word = faker.lorem.word()
+    let createadAssessment: any
+
+    beforeAll(async () => {
+      await prisma.userAction.create({data: {id: 1, userAction: 'bankai'}})
+      const users = await createFakeUsers()
+      const quizzes = await createFakeQuizzes({userId: users[0].id})
+      const quizIds = quizzes.map((q) => q.id)
+      console.log(quizzes)
+
+      createadAssessment = await createAssessmentService({
+        userId: users[0].id,
+        title: word,
+        description: word,
+        quizIds,
+      })
+      await acceptAssessmentService({
+        assessmentId: createadAssessment.id,
+        token: faker.string.uuid(),
+        userId: users[0].id,
+      })
+    })
+
+    test('it should return an assessment', async () => {
+      // const expectedAssessment = await getAssessment({assessmentId})
+      // console.log(createadAssessment)
+
+      const receivedAssessment = await getAssessmentService({
+        assessmentId: createadAssessment.id,
+      })
+      console.log(
+        inspect(receivedAssessment, {
+          showHidden: false,
+          depth: null,
+          colors: true,
+        }),
+      )
+
+      // expect(assessment).toEqual(expectedAssessment.data)
+    })
+  })
+
   describe('Integration test: createManyAssessmentService', () => {
     let assessments: Record<string, any> = {}
 
