@@ -381,3 +381,22 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
 
   return output
 }
+
+export const getAssessmentQuizSubmission = async ({
+  assessmentQuizSubmissionId,
+}: {
+  assessmentQuizSubmissionId: string
+}) => {
+  if (!assessmentQuizSubmissionId) {
+    throw Error('missing assessmentQuizSubmissionId')
+  }
+
+  const assessmentQuizSubmission =
+    await prisma.assessmentQuizSubmission.findUnique({
+      where: {
+        id: assessmentQuizSubmissionId,
+      },
+    })
+
+  return assessmentQuizSubmission
+}
