@@ -349,7 +349,7 @@ export const getAssessmentService = async ({
   const assessmentPoints = await getAssessmentPoints()
 
   assessment.quizzes?.forEach((q) => {
-    const assessmentPointName = `${q.quiz.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
+    const assessmentPointName = `${q.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
     const difficultyPoint = assessmentPoints[assessmentPointName]?.point
     const speedPoint =
       assessmentPoints[AssessmentPoint.SpeedPoint]?.point *
@@ -359,7 +359,7 @@ export const getAssessmentService = async ({
 
     assignedQuizzes.push(q.quiz)
     totalPoint += sum
-    quizPoints[q.quiz.id] = sum
+    quizPoints[q.id] = sum
   })
 
   return assessment
