@@ -276,7 +276,7 @@ export const updateCandidateSubmissionService = async ({
     return {}
   }
 
-  const assessmentResult = updateAssessmentResult({
+  const assessmentResult = await updateAssessmentResult({
     status: 'COMPLETED',
     timeTaken: 12,
     assessmentQuizSubmissionId: assessmentQuizSubmissionId,
