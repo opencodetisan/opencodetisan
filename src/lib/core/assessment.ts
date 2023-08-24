@@ -359,6 +359,25 @@ export const getAssessmentCompletedQuiz = async ({
   return assessmentResults
 }
 
+export const getAssessmentQuizSubmission = async ({
+  assessmentQuizSubmissionId,
+}: {
+  assessmentQuizSubmissionId: string
+}) => {
+  if (!assessmentQuizSubmissionId) {
+    throw Error('missing assessmentQuizSubmissionId')
+  }
+
+  const assessmentQuizSubmission =
+    await prisma.assessmentQuizSubmission.findUnique({
+      where: {
+        id: assessmentQuizSubmissionId,
+      },
+    })
+
+  return assessmentQuizSubmission
+}
+
 export const deleteAssessmentResult = async ({
   assessmentResultId,
 }: {
