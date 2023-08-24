@@ -13,7 +13,7 @@ import {inspect} from 'node:util'
 
 const createFakeQuizzes = async ({userId}: {userId: string}) => {
   const word = faker.lorem.word()
-  const codeLanguageId = faker.number.int(1000)
+  const codeLanguageId = faker.number.int(100000)
   const difficultyLevelId = faker.number.int(1000)
   const createQuizPromises: Promise<any>[] = []
 
@@ -32,7 +32,7 @@ const createFakeQuizzes = async ({userId}: {userId: string}) => {
     createQuizPromises.push(
       prisma.quiz.create({
         data: {
-          title: word,
+          title: `quiz_${i + 1}`,
           userId,
           codeLanguageId,
           difficultyLevelId,
