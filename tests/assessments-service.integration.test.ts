@@ -184,22 +184,18 @@ describe('Integration test: Assessment', () => {
       }
     })
 
-    test('it should return an assessment', async () => {
-      // const expectedAssessment = await getAssessment({assessmentId})
-      // console.log(createadAssessment)
-
+    test('it should return the assessment data', async () => {
       const receivedAssessment = await getAssessmentService({
         assessmentId: createadAssessment.id,
       })
-      // console.log(
-      //   inspect(receivedAssessment, {
-      //     showHidden: false,
-      //     depth: null,
-      //     colors: true,
-      //   }),
-      // )
+      const assessmentQuizSubmissions =
+        receivedAssessment.submissions[0].data[1].assessmentQuizSubmissions
 
-      // expect(assessment).toEqual(expectedAssessment.data)
+      expect(receivedAssessment.data).toEqual(createadAssessment)
+      expect(assessmentQuizSubmissions[0].submission.code).toBe(codes[1])
+      expect(receivedAssessment.candidates).toHaveLength(2)
+      expect(receivedAssessment.quizzes).toHaveLength(2)
+      expect(quizzes).toMatchObject(receivedAssessment.quizzes)
     })
   })
 
