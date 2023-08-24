@@ -3,6 +3,7 @@ import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {glob} from 'glob'
 import {
   IAssessmentPointsProps,
+  ICreateCandidatePointProps,
   IGetAssessmentComparativeScoreProps,
   IGetAssessmentQuizPointProps,
 } from '@/types'
@@ -73,6 +74,49 @@ export const getAssessmentPoints = async () => {
     )
   }
   return object
+}
+
+export const createCandidatePoint = async ({
+  submissionId,
+  userId,
+  quizId,
+  totalPoint,
+  submissionPoint,
+}: ICreateCandidatePointProps) => {
+  const submission = await prisma.submission.update({
+    where: {
+      id: submissionId,
+    },
+    data: {
+      submissionPoint: {
+        createMany: {
+          data: submissionPoint,
+        },
+      },
+      quiz: {
+        update: {
+          quizPointCollection: {
+            upsert: {
+              where: {
+                userId_quizId: {
+                  userId,
+                  quizId,
+                },
+              },
+              create: {
+                userId,
+                point: totalPoint,
+              },
+              update: {
+                point: totalPoint,
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  return submission
 }
 
 export const getAssessmentComparativeScore = ({
