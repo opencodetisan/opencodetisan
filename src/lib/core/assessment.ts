@@ -6,6 +6,7 @@ import {
   IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
+  IUpdateAssessmentResultProps,
 } from '@/types'
 import prisma from '../db/client'
 import {CandidateActionId} from '@/enums'
@@ -494,6 +495,35 @@ export const updateAssessmentAcceptance = async ({
     },
   })
   return assessment
+}
+
+export const updateAssessmentResult = async ({
+  assessmentResultId,
+  assessmentQuizSubmissionId,
+  submissionId,
+  timeTaken,
+  status,
+}: IUpdateAssessmentResultProps) => {
+  const assessmentResult = await prisma.assessmentResult.update({
+    where: {id: assessmentResultId},
+    data: {
+      status,
+      timeTaken,
+      assessmentQuizSubmissions: {
+        update: {
+          where: {
+            id: assessmentQuizSubmissionId,
+          },
+          data: {
+            end: new Date(),
+            submissionId,
+          },
+        },
+      },
+    },
+  })
+
+  return assessmentResult
 }
 
 export const getAssessmentForReport = async ({

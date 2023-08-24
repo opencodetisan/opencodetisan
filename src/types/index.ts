@@ -241,3 +241,11 @@ export interface ICreateQuizSubmissionProps {
   quizId: string
   code: string
 }
+
+export interface IUpdateAssessmentResultProps {
+  assessmentResultId: string
+  assessmentQuizSubmissionId: string
+  submissionId: string
+  timeTaken: number
+  status: 'COMPLETED' | 'PENDING' | 'STARTED'
+}
