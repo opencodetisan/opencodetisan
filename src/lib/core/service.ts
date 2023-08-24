@@ -8,14 +8,17 @@ import {
   createAssessment,
   getAssessment,
   getAssessmentIds,
+  getAssessmentQuizSubmission,
   getAssessmentQuizzes,
   getAssessments,
   updateAssessmentAcceptance,
+  updateAssessmentResult,
 } from './assessment'
 import {getActivityLogCount, getActivityLogs} from './candidate'
 import {
   createQuiz,
   createQuizSolution,
+  createQuizSubmission,
   createQuizTestCase,
   deleteQuiz,
   deleteQuizSolution,
@@ -28,8 +31,9 @@ import {
   updateQuizTestCase,
 } from './quiz'
 import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
-import {getAssessmentPoints} from './analytic'
+import {createCandidatePoint, getAssessmentPoints} from './analytic'
 import {AssessmentPoint} from '@/enums'
+import prisma from '../db/client'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -187,6 +191,60 @@ export const updateQuizSolutionService = async ({
   const testCases = await Promise.all(testCasePromises)
 
   return {quizSolution: solutions, quizTestCase: testCases}
+}
+
+export const updateCandidateSubmissionService = async ({
+  userId,
+  quizId,
+  code,
+  assessmentQuizSubmissionId,
+}: any) => {
+  const submission = await createQuizSubmission({code, quizId, userId})
+
+  const difficultyLevel = submission.quiz.difficultyLevel.name
+
+  const assessmentQuizSubmission = await getAssessmentQuizSubmission({
+    assessmentQuizSubmissionId,
+  })
+
+  if (!assessmentQuizSubmission) {
+    return {}
+  }
+
+  const assessmentResult = updateAssessmentResult({
+    status: 'COMPLETED',
+    timeTaken: 12,
+    assessmentQuizSubmissionId: assessmentQuizSubmissionId,
+    assessmentResultId: assessmentQuizSubmission.assessmentResultId,
+    submissionId: submission.id,
+  })
+
+  const assessmentPoint = await getAssessmentPoints()
+
+  const quizPoint = assessmentPoint![difficultyLevel + QUIZ_COMPLETION_POINT]
+  const speedPoint = assessmentPoint![AssessmentPoint.SpeedPoint]
+  let totalPoint = 0
+
+  const submissionPoint = [
+    {
+      userId,
+      point: quizPoint.point,
+      assessmentPointId: parseInt(quizPoint.id),
+    },
+    {
+      userId,
+      point: Math.round(speedPoint.point),
+      assessmentPointId: parseInt(speedPoint.id),
+    },
+  ]
+
+  await createCandidatePoint({
+    totalPoint,
+    submissionPoint,
+    quizId,
+    userId,
+    submissionId: submission.id,
+  })
 }
 
 export const createAssessmentService = async ({
