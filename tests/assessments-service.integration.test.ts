@@ -2,8 +2,10 @@ import {getAssessment} from '@/lib/core/assessment'
 import {
   acceptAssessmentService,
   createAssessmentService,
+  createCandidateSubmissionService,
   getAssessmentService,
   getManyAssessmentService,
+  updateCandidateSubmissionService,
 } from '@/lib/core/service'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
@@ -52,6 +54,31 @@ const createFakeUsers = async () => {
     promises.push(prisma.user.create({data: {id, name: word}}))
   })
   return Promise.all(promises)
+}
+
+const createFakeCandidateSubmission = async ({
+  assessmentId,
+  quizId,
+  userId,
+  code,
+}: {
+  assessmentId: string
+  quizId: string
+  userId: string
+  code: string
+}) => {
+  const createdSubmission = await createCandidateSubmissionService({
+    assessmentId,
+    quizId,
+    userId,
+  })
+  const updatedSubmission = await updateCandidateSubmissionService({
+    userId,
+    quizId,
+    code,
+    assessmentQuizSubmissionId:
+      createdSubmission.assessmentQuizSubmissions[0].id,
+  })
 }
 
 describe('Integration test: Assessment', () => {
@@ -125,6 +152,11 @@ describe('Integration test: Assessment', () => {
     let createadAssessment: any
 
     beforeAll(async () => {
+      const codes = [
+        'This is the first attempt',
+        'This is the most recent attempt',
+      ]
+
       await prisma.userAction.create({data: {id: 1, userAction: 'bankai'}})
       const users = await createFakeUsers()
       const quizzes = await createFakeQuizzes({userId: users[0].id})
@@ -141,6 +173,14 @@ describe('Integration test: Assessment', () => {
         token: faker.string.uuid(),
         userId: users[0].id,
       })
+      for (let i = 0; i < codes.length; i++) {
+        await createFakeCandidateSubmission({
+          userId: users[0].id,
+          quizId: quizzes[0].id,
+          assessmentId: createadAssessment.id,
+          code: codes[i],
+        })
+      }
     })
 
     test('it should return an assessment', async () => {
