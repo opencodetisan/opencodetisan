@@ -48,10 +48,9 @@ const createFakeQuizzes = async ({userId}: {userId: string}) => {
 
 const createFakeUsers = async () => {
   const promises: Promise<any>[] = []
-  const uuids = [(faker.string.uuid(), faker.string.uuid())]
+  const uuids = [faker.string.uuid(), faker.string.uuid()]
   uuids.forEach((id) => {
-    const word = faker.lorem.word()
-    promises.push(prisma.user.create({data: {id, name: word}}))
+    promises.push(prisma.user.create({data: {id, name: faker.lorem.word()}}))
   })
   return Promise.all(promises)
 }
