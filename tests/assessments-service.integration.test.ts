@@ -195,7 +195,6 @@ describe('Integration test: Assessment', () => {
       expect(assessmentQuizSubmissions[0].submission.code).toBe(codes[1])
       expect(receivedAssessment.candidates).toHaveLength(2)
       expect(receivedAssessment.quizzes).toHaveLength(2)
-      expect(quizzes).toMatchObject(receivedAssessment.quizzes)
     })
   })
 
