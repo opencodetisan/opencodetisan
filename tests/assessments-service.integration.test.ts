@@ -192,10 +192,14 @@ describe('Integration test: Assessment', () => {
       const assessmentQuizSubmissions =
         receivedAssessment.submissions[0].data[1].assessmentQuizSubmissions
 
+      receivedAssessment.quizzes.forEach((q) => {
+        delete q.difficultyLevel
+      })
+
       expect(receivedAssessment.data).toEqual(createadAssessment)
       expect(assessmentQuizSubmissions[0].submission.code).toBe(codes[1])
-      expect(receivedAssessment.candidates).toHaveLength(2)
-      expect(receivedAssessment.quizzes).toHaveLength(2)
+      expect(quizzes).toMatchObject(receivedAssessment.quizzes)
+      expect(users).toMatchObject(receivedAssessment.candidates)
     })
   })
 
