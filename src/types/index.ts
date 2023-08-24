@@ -227,3 +227,11 @@ export interface IUpdateQuizSolutionServiceProps {
   quizSolution: IUpdateQuizSolutionProps[]
   quizTestCase: IUpdateQuizTestCaseProps[]
 }
+
+export interface ICreateCandidatePointsProps {
+  submissionId: string
+  userId: string
+  quizId: string
+  totalPoint: number
+  submissionPoint: {userId: string; point: number; assessmentPointId: number}[]
+}
