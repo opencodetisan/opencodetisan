@@ -200,6 +200,12 @@ describe('Integration test: Assessment', () => {
       expect(assessmentQuizSubmissions[0].submission.code).toBe(codes[1])
       expect(quizzes).toMatchObject(receivedAssessment.quizzes)
       expect(users).toMatchObject(receivedAssessment.candidates)
+      expect(
+        receivedAssessment.submissions[0].data[0].assessmentQuizSubmissions,
+      ).toHaveLength(0)
+      expect(
+        receivedAssessment.submissions[0].data[1].assessmentQuizSubmissions,
+      ).toHaveLength(1)
     })
   })
 
