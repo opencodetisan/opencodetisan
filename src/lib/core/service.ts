@@ -255,7 +255,6 @@ export const createCandidateSubmissionService = async ({
       assessmentQuizSubmissions: true,
     },
   })
-  console.log(updatedAssessmentResult)
   return updatedAssessmentResult
 }
 
@@ -362,7 +361,6 @@ export const getAssessmentService = async ({
     totalPoint += sum
     quizPoints[q.quiz.id] = sum
   })
-  console.log(quizPoints)
 
   return assessment
 }
