@@ -148,17 +148,17 @@ describe('Integration test: Assessment', () => {
 
   describe('Integration test: getAssessmentService', () => {
     const word = faker.lorem.word()
+    const codes = [
+      'This is the first attempt',
+      'This is the most recent attempt',
+    ]
     let createadAssessment: any
+    let quizzes: Record<string, any>[]
 
     beforeAll(async () => {
-      const codes = [
-        'This is the first attempt',
-        'This is the most recent attempt',
-      ]
-
-      await prisma.userAction.create({data: {id: 1, userAction: 'bankai'}})
+      await prisma.userAction.create({data: {id: 1, userAction: 'accept'}})
       const users = await createFakeUsers()
-      const quizzes = await createFakeQuizzes({userId: users[0].id})
+      quizzes = await createFakeQuizzes({userId: users[0].id})
       const quizIds = quizzes.map((q) => q.id)
 
       createadAssessment = await createAssessmentService({
@@ -167,11 +167,13 @@ describe('Integration test: Assessment', () => {
         description: word,
         quizIds,
       })
-      await acceptAssessmentService({
-        assessmentId: createadAssessment.id,
-        token: faker.string.uuid(),
-        userId: users[0].id,
-      })
+      for (let i = 0; i < users.length; i++) {
+        await acceptAssessmentService({
+          assessmentId: createadAssessment.id,
+          token: faker.string.uuid(),
+          userId: users[i].id,
+        })
+      }
       for (let i = 0; i < codes.length; i++) {
         await createFakeCandidateSubmission({
           userId: users[0].id,
