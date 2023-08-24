@@ -193,6 +193,72 @@ export const updateQuizSolutionService = async ({
   return {quizSolution: solutions, quizTestCase: testCases}
 }
 
+export const createCandidateSubmissionService = async ({
+  assessmentId,
+  quizId,
+  userId,
+}: any) => {
+  const assessment = await prisma.assessment.findUnique({
+    where: {
+      id: assessmentId,
+    },
+    select: {
+      assessmentResults: {
+        where: {
+          assessmentId,
+          quizId,
+          candidateId: userId,
+        },
+        include: {
+          assessmentQuizSubmissions: {
+            orderBy: {
+              start: 'desc',
+            },
+            take: 1,
+          },
+        },
+        // select: {
+        //   id: true,
+        //   status: true,
+        //   assessmentQuizSubmissions: {
+        //     select: {
+        //       id: true,
+        //     },
+        //     orderBy: {
+        //       start: 'desc',
+        //     },
+        //     take: 1,
+        //   },
+        // },
+      },
+    },
+  })
+  const assessmentResult = assessment?.assessmentResults[0]
+
+  if (!assessmentResult) {
+    return {}
+  }
+
+  const updatedAssessmentResult = await prisma.assessmentResult.update({
+    where: {
+      id: assessmentResult.id,
+    },
+    data: {
+      status: 'STARTED',
+      assessmentQuizSubmissions: {
+        create: {
+          start: new Date(),
+        },
+      },
+    },
+    include: {
+      assessmentQuizSubmissions: true,
+    },
+  })
+  console.log(updatedAssessmentResult)
+  return updatedAssessmentResult
+}
+
 export const updateCandidateSubmissionService = async ({
   userId,
   quizId,
