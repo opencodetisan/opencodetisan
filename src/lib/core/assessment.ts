@@ -310,6 +310,11 @@ export const getAssessment = async ({
   const data: Record<string, string | Date | number> = {}
   const candidates: Record<string, any>[] = []
   const submissions: Record<string, any>[] = []
+  const quizzes: Record<string, any>[] = []
+
+  assessment?.assessmentQuizzes.forEach((q) => {
+    quizzes.push(q.quiz)
+  })
 
   for (let key in assessment) {
     if (typeof assessment[key] === 'string' || key === 'createdAt') {
@@ -335,7 +340,7 @@ export const getAssessment = async ({
     submissions.push(submissionData)
   })
 
-  return {data, candidates, submissions}
+  return {data, candidates, submissions, quizzes}
 }
 
 export const getAssessmentCompletedQuiz = async ({
