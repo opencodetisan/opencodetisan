@@ -235,3 +235,9 @@ export interface ICreateCandidatePointProps {
   totalPoint: number
   submissionPoint: {userId: string; point: number; assessmentPointId: number}[]
 }
+
+export interface ICreateQuizSubmissionProps {
+  userId: string
+  quizId: string
+  code: string
+}

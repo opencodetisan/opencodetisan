@@ -1,6 +1,7 @@
 import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
+  ICreateQuizSubmissionProps,
   ICreateQuizTestCaseProps,
   IQuizDataProps,
   IQuizProps,
@@ -72,6 +73,36 @@ export const createQuizTestCase = async (
   const result = await prisma.testCase.create({data: testCase})
 
   return result
+}
+
+export const createQuizSubmission = async ({
+  userId,
+  quizId,
+  code,
+}: ICreateQuizSubmissionProps) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!quizId) {
+    throw Error('missing quizId')
+  } else if (!code) {
+    throw Error('missing code')
+  }
+
+  const submission = await prisma.submission.create({
+    data: {
+      userId,
+      quizId,
+      code,
+    },
+    include: {
+      quiz: {
+        include: {
+          difficultyLevel: true,
+        },
+      },
+    },
+  })
+  return submission
 }
 
 export const updateQuiz = async ({
