@@ -31,9 +31,17 @@ import {
   updateQuizTestCase,
 } from './quiz'
 import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
-import {createCandidatePoint, getAssessmentPoints} from './analytic'
+import {
+  createCandidatePoint,
+  getAssessmentComparativeScore,
+  getAssessmentComparativeScoreLevel,
+  getAssessmentPoints,
+  getAssessmentUsersBelowPointCount,
+  getAssessmentUsersCount,
+} from './analytic'
 import {AssessmentPoint} from '@/enums'
 import prisma from '../db/client'
+import {getCandidatePointLevel} from '../utils'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -361,6 +369,59 @@ export const getAssessmentService = async ({
     maxPoint += sum
     maxQuizPoints[q.id] = sum
   })
+
+  const candidateSubmissions = assessment.submissions
+
+  for (let i = 0; i < candidateSubmissions.length; i++) {
+    const submissions = candidateSubmissions[i].data
+    const userId = candidateSubmissions[i].id
+
+    for (let j = 0; j < submissions.length; j++) {
+      let totalPoint = 0
+
+      const assessmentQuizSubmissions = submissions[j].assessmentQuizSubmissions
+      const quizId = submissions[j].quizId
+
+      if (assessmentQuizSubmissions.length) {
+        let point = 0
+
+        const quizSubmission = assessmentQuizSubmissions[0].submission
+
+        quizSubmission.submissionPoint.forEach((s: Record<string, any>) => {
+          point += s.point
+          totalPoint += s.point
+        })
+
+        const players = await getAssessmentUsersCount({quizId, userId})
+
+        const defeatedPlayers = await getAssessmentUsersBelowPointCount({
+          userId,
+          quizId,
+          point,
+        })
+
+        const comparativeScore = getAssessmentComparativeScore({
+          point,
+          usersCount: players,
+          quizPoint: maxQuizPoints[quizId],
+          usersBelowPointCount: defeatedPlayers,
+        })
+
+        const comparativeScoreLevel = getAssessmentComparativeScoreLevel({
+          comparativeScore,
+        })
+
+        quizSubmission.point = point
+        quizSubmission.comparativeScore = comparativeScore
+        quizSubmission.comparativeScoreLevel = comparativeScoreLevel
+        delete quizSubmission.submissionPoint
+      }
+      const totalPointLevel = getCandidatePointLevel(totalPoint)
+
+      submissions[j].totalPoint = totalPoint
+      submissions[j].totalPointLevel = totalPointLevel
+    }
+  }
 
   return assessment
 }
