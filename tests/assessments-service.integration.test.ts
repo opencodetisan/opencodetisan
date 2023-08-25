@@ -5,6 +5,7 @@ import {
   createCandidateSubmissionService,
   getAssessmentService,
   getManyAssessmentService,
+  updateAssessmentDataService,
   updateCandidateSubmissionService,
 } from '@/lib/core/service'
 import prisma from '@/lib/db/client'
@@ -206,6 +207,40 @@ describe('Integration test: Assessment', () => {
       expect(
         receivedAssessment.submissions[0].data[1].assessmentQuizSubmissions,
       ).toHaveLength(1)
+    })
+  })
+
+  describe('Integration test: updateAssessmentDataService', () => {
+    let users
+    let quizzes
+    let createdAssessment: Record<string, any>
+
+    const word = faker.lorem.words()
+
+    beforeAll(async () => {
+      users = await createFakeUsers()
+      quizzes = await createFakeQuizzes({userId: users[0].id})
+      const quizIds = quizzes.map((q) => q.id)
+
+      createdAssessment = await createAssessmentService({
+        userId: users[0].id,
+        title: word,
+        description: word,
+        quizIds,
+      })
+    })
+
+    test('it should update and return an assessment', async () => {
+      const receivedAssessment = await updateAssessmentDataService({
+        assessmentId: createdAssessment.id,
+        description: word,
+        title: word,
+      })
+      const expectedAssessment = await getAssessmentService({
+        assessmentId: receivedAssessment.id,
+      })
+
+      expect(receivedAssessment).toEqual(expectedAssessment.data)
     })
   })
 
