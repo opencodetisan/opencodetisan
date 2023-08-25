@@ -342,8 +342,8 @@ export const getAssessmentService = async ({
     return assessment
   }
 
-  let totalPoint = 0
-  let quizPoints: Record<string, number> = {}
+  let maxPoint = 0
+  let maxQuizPoints: Record<string, number> = {}
   const assignedQuizzes: any = []
 
   const assessmentPoints = await getAssessmentPoints()
@@ -358,8 +358,8 @@ export const getAssessmentService = async ({
     const sum = difficultyPoint + speedPoint
 
     assignedQuizzes.push(q.quiz)
-    totalPoint += sum
-    quizPoints[q.id] = sum
+    maxPoint += sum
+    maxQuizPoints[q.id] = sum
   })
 
   return assessment
