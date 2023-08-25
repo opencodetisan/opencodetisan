@@ -249,3 +249,9 @@ export interface IUpdateAssessmentResultProps {
   timeTaken: number
   status: 'COMPLETED' | 'PENDING' | 'STARTED'
 }
+
+export interface IUpdateAssessmentDataServiceProps {
+  title: string
+  description: string
+  assessmentId: string
+}

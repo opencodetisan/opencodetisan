@@ -1,6 +1,7 @@
 import {
   ICreateAssessmentServiceProps,
   ICreateQuizServiceProps,
+  IUpdateAssessmentDataServiceProps,
   IUpdateQuizDataServiceProps,
   IUpdateQuizSolutionServiceProps,
 } from '@/types'
@@ -11,6 +12,7 @@ import {
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
   getAssessments,
+  updateAssessment,
   updateAssessmentAcceptance,
   updateAssessmentResult,
 } from './assessment'
@@ -422,6 +424,16 @@ export const getAssessmentService = async ({
       submissions[j].totalPointLevel = totalPointLevel
     }
   }
+
+  return assessment
+}
+
+export const updateAssessmentDataService = async ({
+  title,
+  description,
+  assessmentId,
+}: IUpdateAssessmentDataServiceProps) => {
+  const assessment = await updateAssessment({title, description, assessmentId})
 
   return assessment
 }
