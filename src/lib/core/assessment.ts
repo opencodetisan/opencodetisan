@@ -324,7 +324,7 @@ export const getAssessment = async ({
 
   assessment?.assessmentCandidates.forEach((c) => {
     const candidateData = {}
-    const submissionData = {name: '', data: []}
+    const submissionData = {id: '', name: '', data: []}
     const candidate = c.candidate
 
     for (let key in candidate) {
@@ -333,7 +333,8 @@ export const getAssessment = async ({
       }
     }
 
-    submissionData.name = candidate.name
+    submissionData.id = candidate.id
+    submissionData.name = candidate.name as string
     submissionData.data = candidate.assessmentResults
 
     candidates.push(candidateData)
