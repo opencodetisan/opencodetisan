@@ -21,3 +21,9 @@ export enum AssessmentStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
 }
+
+export enum CandidatePointLevel {
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high',
+}
