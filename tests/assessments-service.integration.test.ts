@@ -15,19 +15,9 @@ import {inspect} from 'node:util'
 const createFakeQuizzes = async ({userId}: {userId: string}) => {
   const word = faker.lorem.word()
   const codeLanguageId = faker.number.int(100000)
-  const difficultyLevelId = faker.number.int(1000)
   const createQuizPromises: Promise<any>[] = []
 
-  await prisma.assessmentPoint.createMany({
-    data: [
-      {name: 'easyQuizCompletionPoint', point: 1000},
-      {name: 'speedPoint', point: 500},
-    ],
-  })
   await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
-  await prisma.difficultyLevel.create({
-    data: {id: difficultyLevelId, name: 'easy'},
-  })
 
   for (let i = 0; i < 2; i++) {
     createQuizPromises.push(
@@ -36,7 +26,7 @@ const createFakeQuizzes = async ({userId}: {userId: string}) => {
           title: `quiz_${i + 1}`,
           userId,
           codeLanguageId,
-          difficultyLevelId,
+          difficultyLevelId: 1,
         },
       }),
     )
