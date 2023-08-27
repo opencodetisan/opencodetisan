@@ -43,7 +43,11 @@ import {
 } from './analytic'
 import {AssessmentPoint} from '@/enums'
 import prisma from '../db/client'
-import {getCandidatePointLevel} from '../utils'
+import {
+  convertToMinuteSecond,
+  getCandidatePointLevel,
+  getQuizTimeLimit,
+} from '../utils'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -286,9 +290,15 @@ export const updateCandidateSubmissionService = async ({
     return {}
   }
 
+  const start = new Date(assessmentQuizSubmission?.start as Date).getTime()
+  const end = new Date().getTime()
+
+  const timeTaken =
+    Math.round(((end - start) / 1000 + Number.EPSILON) * 100) / 100
+
   const assessmentResult = await updateAssessmentResult({
     status: 'COMPLETED',
-    timeTaken: 12,
+    timeTaken,
     assessmentQuizSubmissionId: assessmentQuizSubmissionId,
     assessmentResultId: assessmentQuizSubmission.assessmentResultId,
     submissionId: submission.id,
@@ -296,20 +306,36 @@ export const updateCandidateSubmissionService = async ({
 
   const assessmentPoint = await getAssessmentPoints()
 
-  const quizPoint = assessmentPoint![difficultyLevel + QUIZ_COMPLETION_POINT]
-  const speedPoint = assessmentPoint![AssessmentPoint.SpeedPoint]
-  let totalPoint = 0
+  let {id: quizPointId, point: quizPointInt} =
+    assessmentPoint![difficultyLevel + QUIZ_COMPLETION_POINT]
+  let {id: speedPointId, point: speedPointInt} =
+    assessmentPoint![AssessmentPoint.SpeedPoint]
+
+  const timeLimit = getQuizTimeLimit(difficultyLevel)
+  const minutesTaken = convertToMinuteSecond(timeTaken)?.minutes
+
+  if (minutesTaken <= timeLimit / 2) {
+    speedPointInt *= 1.2
+  } else if (minutesTaken <= timeLimit * 0.7) {
+    speedPointInt *= 1.1
+  } else if (minutesTaken <= timeLimit * 0.85) {
+    speedPointInt *= 1.05
+  } else if (minutesTaken > timeLimit) {
+    speedPointInt = 0
+  }
+
+  const totalPoint = quizPointInt + speedPointInt
 
   const submissionPoint = [
     {
       userId,
-      point: quizPoint.point,
-      assessmentPointId: parseInt(quizPoint.id),
+      point: quizPointInt,
+      assessmentPointId: parseInt(quizPointId),
     },
     {
       userId,
-      point: Math.round(speedPoint.point),
-      assessmentPointId: parseInt(speedPoint.id),
+      point: Math.round(speedPointInt),
+      assessmentPointId: parseInt(speedPointId),
     },
   ]
 
