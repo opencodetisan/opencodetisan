@@ -37,6 +37,43 @@ const createFakeQuizzes = async ({userId}: {userId: string}) => {
   return quizzes
 }
 
+const createFakeDifficultyLevel = async () => {
+  const difficultyLevels = [{id: 1, name: 'easy'}]
+  const promises: Promise<any>[] = []
+
+  difficultyLevels.forEach((d) => {
+    promises.push(
+      prisma.difficultyLevel.create({
+        data: {name: d.name, id: d.id},
+      }),
+    )
+  })
+
+  return await Promise.all(promises)
+}
+
+const createFakeAssessmentPoint = async () => {
+  const assessmentPoints = [
+    {name: 'easyQuizCompletionPoint', point: 1000},
+    {name: 'speedPoint', point: 500},
+  ]
+
+  const assessmentPointPromises: Promise<any>[] = []
+
+  assessmentPoints.forEach((p) => {
+    assessmentPointPromises.push(
+      prisma.assessmentPoint.create({
+        data: {
+          name: p.name,
+          point: p.point,
+        },
+      }),
+    )
+  })
+
+  return await Promise.all(assessmentPointPromises)
+}
+
 const createFakeUsers = async () => {
   const promises: Promise<any>[] = []
   const uuids = [faker.string.uuid(), faker.string.uuid()]
