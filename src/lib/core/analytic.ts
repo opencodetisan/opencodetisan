@@ -141,7 +141,7 @@ export const getAssessmentComparativeScore = ({
     comparativeScore = Math.round(+((usersBelowPointCount / usersCount) * 100))
   }
 
-  return {comparativeScore, usersBelowPointCount}
+  return comparativeScore
 }
 
 export const getAssessmentComparativeScoreLevel = ({
