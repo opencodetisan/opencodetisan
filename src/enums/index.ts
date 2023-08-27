@@ -27,3 +27,9 @@ export enum CandidatePointLevel {
   Medium = 'medium',
   High = 'high',
 }
+
+export enum QuizDifficulty {
+  Easy = 'easy',
+  Medium = 'medium',
+  Hard = 'hard',
+}
