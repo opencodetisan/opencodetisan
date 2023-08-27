@@ -1,4 +1,4 @@
-import {CandidatePointLevel} from '@/enums'
+import {CandidatePointLevel, QuizDifficulty} from '@/enums'
 
 export const convertToMinuteSecond = (seconds: number) => {
   if (!seconds) {
@@ -16,5 +16,18 @@ export const getCandidatePointLevel = (value: number) => {
     return CandidatePointLevel.Medium
   } else {
     return CandidatePointLevel.High
+  }
+}
+
+export const getQuizTimeLimit = (difficultyLevel: string) => {
+  switch (difficultyLevel) {
+    case QuizDifficulty.Easy:
+      return 5
+    case QuizDifficulty.Medium:
+      return 15
+    case QuizDifficulty.Hard:
+      return 30
+    default:
+      return 5
   }
 }
