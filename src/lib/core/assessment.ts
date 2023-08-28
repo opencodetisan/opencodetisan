@@ -558,6 +558,11 @@ export const updateAssessmentCandidateStatus = async ({
   assessmentId: string
   candidateId: string
 }) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!candidateId) {
+    throw Error('missing candidateId')
+  }
   const assessment = await prisma.assessment.update({
     where: {
       id: assessmentId,
