@@ -12,8 +12,10 @@ import {
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
   getAssessments,
+  getManyAssessmentResult,
   updateAssessment,
   updateAssessmentAcceptance,
+  updateAssessmentCandidateStatus,
   updateAssessmentResult,
 } from './assessment'
 import {
@@ -309,6 +311,20 @@ export const updateCandidateSubmissionService = async ({
     userId,
     submissionId: submission.id,
   })
+
+  const assessmentResults = await getManyAssessmentResult({
+    assessmentId: assessmentResult.assessmentId,
+    candidateId: userId,
+  })
+
+  const allCompleted = assessmentResults.every((r) => r.status === 'COMPLETED')
+
+  if (allCompleted) {
+    updateAssessmentCandidateStatus({
+      candidateId: userId,
+      assessmentId: assessmentResult.assessmentId,
+    })
+  }
 }
 
 export const createAssessmentService = async ({
