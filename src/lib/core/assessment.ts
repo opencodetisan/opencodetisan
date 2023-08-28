@@ -9,7 +9,7 @@ import {
   IUpdateAssessmentResultProps,
 } from '@/types'
 import prisma from '../db/client'
-import {CandidateActionId} from '@/enums'
+import {AssessmentStatus, CandidateActionId} from '@/enums'
 
 export const createAssessment = async ({
   userId,
@@ -87,28 +87,28 @@ export const updateAssessment = async ({
   return updatedAssessment
 }
 
-export const updateAssessmentCandidateStatus = async ({
-  assessmentId,
-  candidateId,
-}: IUpdateAssessmentCandidateStatusProps) => {
-  if (!assessmentId) {
-    throw Error('missing assessmentId')
-  } else if (!candidateId) {
-    throw Error('missing candidateId')
-  }
-  const assessmentCandidate = await prisma.assessmentCandidate.update({
-    where: {
-      assessmentId_candidateId: {
-        assessmentId,
-        candidateId,
-      },
-    },
-    data: {
-      status: 'COMPLETED',
-    },
-  })
-  return assessmentCandidate
-}
+// export const updateAssessmentCandidateStatus = async ({
+//   assessmentId,
+//   candidateId,
+// }: IUpdateAssessmentCandidateStatusProps) => {
+//   if (!assessmentId) {
+//     throw Error('missing assessmentId')
+//   } else if (!candidateId) {
+//     throw Error('missing candidateId')
+//   }
+//   const assessmentCandidate = await prisma.assessmentCandidate.update({
+//     where: {
+//       assessmentId_candidateId: {
+//         assessmentId,
+//         candidateId,
+//       },
+//     },
+//     data: {
+//       status: 'COMPLETED',
+//     },
+//   })
+//   return assessmentCandidate
+// }
 
 export const addAssessmentQuizzes = async ({
   quizIds,
@@ -549,6 +549,42 @@ export const updateAssessmentResult = async ({
   })
 
   return assessmentResult
+}
+
+export const updateAssessmentCandidateStatus = async ({
+  assessmentId,
+  candidateId,
+}: {
+  assessmentId: string
+  candidateId: string
+}) => {
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      candidateActivityLog: {
+        create: {
+          userActionId: CandidateActionId.Complete,
+          userId: candidateId,
+        },
+      },
+      assessmentCandidates: {
+        update: {
+          where: {
+            assessmentId_candidateId: {
+              assessmentId,
+              candidateId,
+            },
+          },
+          data: {
+            status: AssessmentStatus.COMPLETED,
+          },
+        },
+      },
+    },
+  })
+  return assessment
 }
 
 export const getAssessmentForReport = async ({
