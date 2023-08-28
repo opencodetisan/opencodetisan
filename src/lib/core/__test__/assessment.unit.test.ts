@@ -12,12 +12,12 @@ import {
   getAssessmentResult,
   getAssessments,
   updateAssessment,
-  updateAssessmentCandidateStatus,
   getAssessmentIds,
   getAssessmentQuizzes,
   updateAssessmentAcceptance,
   getAssessmentForReport,
   getManyAssessmentResult,
+  updateAssessmentCandidateStatus,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
 
@@ -276,38 +276,32 @@ describe('Assessment module', () => {
     )
   })
 
-  test('updateAssessmentCandidateStatus fn should update and return the assessmentCandidate data', async () => {
-    const assessmentCandidateData: any = {
+  test('updateAssessmentCandidateStatus fn should update and return assessment data', async () => {
+    const param: any = {
       assessmentId: uuid,
       candidateId: uuid,
     }
-    prismaMock.assessmentCandidate.update.mockResolvedValue(
-      mockAssessmentCandidate,
-    )
-    expect(
-      await updateAssessmentCandidateStatus(assessmentCandidateData),
-    ).toEqual(mockAssessmentCandidate)
+    prismaMock.assessment.update.mockResolvedValue(mockAssessment)
+    expect(await updateAssessmentCandidateStatus(param)).toEqual(mockAssessment)
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
-    const assessmentCandidateData: any = {
+    const param: any = {
       // assessmentId: uuid,
       candidateId: uuid,
     }
     expect(
-      async () =>
-        await updateAssessmentCandidateStatus(assessmentCandidateData),
+      async () => await updateAssessmentCandidateStatus(param),
     ).rejects.toThrow(/^missing assessmentId$/)
   })
 
   test('missing candidateId parameter should return a missing candidateId error', async () => {
-    const assessmentCandidateData: any = {
+    const param: any = {
       assessmentId: uuid,
       // candidateId: uuid,
     }
     expect(
-      async () =>
-        await updateAssessmentCandidateStatus(assessmentCandidateData),
+      async () => await updateAssessmentCandidateStatus(param),
     ).rejects.toThrow(/^missing candidateId$/)
   })
 
