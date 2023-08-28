@@ -443,6 +443,75 @@ export const updateAssessmentDataService = async ({
   return assessment
 }
 
+export const deleteAssessmentService = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  const {submissions} = await getAssessment({assessmentId})
+
+  const assessmentQuizSubmissionPromises: Promise<any>[] = []
+
+  submissions.forEach((s) => {
+    s.data.forEach((d) => {
+      if (d.assessmentQuizSubmissions.length) {
+        d.assessmentQuizSubmissions.forEach((s) => {
+          assessmentQuizSubmissionPromises.push(
+            prisma.assessmentQuizSubmission.delete({
+              where: {
+                id: s.id,
+              },
+            }),
+          )
+        })
+      }
+    })
+  })
+
+  await Promise.all(assessmentQuizSubmissionPromises)
+
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      candidateActivityLog: {
+        deleteMany: {
+          assessmentId,
+        },
+      },
+      assessmentQuizzes: {
+        deleteMany: {
+          assessmentId,
+        },
+      },
+      assessmentCandidateEmail: {
+        deleteMany: {
+          assessmentId,
+        },
+      },
+      assessmentCandidates: {
+        deleteMany: {
+          assessmentId,
+        },
+      },
+      assessmentResults: {
+        deleteMany: {
+          assessmentId,
+        },
+      },
+    },
+  })
+
+  const deletedAssessment = await prisma.assessment.delete({
+    where: {
+      id: assessmentId,
+    },
+  })
+
+  return true
+}
+
 export const deleteQuizService = async ({quizId}: {quizId: string}) => {
   const quiz = (await getSolutionAndTestId({quizId})) as {
     solutionId: string[]
