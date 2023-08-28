@@ -16,7 +16,12 @@ import {
   updateAssessmentAcceptance,
   updateAssessmentResult,
 } from './assessment'
-import {getActivityLogCount, getActivityLogs} from './candidate'
+import {
+  createNewQuizAttempt,
+  getActivityLogCount,
+  getActivityLogs,
+  getCandidateResult,
+} from './candidate'
 import {
   createQuiz,
   createQuizSolution,
@@ -211,63 +216,21 @@ export const createCandidateSubmissionService = async ({
   assessmentId,
   quizId,
   userId,
-}: any) => {
-  const assessment = await prisma.assessment.findUnique({
-    where: {
-      id: assessmentId,
-    },
-    select: {
-      assessmentResults: {
-        where: {
-          assessmentId,
-          quizId,
-          candidateId: userId,
-        },
-        include: {
-          assessmentQuizSubmissions: {
-            orderBy: {
-              start: 'desc',
-            },
-            take: 1,
-          },
-        },
-        // select: {
-        //   id: true,
-        //   status: true,
-        //   assessmentQuizSubmissions: {
-        //     select: {
-        //       id: true,
-        //     },
-        //     orderBy: {
-        //       start: 'desc',
-        //     },
-        //     take: 1,
-        //   },
-        // },
-      },
-    },
-  })
+}: {
+  assessmentId: string
+  quizId: string
+  userId: string
+}) => {
+  const assessment = await getCandidateResult({userId, quizId, assessmentId})
+
   const assessmentResult = assessment?.assessmentResults[0]
 
   if (!assessmentResult) {
     return {}
   }
 
-  const updatedAssessmentResult = await prisma.assessmentResult.update({
-    where: {
-      id: assessmentResult.id,
-    },
-    data: {
-      status: 'STARTED',
-      assessmentQuizSubmissions: {
-        create: {
-          start: new Date(),
-        },
-      },
-    },
-    include: {
-      assessmentQuizSubmissions: true,
-    },
+  const updatedAssessmentResult = await createNewQuizAttempt({
+    assessmentResultId: assessmentResult.id,
   })
   return updatedAssessmentResult
 }
