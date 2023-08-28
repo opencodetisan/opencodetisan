@@ -151,6 +151,25 @@ export const getAssessmentResult = async ({
   return assessmentResult
 }
 
+export const getManyAssessmentResult = async ({
+  candidateId,
+  assessmentId,
+}: {
+  candidateId?: string
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentResults = await prisma.assessmentResult.findMany({
+    where: {
+      assessmentId,
+      candidateId: candidateId ?? undefined,
+    },
+  })
+  return assessmentResults
+}
+
 export const deleteAssessmentQuizSubmissions = async ({
   submissionIds,
 }: IDeleteAssessmentQuizSubmissionsProps) => {
