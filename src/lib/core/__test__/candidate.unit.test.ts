@@ -4,6 +4,7 @@ import {
   createCandidateQuizSubmission,
   getActivityLogCount,
   getActivityLogs,
+  getCandidateResult,
 } from '../candidate'
 
 const uuid = faker.string.uuid()
@@ -30,6 +31,20 @@ const mockCandidateActivityLog = {
 const mockCandidateActivityLogs = new Array(2).map(() => {
   return mockCandidateActivityLog
 })
+
+const candidateResultMock = {
+  assessmentResults: [
+    {
+      id: uuid,
+      quizId: uuid,
+      assessmentId: uuid,
+      candidateId: uuid,
+      timeTaken: 0,
+      status: 'PENDING',
+      assessmentQuizSubmissions: [],
+    },
+  ],
+}
 
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
@@ -123,6 +138,51 @@ describe('Candidate module', () => {
     }
     expect(async () => await getActivityLogs(param)).rejects.toThrow(
       /^empty assessmentIds$/,
+    )
+  })
+
+  test('getCandidateResult fn should return candidate result', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      quizId: uuid,
+      userId: uuid,
+    }
+    prismaMock.assessment.findUnique.mockResolvedValue(
+      candidateResultMock as any,
+    )
+    expect(await getCandidateResult(param)).toEqual(candidateResultMock)
+  })
+
+  test('Missing assessmentId should raise a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+      quizId: uuid,
+      userId: uuid,
+    }
+    expect(async () => await getCandidateResult(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('Missing quizId should raise a missing quizId error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      // quizId: uuid,
+      userId: uuid,
+    }
+    expect(async () => await getCandidateResult(param)).rejects.toThrow(
+      /^missing quizId$/,
+    )
+  })
+
+  test('Missing userId should raise a missing userId error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      quizId: uuid,
+      // userId: uuid,
+    }
+    expect(async () => await getCandidateResult(param)).rejects.toThrow(
+      /^missing userId$/,
     )
   })
 })
