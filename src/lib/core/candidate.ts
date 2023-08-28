@@ -26,6 +26,47 @@ export const createCandidateQuizSubmission = async ({
   return submission
 }
 
+export const getCandidateResult = async ({
+  assessmentId,
+  quizId,
+  userId,
+}: {
+  assessmentId: string
+  quizId: string
+  userId: string
+}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!quizId) {
+    throw Error('missing quizId')
+  } else if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessment = await prisma.assessment.findUnique({
+    where: {
+      id: assessmentId,
+    },
+    select: {
+      assessmentResults: {
+        where: {
+          assessmentId,
+          quizId,
+          candidateId: userId,
+        },
+        include: {
+          assessmentQuizSubmissions: {
+            orderBy: {
+              start: 'desc',
+            },
+            take: 1,
+          },
+        },
+      },
+    },
+  })
+  return assessment
+}
+
 export const getActivityLogCount = async ({
   assessmentIds,
 }: {
