@@ -26,6 +26,33 @@ export const createCandidateQuizSubmission = async ({
   return submission
 }
 
+export const createNewQuizAttempt = async ({
+  assessmentResultId,
+}: {
+  assessmentResultId: string
+}) => {
+  if (!assessmentResultId) {
+    throw Error('missing assessmentResultId')
+  }
+  const assessmentResult = await prisma.assessmentResult.update({
+    where: {
+      id: assessmentResultId,
+    },
+    data: {
+      status: 'STARTED',
+      assessmentQuizSubmissions: {
+        create: {
+          start: new Date(),
+        },
+      },
+    },
+    include: {
+      assessmentQuizSubmissions: true,
+    },
+  })
+  return assessmentResult
+}
+
 export const getCandidateResult = async ({
   assessmentId,
   quizId,
