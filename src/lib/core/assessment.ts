@@ -485,6 +485,22 @@ export const deleteManyAssessmentResult = async ({
   return assessmentResultCount
 }
 
+export const deleteManyAssessmentQuiz = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentQuizCount = await prisma.assessmentQuiz.deleteMany({
+    where: {
+      assessmentId,
+    },
+  })
+  return assessmentQuizCount
+}
+
 export const deleteAssessmentQuiz = async ({
   assessmentId,
   quizId,
