@@ -7,12 +7,20 @@ import {
 } from '@/types'
 import {
   createAssessment,
+  deleteAssessmentData,
+  deleteAssessmentQuiz,
+  deleteManyAssessmentCandidate,
+  deleteManyAssessmentCandidateEmail,
+  deleteManyAssessmentQuiz,
+  deleteManyAssessmentQuizSubmission,
+  deleteManyAssessmentResult,
   getAssessment,
   getAssessmentIds,
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
   getAssessments,
   getManyAssessmentResult,
+  getManyAssessmentResultId,
   updateAssessment,
   updateAssessmentAcceptance,
   updateAssessmentCandidateStatus,
@@ -20,6 +28,7 @@ import {
 } from './assessment'
 import {
   createNewQuizAttempt,
+  deleteManyActivityLog,
   getActivityLogCount,
   getActivityLogs,
   getCandidateResult,
@@ -448,66 +457,22 @@ export const deleteAssessmentService = async ({
 }: {
   assessmentId: string
 }) => {
-  const {submissions} = await getAssessment({assessmentId})
+  const manyAssessmentQuizSubmissionId = await getManyAssessmentResultId({
+    assessmentId,
+  })
 
-  const assessmentQuizSubmissionPromises: Promise<any>[] = []
-
-  submissions.forEach((s) => {
-    s.data.forEach((d) => {
-      if (d.assessmentQuizSubmissions.length) {
-        d.assessmentQuizSubmissions.forEach((s) => {
-          assessmentQuizSubmissionPromises.push(
-            prisma.assessmentQuizSubmission.delete({
-              where: {
-                id: s.id,
-              },
-            }),
-          )
-        })
-      }
+  if (manyAssessmentQuizSubmissionId.length) {
+    await deleteManyAssessmentQuizSubmission({
+      manyAssessmentQuizSubmissionId,
     })
-  })
+  }
 
-  await Promise.all(assessmentQuizSubmissionPromises)
-
-  const assessment = await prisma.assessment.update({
-    where: {
-      id: assessmentId,
-    },
-    data: {
-      candidateActivityLog: {
-        deleteMany: {
-          assessmentId,
-        },
-      },
-      assessmentQuizzes: {
-        deleteMany: {
-          assessmentId,
-        },
-      },
-      assessmentCandidateEmail: {
-        deleteMany: {
-          assessmentId,
-        },
-      },
-      assessmentCandidates: {
-        deleteMany: {
-          assessmentId,
-        },
-      },
-      assessmentResults: {
-        deleteMany: {
-          assessmentId,
-        },
-      },
-    },
-  })
-
-  const deletedAssessment = await prisma.assessment.delete({
-    where: {
-      id: assessmentId,
-    },
-  })
+  await deleteManyAssessmentResult({assessmentId})
+  await deleteManyAssessmentQuiz({assessmentId})
+  await deleteManyAssessmentCandidate({assessmentId})
+  await deleteManyAssessmentCandidateEmail({assessmentId})
+  await deleteManyActivityLog({assessmentId})
+  await deleteAssessmentData({assessmentId})
 
   return true
 }
