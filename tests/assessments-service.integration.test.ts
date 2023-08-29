@@ -3,6 +3,8 @@ import {
   acceptAssessmentService,
   createAssessmentService,
   createCandidateSubmissionService,
+  deleteAssessmentService,
+  deleteQuizService,
   getAssessmentService,
   getManyAssessmentService,
   updateAssessmentDataService,
@@ -338,6 +340,59 @@ describe('Integration test: Assessment', () => {
       expect(await getManyAssessmentService({userId})).toEqual(
         expectedAssessments,
       )
+    })
+  })
+
+  describe('Integration test: deleteAssessmentService', () => {
+    const word = faker.lorem.word()
+    const codes = [
+      'This is the first attempt',
+      'This is the most recent attempt',
+    ]
+    let createadAssessment: any
+    let quizzes: Record<string, any>[]
+    let users: Record<string, any>[]
+    let assessmentPoints: Record<string, any>[]
+
+    beforeAll(async () => {
+      // await prisma.userAction.create({data: {id: 1, userAction: 'accept'}})
+      users = await createFakeUsers()
+      // await createFakeDifficultyLevel()
+      quizzes = await createFakeQuizzes({userId: users[0].id})
+      const quizIds = quizzes.map((q) => q.id)
+
+      // assessmentPoints = await createFakeAssessmentPoint()
+      createadAssessment = await createAssessmentService({
+        userId: users[0].id,
+        title: word,
+        description: word,
+        quizIds,
+      })
+      for (let i = 0; i < users.length; i++) {
+        await acceptAssessmentService({
+          assessmentId: createadAssessment.id,
+          token: faker.string.uuid(),
+          userId: users[i].id,
+        })
+      }
+      for (let i = 0; i < codes.length; i++) {
+        await createFakeCandidateSubmission({
+          userId: users[0].id,
+          quizId: quizzes[0].id,
+          assessmentId: createadAssessment.id,
+          code: codes[i],
+        })
+      }
+    })
+
+    test('it should delete an assessment', async () => {
+      await deleteAssessmentService({assessmentId: createadAssessment.id})
+
+      const receivedAssessment = await getAssessmentService({
+        assessmentId: createadAssessment.id,
+      })
+
+      expect(receivedAssessment).toEqual({})
     })
   })
 })
