@@ -326,6 +326,10 @@ export const getAssessment = async ({
     },
   })
 
+  if (!assessment) {
+    return null
+  }
+
   const data: Record<string, string | Date | number> = {}
   const candidates: Record<string, any>[] = []
   const submissions: Record<string, any>[] = []
