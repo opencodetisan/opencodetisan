@@ -404,6 +404,39 @@ export const getAssessmentQuizSubmission = async ({
   return assessmentQuizSubmission
 }
 
+export const getManyAssessmentResultId = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}): Promise<string[]> => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+
+  const assessment = await prisma.assessment.findUnique({
+    where: {
+      id: assessmentId,
+    },
+    select: {
+      assessmentResults: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  })
+
+  if (!assessment) {
+    return []
+  }
+
+  const assessmentResultIds = assessment.assessmentResults.map(
+    (result) => result.id,
+  )
+
+  return assessmentResultIds
+}
+
 export const deleteAssessmentResult = async ({
   assessmentResultId,
 }: {
