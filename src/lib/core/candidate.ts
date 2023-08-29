@@ -146,3 +146,19 @@ export const getActivityLogs = async ({
 
   return activityLogData
 }
+
+export const deleteManyActivityLog = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const activityLogCount = await prisma.candidateActivityLog.deleteMany({
+    where: {
+      assessmentId,
+    },
+  })
+  return activityLogCount
+}
