@@ -1,7 +1,7 @@
 import {CandidatePointLevel, QuizDifficulty} from '@/enums'
 
 export const convertToMinuteSecond = (seconds: number) => {
-  if (!seconds) {
+  if (seconds === undefined) {
     throw Error('missing seconds')
   }
   const minutes = Math.floor(seconds / 60)
