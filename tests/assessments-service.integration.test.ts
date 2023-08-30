@@ -1,4 +1,5 @@
 import {getAssessment} from '@/lib/core/assessment'
+import {getCandidate} from '@/lib/core/candidate'
 import {
   acceptAssessmentService,
   createAssessmentService,
@@ -101,13 +102,16 @@ const createFakeCandidateSubmission = async ({
     quizId,
     userId,
   })
-  const updatedSubmission = await updateCandidateSubmissionService({
-    userId,
-    quizId,
-    code,
-    assessmentQuizSubmissionId:
-      createdSubmission.assessmentQuizSubmissions[0].id,
-  })
+
+  for (let i = 0; i < createdSubmission.assessmentQuizSubmissions.length; i++) {
+    const updatedSubmission = await updateCandidateSubmissionService({
+      userId,
+      quizId,
+      code,
+      assessmentQuizSubmissionId:
+        createdSubmission.assessmentQuizSubmissions[i].id,
+    })
+  }
 }
 
 describe('Integration test: Assessment', () => {
