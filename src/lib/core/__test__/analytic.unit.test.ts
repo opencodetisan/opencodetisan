@@ -244,10 +244,7 @@ describe('Analytic module', () => {
       usersBelowPointCount: 0,
       point: 100,
     }
-    expect(getAssessmentComparativeScore(data)).toEqual({
-      comparativeScore: 100,
-      usersBelowPointCount: 0,
-    })
+    expect(getAssessmentComparativeScore(data)).toBe(100)
   })
 
   test('missing usersCount param should return a missing usersCount error', async () => {
