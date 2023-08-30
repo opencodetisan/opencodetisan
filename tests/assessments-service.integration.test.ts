@@ -244,6 +244,19 @@ describe('Integration test: Assessment', () => {
         delete q.difficultyLevel
       })
 
+      const candidatePromises: Promise<any>[] = []
+
+      users.forEach((user) => {
+        candidatePromises.push(
+          getCandidate({
+            candidateId: user.id,
+            assessmentId: createadAssessment.id,
+          }),
+        )
+      })
+
+      const candidates = await Promise.all(candidatePromises)
+
       expect(receivedAssessment.data).toEqual(createadAssessment)
       expect(assessmentQuizSubmissions[0].submission.code).toBe(codes[1])
       expect(quizzes).toMatchObject(receivedAssessment.quizzes)
@@ -254,6 +267,8 @@ describe('Integration test: Assessment', () => {
       expect(
         receivedAssessment.submissions[0].data[1].assessmentQuizSubmissions,
       ).toHaveLength(1)
+      expect(candidates[0].status).toBe('COMPLETED')
+      expect(candidates[1].status).toBe('PENDING')
     })
   })
 
