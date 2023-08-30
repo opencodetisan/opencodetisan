@@ -191,6 +191,71 @@ describe('Integration test: Assessment', () => {
     })
   })
 
+  describe('Integration test: createCandidateSubmissionService', () => {
+    const words = faker.lorem.words()
+    const number = faker.number.int({min: 1, max: 3866627})
+    let user: any
+    let quiz: any
+    let createdAssessment: Record<string, any>
+    let assessmentPoints: Record<string, any>[]
+    let assessmentQuizSubmissionId: string
+
+    beforeAll(async () => {
+      await prisma.codeLanguage.create({data: {id: number, name: words}})
+      await prisma.difficultyLevel.create({data: {id: number, name: words}})
+      user = await prisma.user.create({data: {name: faker.lorem.word()}})
+      quiz = await createQuizService({
+        quizData: {
+          userId: user.id,
+          title: words,
+          answer: words,
+          locale: words,
+          defaultCode: words,
+          instruction: words,
+          codeLanguageId: number,
+          difficultyLevelId: number,
+        },
+        quizSolution: [
+          {
+            code: words,
+            sequence: 0,
+            testRunner: words,
+            importDirectives: words,
+          },
+        ],
+        quizTestCases: [[{input: words, output: words}]],
+      })
+      // assessmentPoints = await createFakeAssessmentPoint()
+      createdAssessment = await createAssessmentService({
+        userId: user.id,
+        title: words,
+        description: words,
+        quizIds: [quiz.quizData.id],
+      })
+      await acceptAssessmentService({
+        assessmentId: createdAssessment.id,
+        token: faker.string.uuid(),
+        userId: user.id,
+      })
+    })
+
+    test('it should create candidate submission', async () => {
+      const candidateSubmission = await createCandidateSubmissionService({
+        assessmentId: createdAssessment.id,
+        quizId: quiz.quizData.id,
+        userId: user.id,
+      })
+      const retrievedAssessment = await getAssessmentService({
+        assessmentId: createdAssessment.id,
+      })
+      const submissionData = retrievedAssessment?.submissions[0].data[0]
+
+      expect(submissionData.status).toBe('STARTED')
+      expect(submissionData.assessmentQuizSubmissions).toHaveLength(0)
+      expect(submissionData.totalPoint).toBe(0)
+    })
+  })
+
   describe('Integration test: getAssessmentService', () => {
     const word = faker.lorem.word()
     const codes = [
