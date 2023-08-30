@@ -461,7 +461,16 @@ describe('Assessment module', () => {
       assessmentId: uuid,
     }
     prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
-    expect(await getAssessment(data)).toEqual(mockAssessment)
+    expect(await getAssessment(data)).toEqual(getAssessmentOutputMock)
+  })
+
+  test('missing assessmentId parameter should return a missing assessmentId error', async () => {
+    const data: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getAssessment(data)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
   })
 
   test('deleteAssessmentResult fn should delete and return assessmentResult', async () => {
