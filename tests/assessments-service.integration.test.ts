@@ -224,6 +224,12 @@ describe('Integration test: Assessment', () => {
           assessmentId: createadAssessment.id,
           code: codes[i],
         })
+        await createFakeCandidateSubmission({
+          userId: users[0].id,
+          quizId: quizzes[1].id,
+          assessmentId: createadAssessment.id,
+          code: codes[i],
+        })
       }
     })
 
