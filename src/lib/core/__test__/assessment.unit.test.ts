@@ -53,6 +53,19 @@ const mockAssessment = {
   title: text,
   description: text,
   createdAt: date,
+  assessmentCandidateEmail: [],
+  assessmentCandidates: [],
+  assessmentQuizzes: [
+    {
+      quiz: {
+        id: uuid,
+        title: uuid,
+        instruction: text,
+        difficultyLevelId: number,
+        difficultyLevel: {name: text},
+      },
+    },
+  ],
 }
 const mockAssessments = Array(2).fill(mockAssessment)
 
