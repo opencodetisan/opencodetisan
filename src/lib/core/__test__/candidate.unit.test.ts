@@ -5,6 +5,7 @@ import {
   createNewQuizAttempt,
   getActivityLogCount,
   getActivityLogs,
+  getCandidate,
   getCandidateResult,
 } from '../candidate'
 
@@ -45,6 +46,13 @@ const candidateResultMock = {
       assessmentQuizSubmissions: [],
     },
   ],
+}
+
+const assessmentCandidateMock = {
+  assessmentId: uuid,
+  candidateId: uuid,
+  status: 'PENDING',
+  token: uuid,
 }
 
 describe('Candidate module', () => {
@@ -201,6 +209,37 @@ describe('Candidate module', () => {
     const param: any = {}
     expect(async () => await createNewQuizAttempt(param)).rejects.toThrow(
       /^missing assessmentResultId$/,
+    )
+  })
+
+  test('getCandidate fn should return candidate data', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      candidateId: uuid,
+    }
+    prismaMock.assessmentCandidate.findUnique.mockResolvedValue(
+      assessmentCandidateMock as any,
+    )
+    expect(await getCandidate(param)).toEqual(assessmentCandidateMock)
+  })
+
+  test('Missing assessmentId should raise a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+      candidateId: uuid,
+    }
+    expect(async () => await getCandidate(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('Missing candidateId should raise a missing candidateId error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      // candidateId: uuid,
+    }
+    expect(async () => await getCandidate(param)).rejects.toThrow(
+      /^missing candidateId$/,
     )
   })
 })
