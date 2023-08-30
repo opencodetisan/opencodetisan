@@ -26,6 +26,27 @@ const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
 
+const getAssessmentOutputMock = {
+  data: {
+    id: uuid,
+    ownerId: uuid,
+    title: text,
+    description: text,
+    createdAt: date,
+  },
+  candidates: [],
+  submissions: [],
+  quizzes: [
+    {
+      id: uuid,
+      title: uuid,
+      instruction: text,
+      difficultyLevelId: number,
+      difficultyLevel: {name: text},
+    },
+  ],
+}
+
 const mockAssessment = {
   id: uuid,
   ownerId: uuid,
