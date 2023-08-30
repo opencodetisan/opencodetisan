@@ -4,6 +4,7 @@ import {
   acceptAssessmentService,
   createAssessmentService,
   createCandidateSubmissionService,
+  createQuizService,
   deleteAssessmentService,
   deleteQuizService,
   getAssessmentService,
@@ -303,6 +304,83 @@ describe('Integration test: Assessment', () => {
       })
 
       expect(receivedAssessment).toEqual(expectedAssessment.data)
+    })
+  })
+
+  describe('Integration test: updateCandidateSubmissionService', () => {
+    const words = faker.lorem.words()
+    let user: any
+    let quiz: any
+    let createdAssessment: Record<string, any>
+    let assessmentPoints: Record<string, any>[]
+    let assessmentQuizSubmissionId: string
+
+    beforeAll(async () => {
+      // await prisma.userAction.createMany({
+      //   data: [
+      //     {id: 1, userAction: 'accept'},
+      //     {id: 2, userAction: 'complete'},
+      //   ],
+      // })
+      await prisma.codeLanguage.create({data: {id: 1, name: words}})
+      user = await prisma.user.create({data: {name: faker.lorem.word()}})
+      quiz = await createQuizService({
+        quizData: {
+          userId: user.id,
+          title: words,
+          answer: words,
+          locale: words,
+          defaultCode: words,
+          instruction: words,
+          codeLanguageId: 1,
+          difficultyLevelId: 1,
+        },
+        quizSolution: [
+          {
+            code: words,
+            sequence: 0,
+            testRunner: words,
+            importDirectives: words,
+          },
+        ],
+        quizTestCases: [[{input: words, output: words}]],
+      })
+      // assessmentPoints = await createFakeAssessmentPoint()
+      createdAssessment = await createAssessmentService({
+        userId: user.id,
+        title: words,
+        description: words,
+        quizIds: [quiz.quizData.id],
+      })
+      await acceptAssessmentService({
+        assessmentId: createdAssessment.id,
+        token: faker.string.uuid(),
+        userId: user.id,
+      })
+      const candidateSubmission = await createCandidateSubmissionService({
+        assessmentId: createdAssessment.id,
+        quizId: quiz.quizData.id,
+        userId: user.id,
+      })
+      assessmentQuizSubmissionId = candidateSubmission
+        ?.assessmentQuizSubmissions[0].id as string
+    })
+
+    test('it should update candidate submission', async () => {
+      await updateCandidateSubmissionService({
+        assessmentQuizSubmissionId,
+        code: words,
+        userId: user.id,
+        quizId: quiz.quizData.id,
+      })
+      const retrievedAssessment = await getAssessmentService({
+        assessmentId: createdAssessment.id,
+      })
+      const submissionData = retrievedAssessment?.submissions[0].data[0]
+
+      expect(submissionData.status).toBe('COMPLETED')
+      expect(submissionData.assessmentQuizSubmissions).toHaveLength(1)
+      expect(submissionData.totalPoint).toBeGreaterThan(0)
     })
   })
 
