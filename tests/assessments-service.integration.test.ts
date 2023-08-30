@@ -16,6 +16,16 @@ import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
 import {inspect} from 'node:util'
 
+const inspectItem = (item: any) => {
+  console.log(
+    inspect(item, {
+      showHidden: false,
+      depth: null,
+      colors: true,
+    }),
+  )
+}
+
 const createFakeQuizzes = async ({userId}: {userId: string}) => {
   const word = faker.lorem.word()
   const codeLanguageId = faker.number.int(100000)
