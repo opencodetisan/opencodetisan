@@ -192,7 +192,12 @@ describe('Integration test: Assessment', () => {
     let assessmentPoints: Record<string, any>[]
 
     beforeAll(async () => {
-      await prisma.userAction.create({data: {id: 1, userAction: 'accept'}})
+      await prisma.userAction.createMany({
+        data: [
+          {id: 1, userAction: 'accept'},
+          {id: 2, userAction: 'complete'},
+        ],
+      })
       users = await createFakeUsers()
       await createFakeDifficultyLevel()
       quizzes = await createFakeQuizzes({userId: users[0].id})
