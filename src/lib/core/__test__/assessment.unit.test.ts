@@ -18,6 +18,7 @@ import {
   getAssessmentForReport,
   getManyAssessmentResult,
   updateAssessmentCandidateStatus,
+  deleteAssessmentData,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
 
@@ -699,6 +700,23 @@ describe('Assessment module', () => {
       // assessmentId: uuid,
     }
     expect(async () => await getManyAssessmentResult(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('deleteAssessmentData fn should return candidate data', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.delete.mockResolvedValue(mockAssessment)
+    expect(await deleteAssessmentData(param)).toEqual(mockAssessment)
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await deleteAssessmentData(param)).rejects.toThrow(
       /^missing assessmentId$/,
     )
   })
