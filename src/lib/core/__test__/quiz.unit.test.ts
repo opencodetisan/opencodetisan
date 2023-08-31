@@ -124,6 +124,15 @@ const fakeGetQuizOutput = {
   ],
 }
 
+const quizSubmissionMock = {
+  id: uuid,
+  userId: uuid,
+  quizId: uuid,
+  code: text,
+  createdAt: date,
+  updatedAt: date,
+}
+
 describe('Quiz module', () => {
   test('createQuiz function should save the quiz data and return the saved data', async () => {
     const quizData: any = {
