@@ -25,6 +25,7 @@ import {
   deleteManyAssessmentResult,
   deleteManyAssessmentQuizSubmission,
   getManyAssessmentResultId,
+  updateAssessmentResult,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
@@ -848,6 +849,96 @@ describe('Assessment module', () => {
     }
     expect(async () => await getManyAssessmentResultId(param)).rejects.toThrow(
       /^missing assessmentId$/,
+    )
+  })
+
+  test('updateAssessmentResult fn should update and return assessmentResult', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    prismaMock.assessmentResult.update.mockResolvedValue(mockAssessmentResult)
+    expect(await updateAssessmentResult(param)).toEqual(mockAssessmentResult)
+  })
+
+  test('missing assessmentResultId param should return a missing assessmentResultId error', async () => {
+    const param: any = {
+      // assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing assessmentResultId$/,
+    )
+  })
+
+  test('missing assessmentQuizSubmissionId param should return a missing assessmentQuizSubmissionId error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      // assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing assessmentQuizSubmissionId$/,
+    )
+  })
+
+  test('missing submissionId param should return a missing submissionId error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      // submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing submissionId$/,
+    )
+  })
+
+  test('missing timeTaken param should return a missing timeTaken error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      // timeTaken: number,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing timeTaken$/,
+    )
+  })
+
+  test('Invalid timeTaken param should return an invalid timeTaken error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: text,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^invalid timeTaken$/,
+    )
+  })
+
+  test('Missing status param should return a missing status error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      // status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing status$/,
     )
   })
 })
