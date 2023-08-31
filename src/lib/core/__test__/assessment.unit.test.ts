@@ -21,6 +21,7 @@ import {
   deleteAssessmentData,
   deleteManyAssessmentCandidateEmail,
   deleteManyAssessmentCandidate,
+  deleteManyAssessmentQuiz,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
@@ -773,5 +774,22 @@ describe('Assessment module', () => {
     expect(
       async () => await deleteManyAssessmentCandidate(param),
     ).rejects.toThrow(/^missing assessmentId$/)
+  })
+
+  test('deleteManyAssessmentQuiz fn should delete many assessment quizzes and return count number', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentQuiz.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyAssessmentQuiz(param)).toEqual({count: 1})
+  })
+
+  test('missing deleteAssessmentQuiz param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await deleteAssessmentQuiz(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
   })
 })
