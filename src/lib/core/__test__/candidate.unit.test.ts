@@ -8,6 +8,7 @@ import {
   getCandidate,
   getCandidateResult,
 } from '../candidate'
+import {createCandidatePoint} from '../analytic'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
@@ -240,6 +241,83 @@ describe('Candidate module', () => {
     }
     expect(async () => await getCandidate(param)).rejects.toThrow(
       /^missing candidateId$/,
+    )
+  })
+
+  test('createCandidatePoint fn should create and return submission', async () => {
+    const param: any = {
+      submissionId: uuid,
+      userId: uuid,
+      quizId: uuid,
+      totalPoint: number,
+      submissionPoint: number,
+    }
+    prismaMock.submission.update.mockResolvedValue(mockSubmission)
+    expect(await createCandidatePoint(param)).toEqual(mockSubmission)
+  })
+
+  test('Missing submissionId should raise a missing submissionId error', async () => {
+    const param: any = {
+      // submissionId: uuid,
+      userId: uuid,
+      quizId: uuid,
+      totalPoint: number,
+      submissionPoint: number,
+    }
+    expect(async () => await createCandidatePoint(param)).rejects.toThrow(
+      /^missing submissionId$/,
+    )
+  })
+
+  test('Missing userId should raise a missing userId error', async () => {
+    const param: any = {
+      submissionId: uuid,
+      // userId: uuid,
+      quizId: uuid,
+      totalPoint: number,
+      submissionPoint: number,
+    }
+    expect(async () => await createCandidatePoint(param)).rejects.toThrow(
+      /^missing userId$/,
+    )
+  })
+
+  test('Missing quizId should raise a missing quizId error', async () => {
+    const param: any = {
+      submissionId: uuid,
+      userId: uuid,
+      // quizId: uuid,
+      totalPoint: number,
+      submissionPoint: number,
+    }
+    expect(async () => await createCandidatePoint(param)).rejects.toThrow(
+      /^missing quizId$/,
+    )
+  })
+
+  test('Missing totalPoint should raise a missing totalPoint error', async () => {
+    const param: any = {
+      submissionId: uuid,
+      userId: uuid,
+      quizId: uuid,
+      // totalPoint: number,
+      submissionPoint: number,
+    }
+    expect(async () => await createCandidatePoint(param)).rejects.toThrow(
+      /^missing totalPoint$/,
+    )
+  })
+
+  test('Missing submissionPoint should raise a missing submissionPoint error', async () => {
+    const param: any = {
+      submissionId: uuid,
+      userId: uuid,
+      quizId: uuid,
+      totalPoint: number,
+      // submissionPoint: number,
+    }
+    expect(async () => await createCandidatePoint(param)).rejects.toThrow(
+      /^missing submissionPoint$/,
     )
   })
 })
