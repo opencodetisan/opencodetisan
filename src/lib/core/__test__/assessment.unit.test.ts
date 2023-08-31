@@ -24,6 +24,7 @@ import {
   deleteManyAssessmentQuiz,
   deleteManyAssessmentResult,
   deleteManyAssessmentQuizSubmission,
+  getManyAssessmentResultId,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
@@ -60,6 +61,7 @@ const mockAssessment = {
   title: text,
   description: text,
   createdAt: date,
+  assessmentResults: [{id: uuid}],
   assessmentCandidateEmail: [],
   assessmentCandidates: [],
   assessmentQuizzes: [
@@ -830,5 +832,22 @@ describe('Assessment module', () => {
     expect(
       async () => await deleteManyAssessmentQuizSubmission(param),
     ).rejects.toThrow(/^missing manyAssessmentQuizSubmissionId$/)
+  })
+
+  test('getManyAssessmentResultId fn should return many assessmentResult ids', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
+    expect(await getManyAssessmentResultId(param)).toEqual([uuid])
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getManyAssessmentResultId(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
   })
 })
