@@ -79,6 +79,14 @@ const mockAssessment = {
 }
 const mockAssessments = Array(2).fill(mockAssessment)
 
+const assessmentQuizSubmissionMock = {
+  id: uuid,
+  assessmentResultId: uuid,
+  submissionId: uuid,
+  start: date,
+  end: date,
+}
+
 const mockAssessmentCandidateEmail = {
   id: uuid,
   email: text,
