@@ -785,7 +785,7 @@ describe('Assessment module', () => {
     expect(await deleteManyAssessmentQuiz(param)).toEqual({count: 1})
   })
 
-  test('missing deleteAssessmentQuiz param should return a missing assessmentId error', async () => {
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
     const param: any = {
       // assessmentId: uuid,
     }
