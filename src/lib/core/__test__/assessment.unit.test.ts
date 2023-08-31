@@ -21,6 +21,7 @@ import {
   deleteAssessmentData,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
+import {deleteManyActivityLog} from '../candidate'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
@@ -717,6 +718,23 @@ describe('Assessment module', () => {
       // assessmentId: uuid,
     }
     expect(async () => await deleteAssessmentData(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('deleteManyActivityLog fn should delete many and return count number', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.candidateActivityLog.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyActivityLog(param)).toEqual({count: 1})
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await deleteManyActivityLog(param)).rejects.toThrow(
       /^missing assessmentId$/,
     )
   })
