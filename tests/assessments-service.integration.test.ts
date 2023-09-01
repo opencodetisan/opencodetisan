@@ -274,23 +274,38 @@ describe('Integration test: Assessment', () => {
 
   describe('Integration test: getAssessmentService', () => {
     const word = faker.lorem.word()
+    const text = faker.lorem.text()
+    const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const codeLanguages = [
+      {id: faker.number.int({min: 1, max: 100}), name: text},
+    ]
+    const difficultyLevels = [
+      {id: faker.number.int({min: 1, max: 100}), name: 'easy'},
+    ]
+    const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const quizIds = quizzes.map((q) => q.id)
     const codes = [
       'This is the first attempt',
       'This is the most recent attempt',
     ]
-    let createadAssessment: any
-    let quizzes: Record<string, any>[]
-    let users: Record<string, any>[]
+    let createdAssessment: any
     let assessmentPoints: Record<string, any>[]
 
     beforeAll(async () => {
-      users = await createFakeUsers()
-      await createFakeDifficultyLevel()
-      quizzes = await createFakeQuizzes({userId: users[0].id})
-      const quizIds = quizzes.map((q) => q.id)
-
+      await prisma.user.create({data: {id: users[0].id}})
+      await prisma.user.create({data: {id: users[1].id}})
+      await createManyFakeCodeLanguage(codeLanguages)
+      await createFakeDifficultyLevel(difficultyLevels)
+      for (let i = 0; i < quizzes.length; i++) {
+        await createFakeQuizzesTest({
+          userId: users[0].id,
+          quizId: quizzes[i].id,
+          codeLanguageId: codeLanguages[0].id,
+          difficultyLevelId: difficultyLevels[0].id,
+        })
+      }
       assessmentPoints = await createFakeAssessmentPoint()
-      createadAssessment = await createAssessmentService({
+      createdAssessment = await createAssessmentService({
         userId: users[0].id,
         title: word,
         description: word,
@@ -298,7 +313,7 @@ describe('Integration test: Assessment', () => {
       })
       for (let i = 0; i < users.length; i++) {
         await acceptAssessmentService({
-          assessmentId: createadAssessment.id,
+          assessmentId: createdAssessment.id,
           token: faker.string.uuid(),
           userId: users[i].id,
         })
@@ -307,13 +322,13 @@ describe('Integration test: Assessment', () => {
         await createFakeCandidateSubmission({
           userId: users[0].id,
           quizId: quizzes[0].id,
-          assessmentId: createadAssessment.id,
+          assessmentId: createdAssessment.id,
           code: codes[i],
         })
         await createFakeCandidateSubmission({
           userId: users[0].id,
           quizId: quizzes[1].id,
-          assessmentId: createadAssessment.id,
+          assessmentId: createdAssessment.id,
           code: codes[i],
         })
       }
