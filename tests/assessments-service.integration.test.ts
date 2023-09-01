@@ -392,16 +392,16 @@ describe('Integration test: Assessment', () => {
 
       const candidates = await Promise.all(candidatePromises)
 
-      expect(receivedAssessment.data).toEqual(createadAssessment)
+      expect(receivedAssessment?.data).toEqual(createdAssessment)
       expect(assessmentQuizSubmissions[0].submission.code).toBe(codes[1])
-      expect(quizzes).toMatchObject(receivedAssessment.quizzes)
-      expect(users).toMatchObject(receivedAssessment.candidates)
+      expect(receivedAssessment?.quizzes).toMatchObject(quizzes)
+      expect(receivedAssessment?.candidates).toMatchObject(users)
       expect(
-        receivedAssessment.submissions[0].data[0].assessmentQuizSubmissions,
-      ).toHaveLength(0)
-      expect(
-        receivedAssessment.submissions[0].data[1].assessmentQuizSubmissions,
+        receivedAssessment?.submissions[0].data[0].assessmentQuizSubmissions,
       ).toHaveLength(1)
+      expect(
+        receivedAssessment?.submissions[1].data[0].assessmentQuizSubmissions,
+      ).toHaveLength(0)
       expect(candidates[0].status).toBe('COMPLETED')
       expect(candidates[1].status).toBe('PENDING')
     })
