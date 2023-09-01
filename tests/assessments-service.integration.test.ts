@@ -354,6 +354,20 @@ describe('Integration test: Assessment', () => {
       }
     })
 
+    afterAll(async () => {
+      await deleteAssessmentService({assessmentId: createdAssessment.id})
+      await prisma.quizPointCollection.deleteMany({
+        where: {quizId: {in: quizIds}},
+      })
+      await prisma.submissionPoint.deleteMany({
+        where: {userId: {in: userIds}},
+      })
+      await prisma.submission.deleteMany({where: {quizId: {in: quizIds}}})
+      await prisma.quiz.deleteMany({where: {id: {in: quizIds}}})
+      await prisma.codeLanguage.deleteMany({where: {id: {in: codeLanguageIds}}})
+      await prisma.user.deleteMany({where: {id: {in: userIds}}})
+    })
+
     test('it should return the assessment data', async () => {
       const receivedAssessment = await getAssessmentService({
         assessmentId: createadAssessment.id,
