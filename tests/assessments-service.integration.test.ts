@@ -107,19 +107,19 @@ const createFakeCandidateSubmission = async ({
     quizId,
     userId,
   })
+  const assessmentResult = createdSubmission?.updatedAssessmentResult
 
   for (
     let i = 0;
-    i < createdSubmission?.assessmentQuizSubmissions.length!;
+    i < assessmentResult?.assessmentQuizSubmissions.length!;
     i++
   ) {
     const updatedSubmission = await updateCandidateSubmissionService({
       userId,
       quizId,
       code,
-      assessmentQuizSubmissionId: createdSubmission?.assessmentQuizSubmissions[
-        i
-      ].id as string,
+      assessmentQuizSubmissionId: assessmentResult?.assessmentQuizSubmissions[i]
+        .id as string,
     })
   }
 }
@@ -504,8 +504,8 @@ describe('Integration test: Assessment', () => {
         quizId: quizIds[0],
         userId: users[0].id,
       })
-      assessmentQuizSubmissionId = candidateSubmission
-        ?.assessmentQuizSubmissions[0].id as string
+      assessmentQuizSubmissionId = candidateSubmission?.updatedAssessmentResult
+        .assessmentQuizSubmissions[0].id as string
     })
 
     afterAll(async () => {
