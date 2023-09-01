@@ -339,6 +339,12 @@ export const updateCandidateSubmissionService = async ({
       assessmentId: assessmentResult.assessmentId,
     })
   }
+  return {
+    submission,
+    assessmentQuizSubmission,
+    assessmentResults,
+    assessmentPoint,
+  }
 }
 
 export const createAssessmentService = async ({
