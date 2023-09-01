@@ -659,6 +659,12 @@ describe('Integration test: Assessment', () => {
       })
     })
 
+    afterAll(async () => {
+      await prisma.quiz.deleteMany({where: {id: {in: quizIds}}})
+      await prisma.codeLanguage.deleteMany({where: {id: {in: codeLanguageIds}}})
+      await prisma.user.deleteMany({where: {id: {in: userIds}}})
+    })
+
     test('it should delete an assessment', async () => {
       await deleteAssessmentService({assessmentId: createadAssessment.id})
 
