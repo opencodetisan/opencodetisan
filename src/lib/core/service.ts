@@ -251,7 +251,12 @@ export const updateCandidateSubmissionService = async ({
   quizId,
   code,
   assessmentQuizSubmissionId,
-}: any) => {
+}: {
+  userId: string
+  quizId: string
+  code: string
+  assessmentQuizSubmissionId: string
+}) => {
   const submission = await createQuizSubmission({code, quizId, userId})
 
   const difficultyLevel = submission.quiz.difficultyLevel.name
