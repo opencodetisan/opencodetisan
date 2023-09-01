@@ -492,6 +492,31 @@ describe('Integration test: Assessment', () => {
         ?.assessmentQuizSubmissions[0].id as string
     })
 
+    afterAll(async () => {
+      await deleteAssessmentService({assessmentId: createdAssessment.id})
+      await prisma.quiz.deleteMany({
+        where: {
+          id: {
+            in: quizIds,
+          },
+        },
+      })
+      await prisma.codeLanguage.deleteMany({
+        where: {
+          id: {
+            in: codeLanguageIds,
+          },
+        },
+      })
+      await prisma.user.deleteMany({
+        where: {
+          id: {
+            in: userIds,
+          },
+        },
+      })
+    })
+
     test('it should update candidate submission', async () => {
       await updateCandidateSubmissionService({
         assessmentQuizSubmissionId,
