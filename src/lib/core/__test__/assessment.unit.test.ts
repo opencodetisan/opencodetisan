@@ -691,7 +691,7 @@ describe('Assessment module', () => {
       assessmentId: uuid,
     }
     prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
-    expect(await getAssessmentForReport(param)).toEqual(mockAssessment)
+    expect(await getAssessmentForReport(param)).toEqual(getAssessmentOutputMock)
   })
 
   test('missing assessmentId param should return a missing assessmentId error', async () => {
