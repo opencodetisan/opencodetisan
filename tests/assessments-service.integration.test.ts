@@ -627,44 +627,36 @@ describe('Integration test: Assessment', () => {
 
   describe('Integration test: deleteAssessmentService', () => {
     const word = faker.lorem.word()
-    const codes = [
-      'This is the first attempt',
-      'This is the most recent attempt',
+    const text = faker.lorem.text()
+    const users = [{id: faker.string.uuid()}]
+    const codeLanguages = [
+      {id: faker.number.int({min: 1, max: 100}), name: text},
     ]
-    let createadAssessment: any
-    let quizzes: Record<string, any>[]
-    let users: Record<string, any>[]
-    let assessmentPoints: Record<string, any>[]
+    const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const userIds = users.map((u) => u.id)
+    const codeLanguageIds = codeLanguages.map((l) => l.id)
+    const quizIds = quizzes.map((q) => q.id)
+
+    let createdAssessment: any
 
     beforeAll(async () => {
-      // await prisma.userAction.create({data: {id: 1, userAction: 'accept'}})
-      users = await createFakeUsers()
-      // await createFakeDifficultyLevel()
-      quizzes = await createFakeQuizzes({userId: users[0].id})
-      const quizIds = quizzes.map((q) => q.id)
+      await prisma.user.create({data: {id: users[0].id}})
+      await createManyFakeCodeLanguage(codeLanguages)
+      for (let i = 0; i < quizzes.length; i++) {
+        await createFakeQuizzes({
+          userId: users[0].id,
+          quizId: quizzes[i].id,
+          codeLanguageId: codeLanguages[0].id,
+          difficultyLevelId: difficultyLevels[0].id,
+        })
+      }
 
-      // assessmentPoints = await createFakeAssessmentPoint()
-      createadAssessment = await createAssessmentService({
+      createdAssessment = await createAssessmentService({
         userId: users[0].id,
         title: word,
         description: word,
         quizIds,
       })
-      for (let i = 0; i < users.length; i++) {
-        await acceptAssessmentService({
-          assessmentId: createadAssessment.id,
-          token: faker.string.uuid(),
-          userId: users[i].id,
-        })
-      }
-      for (let i = 0; i < codes.length; i++) {
-        await createFakeCandidateSubmission({
-          userId: users[0].id,
-          quizId: quizzes[0].id,
-          assessmentId: createadAssessment.id,
-          code: codes[i],
-        })
-      }
     })
 
     test('it should delete an assessment', async () => {
