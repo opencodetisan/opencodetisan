@@ -48,17 +48,11 @@ const createFakeQuizzes = async ({
   })
 }
 
-const createFakeDifficultyLevel = async () => {
-  const difficultyLevels = [{id: 1, name: 'easy'}]
-  const promises: Promise<any>[] = []
-
-  difficultyLevels.forEach((d) => {
-    promises.push(
-      prisma.difficultyLevel.create({
-        data: {name: d.name, id: d.id},
-      }),
-    )
-  })
+const createManyFakeDifficultyLevel = async (
+  difficultyLevels: {id: number; name: string}[],
+) => {
+  await prisma.difficultyLevel.createMany({data: difficultyLevels})
+}
 
   return await Promise.all(promises)
 }
