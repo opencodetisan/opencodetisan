@@ -243,7 +243,7 @@ export const createCandidateSubmissionService = async ({
   const updatedAssessmentResult = await createNewQuizAttempt({
     assessmentResultId: assessmentResult.id,
   })
-  return updatedAssessmentResult
+  return {assessment, updatedAssessmentResult}
 }
 
 export const updateCandidateSubmissionService = async ({
