@@ -247,6 +247,14 @@ describe('Integration test: Assessment', () => {
       })
     })
 
+    afterAll(async () => {
+      await deleteAssessmentService({assessmentId: createdAssessment.id})
+      await deleteQuizService({quizId: quiz.quizData.id})
+      await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
+      await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
+      await prisma.user.delete({where: {id: userId}})
+    })
+
     test('it should create candidate submission', async () => {
       const candidateSubmission = await createCandidateSubmissionService({
         assessmentId: createdAssessment.id,
