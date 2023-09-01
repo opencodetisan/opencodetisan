@@ -1,3 +1,25 @@
+export interface IAssessmentDataProps {
+  id: string
+  ownerId: string
+  title: string
+  description: string
+  createdAt: Date
+}
+
+export interface IUserProps {
+  id: string
+  name: string
+}
+
+export interface IAssessmentResultProps {
+  id: string
+  quizId: string
+  assessmentId: string
+  candidateId: string | null
+  timeTaken: number | null
+  status: 'COMPLETED' | 'STARTED' | 'PENDING'
+}
+
 export interface IQuizDataProps {
   id: string
   title: string
