@@ -209,7 +209,7 @@ describe('Integration test: Assessment', () => {
       assessmentId = assessment.id
       const expectedAssessment = await getAssessment({assessmentId})
 
-      expect(assessment).toEqual(expectedAssessment.data)
+      expect(assessment).toEqual(expectedAssessment?.data)
     })
   })
 
@@ -370,12 +370,12 @@ describe('Integration test: Assessment', () => {
 
     test('it should return the assessment data', async () => {
       const receivedAssessment = await getAssessmentService({
-        assessmentId: createadAssessment.id,
+        assessmentId: createdAssessment.id,
       })
       const assessmentQuizSubmissions =
-        receivedAssessment.submissions[0].data[1].assessmentQuizSubmissions
+        receivedAssessment?.submissions[0].data[1].assessmentQuizSubmissions
 
-      receivedAssessment.quizzes.forEach((q) => {
+      receivedAssessment?.quizzes.forEach((q) => {
         delete q.difficultyLevel
       })
 
@@ -385,7 +385,7 @@ describe('Integration test: Assessment', () => {
         candidatePromises.push(
           getCandidate({
             candidateId: user.id,
-            assessmentId: createadAssessment.id,
+            assessmentId: createdAssessment.id,
           }),
         )
       })
