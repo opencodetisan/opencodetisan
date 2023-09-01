@@ -108,13 +108,18 @@ const createFakeCandidateSubmission = async ({
     userId,
   })
 
-  for (let i = 0; i < createdSubmission.assessmentQuizSubmissions.length; i++) {
+  for (
+    let i = 0;
+    i < createdSubmission?.assessmentQuizSubmissions.length!;
+    i++
+  ) {
     const updatedSubmission = await updateCandidateSubmissionService({
       userId,
       quizId,
       code,
-      assessmentQuizSubmissionId:
-        createdSubmission.assessmentQuizSubmissions[i].id,
+      assessmentQuizSubmissionId: createdSubmission?.assessmentQuizSubmissions[
+        i
+      ].id as string,
     })
   }
 }
