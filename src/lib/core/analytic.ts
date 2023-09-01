@@ -83,6 +83,17 @@ export const createCandidatePoint = async ({
   totalPoint,
   submissionPoint,
 }: ICreateCandidatePointProps) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!submissionId) {
+    throw Error('missing submissionId')
+  } else if (!quizId) {
+    throw Error('missing quizId')
+  } else if (!totalPoint) {
+    throw Error('missing totalPoint')
+  } else if (!submissionPoint) {
+    throw Error('missing submissionPoint')
+  }
   const submission = await prisma.submission.update({
     where: {
       id: submissionId,
