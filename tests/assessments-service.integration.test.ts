@@ -666,13 +666,13 @@ describe('Integration test: Assessment', () => {
     })
 
     test('it should delete an assessment', async () => {
-      await deleteAssessmentService({assessmentId: createadAssessment.id})
+      await deleteAssessmentService({assessmentId: createdAssessment.id})
 
       const receivedAssessment = await getAssessmentService({
-        assessmentId: createadAssessment.id,
+        assessmentId: createdAssessment.id,
       })
 
-      expect(receivedAssessment).toEqual({})
+      expect(receivedAssessment).toEqual(null)
     })
   })
 })
