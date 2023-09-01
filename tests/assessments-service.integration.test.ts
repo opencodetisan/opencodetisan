@@ -521,8 +521,8 @@ describe('Integration test: Assessment', () => {
       await updateCandidateSubmissionService({
         assessmentQuizSubmissionId,
         code: words,
-        userId: user.id,
-        quizId: quiz.quizData.id,
+        userId: users[0].id,
+        quizId: quizIds[0],
       })
       const retrievedAssessment = await getAssessmentService({
         assessmentId: createdAssessment.id,
