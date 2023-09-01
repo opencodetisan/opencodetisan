@@ -54,7 +54,10 @@ const createManyFakeDifficultyLevel = async (
   await prisma.difficultyLevel.createMany({data: difficultyLevels})
 }
 
-  return await Promise.all(promises)
+const createManyFakeCodeLanguage = async (
+  codeLanguages: {id: number; name: string}[],
+) => {
+  await prisma.codeLanguage.createMany({data: codeLanguages})
 }
 
 const createFakeAssessmentPoint = async () => {
