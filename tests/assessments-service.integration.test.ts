@@ -426,7 +426,7 @@ describe('Integration test: Assessment', () => {
       await prisma.user.create({data: {id: users[1].id}})
       await createManyFakeCodeLanguage(codeLanguages)
       for (let i = 0; i < quizzes.length; i++) {
-        await createFakeQuizzesTest({
+        await createFakeQuizzes({
           userId: users[0].id,
           quizId: quizzes[i].id,
           codeLanguageId: codeLanguages[0].id,
