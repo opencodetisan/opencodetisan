@@ -1,11 +1,14 @@
 import {
   IAddAssessmentQuizzesProps,
+  IAssessmentDataProps,
+  IAssessmentResultProps,
   ICandidateEmailStatusProps,
   ICreateAssessmentProps,
   IDeleteAssessmentQuizSubmissionsProps,
   IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentProps,
   IUpdateAssessmentResultProps,
+  IUserProps,
 } from '@/types'
 import prisma from '../db/client'
 import {AssessmentStatus, CandidateActionId} from '@/enums'
@@ -316,19 +319,27 @@ export const getAssessment = async ({
   })
 
   for (let key in assessment) {
-    if (typeof assessment[key] === 'string' || key === 'createdAt') {
-      data[key] = assessment[key]
+    const k = key as keyof IAssessmentDataProps
+
+    if (typeof assessment[k] === 'string' || key === 'createdAt') {
+      data[k] = assessment[k]
     }
   }
 
   assessment?.assessmentCandidates.forEach((c) => {
-    const candidateData = {}
-    const submissionData = {id: '', name: '', data: []}
+    const candidateData: IUserProps = {id: '', name: ''}
     const candidate = c.candidate
+    const submissionData: {
+      id: string
+      name: string
+      data: IAssessmentResultProps[]
+    } = {id: '', name: '', data: []}
 
     for (let key in candidate) {
-      if (typeof candidate[key] === 'string') {
-        candidateData[key] = candidate[key]
+      const k = key as keyof IUserProps
+
+      if (typeof candidate[k] === 'string') {
+        candidateData[k] = candidate[k] as string
       }
     }
 
