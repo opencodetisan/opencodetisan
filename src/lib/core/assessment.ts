@@ -5,6 +5,7 @@ import {
   ICandidateEmailStatusProps,
   ICreateAssessmentProps,
   IDeleteAssessmentQuizSubmissionsProps,
+  IQuizDataProps,
   IUpdateAssessmentAcceptanceProps,
   IUpdateAssessmentProps,
   IUpdateAssessmentResultProps,
@@ -314,9 +315,11 @@ export const getAssessment = async ({
   const submissions: Record<string, any>[] = []
   const quizzes: Record<string, any>[] = []
 
-  assessment?.assessmentQuizzes.forEach((q) => {
-    quizzes.push(q.quiz)
-  })
+  assessment?.assessmentQuizzes.forEach(
+    (q: {quiz: Partial<IQuizDataProps>}) => {
+      quizzes.push(q.quiz)
+    },
+  )
 
   for (let key in assessment) {
     const k = key as keyof IAssessmentDataProps
