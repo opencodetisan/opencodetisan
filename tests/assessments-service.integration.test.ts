@@ -192,8 +192,11 @@ describe('Integration test: Assessment', () => {
   })
 
   describe('Integration test: createCandidateSubmissionService', () => {
-    const words = faker.lorem.words()
+    const text = faker.lorem.text()
     const number = faker.number.int({min: 1, max: 3866627})
+    const userId = faker.string.uuid()
+    const codeLanguageId = faker.number.int(1000)
+    const difficultyLevelId = faker.number.int(1000)
     let user: any
     let quiz: any
     let createdAssessment: Record<string, any>
@@ -201,35 +204,40 @@ describe('Integration test: Assessment', () => {
     let assessmentQuizSubmissionId: string
 
     beforeAll(async () => {
-      await prisma.codeLanguage.create({data: {id: number, name: words}})
-      await prisma.difficultyLevel.create({data: {id: number, name: words}})
-      user = await prisma.user.create({data: {name: faker.lorem.word()}})
+      user = await prisma.user.create({
+        data: {id: userId, name: faker.lorem.word()},
+      })
+      await prisma.codeLanguage.create({
+        data: {id: codeLanguageId, name: text},
+      })
+      await prisma.difficultyLevel.create({
+        data: {id: difficultyLevelId, name: text},
+      })
       quiz = await createQuizService({
         quizData: {
-          userId: user.id,
-          title: words,
-          answer: words,
-          locale: words,
-          defaultCode: words,
-          instruction: words,
-          codeLanguageId: number,
-          difficultyLevelId: number,
+          userId,
+          title: text,
+          answer: text,
+          locale: text,
+          defaultCode: text,
+          instruction: text,
+          codeLanguageId,
+          difficultyLevelId,
         },
         quizSolution: [
           {
-            code: words,
+            code: text,
             sequence: 0,
-            testRunner: words,
-            importDirectives: words,
+            testRunner: text,
+            importDirectives: text,
           },
         ],
-        quizTestCases: [[{input: words, output: words}]],
+        quizTestCases: [[{input: text, output: text}]],
       })
-      // assessmentPoints = await createFakeAssessmentPoint()
       createdAssessment = await createAssessmentService({
-        userId: user.id,
-        title: words,
-        description: words,
+        userId,
+        title: text,
+        description: text,
         quizIds: [quiz.quizData.id],
       })
       await acceptAssessmentService({
