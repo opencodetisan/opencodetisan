@@ -237,7 +237,7 @@ export const createCandidateSubmissionService = async ({
   const assessmentResult = assessment?.assessmentResults[0]
 
   if (!assessmentResult) {
-    return {}
+    return null
   }
 
   const updatedAssessmentResult = await createNewQuizAttempt({
