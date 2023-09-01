@@ -374,17 +374,31 @@ describe('Integration test: Assessment', () => {
   })
 
   describe('Integration test: updateAssessmentDataService', () => {
-    let users
-    let quizzes
+    const word = faker.lorem.words()
+    const text = faker.lorem.text()
+    const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const codeLanguages = [
+      {id: faker.number.int({min: 1, max: 100}), name: text},
+    ]
+    const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const userIds = users.map((u) => u.id)
+    const codeLanguageIds = codeLanguages.map((l) => l.id)
+    const quizIds = quizzes.map((q) => q.id)
+
     let createdAssessment: Record<string, any>
 
-    const word = faker.lorem.words()
-
     beforeAll(async () => {
-      users = await createFakeUsers()
-      quizzes = await createFakeQuizzes({userId: users[0].id})
-      const quizIds = quizzes.map((q) => q.id)
-
+      await prisma.user.create({data: {id: users[0].id}})
+      await prisma.user.create({data: {id: users[1].id}})
+      await createManyFakeCodeLanguage(codeLanguages)
+      for (let i = 0; i < quizzes.length; i++) {
+        await createFakeQuizzesTest({
+          userId: users[0].id,
+          quizId: quizzes[i].id,
+          codeLanguageId: codeLanguages[0].id,
+          difficultyLevelId: difficultyLevels[0].id,
+        })
+      }
       createdAssessment = await createAssessmentService({
         userId: users[0].id,
         title: word,
