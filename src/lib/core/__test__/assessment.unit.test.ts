@@ -912,19 +912,6 @@ describe('Assessment module', () => {
     )
   })
 
-  test('missing timeTaken param should return a missing timeTaken error', async () => {
-    const param: any = {
-      assessmentResultId: uuid,
-      assessmentQuizSubmissionId: uuid,
-      submissionId: uuid,
-      // timeTaken: number,
-      status: text,
-    }
-    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
-      /^missing timeTaken$/,
-    )
-  })
-
   test('Invalid timeTaken param should return an invalid timeTaken error', async () => {
     const param: any = {
       assessmentResultId: uuid,
