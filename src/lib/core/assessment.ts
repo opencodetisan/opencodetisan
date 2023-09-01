@@ -665,6 +665,18 @@ export const updateAssessmentResult = async ({
   timeTaken,
   status,
 }: IUpdateAssessmentResultProps) => {
+  if (!assessmentResultId) {
+    throw Error('missing assessmentResultId')
+  } else if (!assessmentQuizSubmissionId) {
+    throw Error('missing assessmentQuizSubmissionId')
+  } else if (!submissionId) {
+    throw Error('missing submissionId')
+  } else if (typeof timeTaken !== 'number') {
+    throw Error('invalid timeTaken')
+  } else if (!status) {
+    throw Error('missing status')
+  }
+
   const assessmentResult = await prisma.assessmentResult.update({
     where: {id: assessmentResultId},
     data: {
