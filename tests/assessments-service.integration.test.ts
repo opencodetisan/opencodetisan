@@ -301,10 +301,9 @@ describe('Integration test: Assessment', () => {
     const codeLanguages = [
       {id: faker.number.int({min: 1, max: 100}), name: text},
     ]
-    const difficultyLevels = [
-      {id: faker.number.int({min: 1, max: 100}), name: 'easy'},
-    ]
     const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const userIds = users.map((u) => u.id)
+    const codeLanguageIds = codeLanguages.map((l) => l.id)
     const quizIds = quizzes.map((q) => q.id)
     const codes = [
       'This is the first attempt',
@@ -317,9 +316,8 @@ describe('Integration test: Assessment', () => {
       await prisma.user.create({data: {id: users[0].id}})
       await prisma.user.create({data: {id: users[1].id}})
       await createManyFakeCodeLanguage(codeLanguages)
-      await createFakeDifficultyLevel(difficultyLevels)
       for (let i = 0; i < quizzes.length; i++) {
-        await createFakeQuizzesTest({
+        await createFakeQuizzes({
           userId: users[0].id,
           quizId: quizzes[i].id,
           codeLanguageId: codeLanguages[0].id,
