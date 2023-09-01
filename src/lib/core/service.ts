@@ -483,9 +483,9 @@ export const deleteAssessmentService = async ({
   await deleteManyAssessmentCandidate({assessmentId})
   await deleteManyAssessmentCandidateEmail({assessmentId})
   await deleteManyActivityLog({assessmentId})
-  await deleteAssessmentData({assessmentId})
+  const assessmentData = await deleteAssessmentData({assessmentId})
 
-  return true
+  return {assessmentData}
 }
 
 export const deleteQuizService = async ({quizId}: {quizId: string}) => {
