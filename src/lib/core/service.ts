@@ -372,7 +372,7 @@ export const getAssessmentService = async ({
   })
 
   if (!assessment) {
-    return {}
+    return null
   } else if (!assessment.candidates.length) {
     return assessment
   }
