@@ -26,29 +26,26 @@ const inspectItem = (item: any) => {
   )
 }
 
-const createFakeQuizzes = async ({userId}: {userId: string}) => {
-  const word = faker.lorem.word()
-  const codeLanguageId = faker.number.int(100000)
-  const createQuizPromises: Promise<any>[] = []
-
-  await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
-
-  for (let i = 0; i < 2; i++) {
-    createQuizPromises.push(
-      prisma.quiz.create({
-        data: {
-          title: `quiz_${i + 1}`,
-          userId,
-          codeLanguageId,
-          difficultyLevelId: 1,
-        },
-      }),
-    )
-  }
-
-  const quizzes = await Promise.all(createQuizPromises)
-
-  return quizzes
+const createFakeQuizzes = async ({
+  quizId,
+  userId,
+  difficultyLevelId,
+  codeLanguageId,
+}: {
+  quizId: string
+  userId: string
+  difficultyLevelId: number
+  codeLanguageId: number
+}) => {
+  await prisma.quiz.create({
+    data: {
+      id: quizId,
+      title: faker.lorem.text(),
+      userId,
+      codeLanguageId,
+      difficultyLevelId,
+    },
+  })
 }
 
 const createFakeDifficultyLevel = async () => {
