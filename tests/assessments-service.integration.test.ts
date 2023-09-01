@@ -448,58 +448,45 @@ describe('Integration test: Assessment', () => {
 
   describe('Integration test: updateCandidateSubmissionService', () => {
     const words = faker.lorem.words()
-    let user: any
-    let quiz: any
+    const text = faker.lorem.text()
+    const users = [{id: faker.string.uuid()}]
+    const codeLanguages = [
+      {id: faker.number.int({min: 1, max: 100}), name: text},
+    ]
+    const quizzes = [{id: faker.string.uuid()}]
+    const userIds = users.map((u) => u.id)
+    const codeLanguageIds = codeLanguages.map((l) => l.id)
+    const quizIds = quizzes.map((q) => q.id)
+
     let createdAssessment: Record<string, any>
-    let assessmentPoints: Record<string, any>[]
     let assessmentQuizSubmissionId: string
 
     beforeAll(async () => {
-      // await prisma.userAction.createMany({
-      //   data: [
-      //     {id: 1, userAction: 'accept'},
-      //     {id: 2, userAction: 'complete'},
-      //   ],
-      // })
-      await prisma.codeLanguage.create({data: {id: 1, name: words}})
-      user = await prisma.user.create({data: {name: faker.lorem.word()}})
-      quiz = await createQuizService({
-        quizData: {
-          userId: user.id,
-          title: words,
-          answer: words,
-          locale: words,
-          defaultCode: words,
-          instruction: words,
-          codeLanguageId: 1,
-          difficultyLevelId: 1,
-        },
-        quizSolution: [
-          {
-            code: words,
-            sequence: 0,
-            testRunner: words,
-            importDirectives: words,
-          },
-        ],
-        quizTestCases: [[{input: words, output: words}]],
-      })
-      // assessmentPoints = await createFakeAssessmentPoint()
+      await prisma.user.create({data: {id: users[0].id}})
+      await createManyFakeCodeLanguage(codeLanguages)
+      for (let i = 0; i < quizzes.length; i++) {
+        await createFakeQuizzesTest({
+          userId: users[0].id,
+          quizId: quizzes[i].id,
+          codeLanguageId: codeLanguages[0].id,
+          difficultyLevelId: difficultyLevels[0].id,
+        })
+      }
       createdAssessment = await createAssessmentService({
-        userId: user.id,
+        userId: users[0].id,
         title: words,
         description: words,
-        quizIds: [quiz.quizData.id],
+        quizIds,
       })
       await acceptAssessmentService({
         assessmentId: createdAssessment.id,
         token: faker.string.uuid(),
-        userId: user.id,
+        userId: users[0].id,
       })
       const candidateSubmission = await createCandidateSubmissionService({
         assessmentId: createdAssessment.id,
-        quizId: quiz.quizData.id,
-        userId: user.id,
+        quizId: quizIds[0],
+        userId: users[0].id,
       })
       assessmentQuizSubmissionId = candidateSubmission
         ?.assessmentQuizSubmissions[0].id as string
