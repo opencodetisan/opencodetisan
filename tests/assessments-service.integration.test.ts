@@ -125,6 +125,29 @@ const createFakeCandidateSubmission = async ({
 }
 
 describe('Integration test: Assessment', () => {
+  const difficultyLevels = [
+    {id: faker.number.int({min: 1, max: 100}), name: 'easy'},
+  ]
+  const difficultyLevelIds = difficultyLevels.map((d) => d.id)
+
+  beforeAll(async () => {
+    await createManyFakeDifficultyLevel(difficultyLevels)
+    await prisma.userAction.createMany({
+      data: [
+        {id: 1, userAction: 'accept'},
+        {id: 2, userAction: 'complete'},
+      ],
+    })
+  })
+
+  afterAll(async () => {
+    await prisma.candidateActivityLog.deleteMany()
+    await prisma.userAction.deleteMany({where: {id: {in: [1, 2]}}})
+    await prisma.difficultyLevel.deleteMany({
+      where: {id: {in: difficultyLevelIds}},
+    })
+  })
+
   describe('Integration test: createAssessmentService', () => {
     const uuid = faker.string.uuid()
     const word = faker.lorem.word()
