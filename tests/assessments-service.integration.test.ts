@@ -442,7 +442,7 @@ describe('Integration test: Assessment', () => {
         assessmentId: receivedAssessment.id,
       })
 
-      expect(receivedAssessment).toEqual(expectedAssessment.data)
+      expect(receivedAssessment).toEqual(expectedAssessment?.data)
     })
   })
 
