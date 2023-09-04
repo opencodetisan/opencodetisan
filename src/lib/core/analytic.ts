@@ -2,10 +2,11 @@ import {compressSync, decompressSync, strFromU8, strToU8} from 'fflate'
 import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {glob} from 'glob'
 import {
-  IAssessmentPointsProps,
+  IAssessmentPointProps,
   ICreateCandidatePointProps,
   IGetAssessmentComparativeScoreProps,
   IGetAssessmentQuizPointProps,
+  IManyAssessmentPointProps,
 } from '@/types'
 import prisma from '../db/client'
 import {AssessmentComparativeScoreLevel, AssessmentPoint} from '@/enums'
@@ -64,13 +65,14 @@ export const readSessionReplay = async ({
 }
 
 export const getAssessmentPoints = async () => {
-  let object: IAssessmentPointsProps = {}
+  let object: IManyAssessmentPointProps = {}
   const assessmentPoints = await prisma.assessmentPoint.findMany()
   if (assessmentPoints.length === 0) {
     return {}
   } else {
     assessmentPoints.forEach(
-      (p: any) => (object[p.name] = {point: p.point, id: p.id}),
+      (p: IAssessmentPointProps) =>
+        (object[p.name] = {point: p.point, id: p.id}),
     )
   }
   return object
