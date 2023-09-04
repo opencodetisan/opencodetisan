@@ -1,4 +1,5 @@
 import {
+  IAssessmentResultProps,
   ICreateAssessmentServiceProps,
   ICreateQuizServiceProps,
   IUpdateAssessmentDataServiceProps,
@@ -331,7 +332,9 @@ export const updateCandidateSubmissionService = async ({
     candidateId: userId,
   })
 
-  const allCompleted = assessmentResults.every((r) => r.status === 'COMPLETED')
+  const allCompleted = assessmentResults.every((r: IAssessmentResultProps) => {
+    r.status === 'COMPLETED'
+  })
 
   if (allCompleted) {
     updateAssessmentCandidateStatus({
