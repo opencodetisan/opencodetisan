@@ -417,7 +417,8 @@ export const getAssessmentService = async ({
 
         const quizSubmission = assessmentQuizSubmissions[0].submission
 
-        quizSubmission.submissionPoint.forEach((s: Record<string, any>) => {
+        // TODO: Replace any type with a proper type
+        quizSubmission.submissionPoint.forEach((s: any) => {
           point += s.point
           totalPoint += s.point
         })
