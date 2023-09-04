@@ -329,7 +329,8 @@ export const getAssessment = async ({
     }
   }
 
-  assessment?.assessmentCandidates.forEach((c) => {
+  // TODO: Replace any type with a proper type
+  assessment?.assessmentCandidates.forEach((c: any) => {
     const candidateData: IUserProps = {id: '', name: ''}
     const candidate = c.candidate
     const submissionData: {
@@ -425,7 +426,7 @@ export const getManyAssessmentResultId = async ({
   }
 
   const assessmentResultIds = assessment.assessmentResults.map(
-    (result) => result.id,
+    (result: IAssessmentResultProps) => result.id,
   )
 
   return assessmentResultIds
