@@ -219,9 +219,11 @@ export const getSolutionAndTestId = async ({quizId}: {quizId: string}) => {
     return {}
   }
 
+  // TODO: Replace any type with a proper type
   quiz.solutions.forEach((solution: Record<string, any>) => {
     output.solutionId.push(solution.id)
 
+    // TODO: Replace any type with a proper type
     solution.testCases.forEach((test: Record<string, any>) => {
       output.testCaseId.push(test.id)
     })
@@ -354,6 +356,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
     }
   }
 
+  // TODO: Replace any type with a proper type
   quiz.solutions.forEach((solution: Record<string, any>) => {
     const quizSolution: IQuizSolutionProps = {
       quizId: '',
