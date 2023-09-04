@@ -310,12 +310,12 @@ export const updateCandidateSubmissionService = async ({
     {
       userId,
       point: quizPointInt,
-      assessmentPointId: parseInt(quizPointId),
+      assessmentPointId: quizPointId,
     },
     {
       userId,
       point: Math.round(speedPointInt),
-      assessmentPointId: parseInt(speedPointId),
+      assessmentPointId: speedPointId,
     },
   ]
 
