@@ -204,13 +204,13 @@ export interface IGetAssessmentComparativeScoreProps {
   quizPoint?: number
 }
 
-export interface IAssessmentPointsProps {
-  [key: string]: {point: number; id: string}
+export interface IManyAssessmentPointProps {
+  [key: string]: {point: number; id: number}
 }
 
 export interface IGetAssessmentQuizPointProps {
   assessmentQuizzes: IAssessmentQuizProps[]
-  assessmentPoints: IAssessmentPointsProps
+  assessmentPoints: IManyAssessmentPointProps
 }
 
 export interface IUpdateQuizTestCaseProps {
