@@ -27,6 +27,12 @@ export interface IAssessmentCandidateProps {
   token: string
 }
 
+export interface IAssessmentPointProps {
+  id: number
+  name: string
+  point: number
+}
+
 export interface IQuizDataProps {
   id: string
   title: string
