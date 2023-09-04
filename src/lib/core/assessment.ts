@@ -426,7 +426,7 @@ export const getManyAssessmentResultId = async ({
   }
 
   const assessmentResultIds = assessment.assessmentResults.map(
-    (result: IAssessmentResultProps) => result.id,
+    (result: Pick<IAssessmentResultProps, 'id'>) => result.id,
   )
 
   return assessmentResultIds
