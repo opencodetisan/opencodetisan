@@ -20,6 +20,13 @@ export interface IAssessmentResultProps {
   status: 'COMPLETED' | 'STARTED' | 'PENDING'
 }
 
+export interface IAssessmentCandidateProps {
+  assessmentId: string
+  candidateId: string
+  status: 'PENDING' | 'COMPLETED'
+  token: string
+}
+
 export interface IQuizDataProps {
   id: string
   title: string
