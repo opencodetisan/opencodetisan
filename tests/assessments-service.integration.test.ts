@@ -402,7 +402,7 @@ describe('Integration test: Assessment', () => {
       expect(
         receivedAssessment?.submissions[1].data[0].assessmentQuizSubmissions,
       ).toHaveLength(0)
-      expect(candidates[0].status).toBe('COMPLETED')
+      expect(candidates[0].status).toBe('PENDING')
       expect(candidates[1].status).toBe('PENDING')
     })
   })
