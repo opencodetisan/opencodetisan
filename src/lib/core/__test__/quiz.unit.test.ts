@@ -1,6 +1,7 @@
 import {
   createQuiz,
   createQuizSolution,
+  createQuizSubmission,
   createQuizTestCase,
   deleteQuiz,
   deleteQuizSolution,
@@ -19,6 +20,7 @@ const word = faker.lorem.word()
 const uuid = faker.string.uuid()
 const date = faker.date.anytime()
 const number = faker.number.int(1000)
+const text = faker.lorem.text()
 
 const fakeQuizTestCase = {
   id: uuid,
@@ -120,6 +122,15 @@ const fakeGetQuizOutput = {
       solutionId: uuid,
     },
   ],
+}
+
+const quizSubmissionMock = {
+  id: uuid,
+  userId: uuid,
+  quizId: uuid,
+  code: text,
+  createdAt: date,
+  updatedAt: date,
 }
 
 describe('Quiz module', () => {
@@ -682,5 +693,48 @@ describe('Quiz module', () => {
   test('Missing locale parameter should raise a missing locale error', async () => {
     const param: any = {}
     expect(async () => await getQuiz(param)).rejects.toThrow(/^missing quizId$/)
+  })
+
+  test('createQuizSubmission fn should create and return submission', async () => {
+    const param: any = {
+      userId: uuid,
+      quizId: uuid,
+      code: uuid,
+    }
+    prismaMock.submission.create.mockResolvedValue(quizSubmissionMock)
+    expect(await createQuizSubmission(param)).toEqual(quizSubmissionMock)
+  })
+
+  test('Missing userId parameter should raise a missing userId error', async () => {
+    const param: any = {
+      // userId: uuid,
+      quizId: uuid,
+      code: uuid,
+    }
+    expect(async () => await createQuizSubmission(param)).rejects.toThrow(
+      /^missing userId$/,
+    )
+  })
+
+  test('Missing quizId parameter should raise a missing quizId error', async () => {
+    const param: any = {
+      userId: uuid,
+      // quizId: uuid,
+      code: uuid,
+    }
+    expect(async () => await createQuizSubmission(param)).rejects.toThrow(
+      /^missing quizId$/,
+    )
+  })
+
+  test('Missing code parameter should raise a missing code error', async () => {
+    const param: any = {
+      userId: uuid,
+      quizId: uuid,
+      // code: uuid,
+    }
+    expect(async () => await createQuizSubmission(param)).rejects.toThrow(
+      /^missing code$/,
+    )
   })
 })

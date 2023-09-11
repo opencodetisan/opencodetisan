@@ -1,6 +1,7 @@
 import {
   ICreateQuizProps,
   ICreateQuizSolutionProps,
+  ICreateQuizSubmissionProps,
   ICreateQuizTestCaseProps,
   IQuizDataProps,
   IQuizProps,
@@ -72,6 +73,36 @@ export const createQuizTestCase = async (
   const result = await prisma.testCase.create({data: testCase})
 
   return result
+}
+
+export const createQuizSubmission = async ({
+  userId,
+  quizId,
+  code,
+}: ICreateQuizSubmissionProps) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!quizId) {
+    throw Error('missing quizId')
+  } else if (!code) {
+    throw Error('missing code')
+  }
+
+  const submission = await prisma.submission.create({
+    data: {
+      userId,
+      quizId,
+      code,
+    },
+    include: {
+      quiz: {
+        include: {
+          difficultyLevel: true,
+        },
+      },
+    },
+  })
+  return submission
 }
 
 export const updateQuiz = async ({
@@ -188,9 +219,11 @@ export const getSolutionAndTestId = async ({quizId}: {quizId: string}) => {
     return {}
   }
 
+  // TODO: Replace any type with a proper type
   quiz.solutions.forEach((solution: Record<string, any>) => {
     output.solutionId.push(solution.id)
 
+    // TODO: Replace any type with a proper type
     solution.testCases.forEach((test: Record<string, any>) => {
       output.testCaseId.push(test.id)
     })
@@ -323,6 +356,7 @@ export const getQuiz = async ({quizId}: {quizId: string}) => {
     }
   }
 
+  // TODO: Replace any type with a proper type
   quiz.solutions.forEach((solution: Record<string, any>) => {
     const quizSolution: IQuizSolutionProps = {
       quizId: '',

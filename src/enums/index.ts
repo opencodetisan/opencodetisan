@@ -21,3 +21,21 @@ export enum AssessmentStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
 }
+
+export enum AssessmentQuizStatus {
+  Pending = 'PENDING',
+  Started = 'STARTED',
+  Completed = 'COMPLETED',
+}
+
+export enum CandidatePointLevel {
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high',
+}
+
+export enum QuizDifficulty {
+  Easy = 'easy',
+  Medium = 'medium',
+  Hard = 'hard',
+}

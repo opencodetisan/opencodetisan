@@ -1,20 +1,43 @@
 import {
+  IAssessmentResultProps,
   ICreateAssessmentServiceProps,
   ICreateQuizServiceProps,
+  IUpdateAssessmentDataServiceProps,
   IUpdateQuizDataServiceProps,
   IUpdateQuizSolutionServiceProps,
 } from '@/types'
 import {
   createAssessment,
+  deleteAssessmentData,
+  deleteAssessmentQuiz,
+  deleteManyAssessmentCandidate,
+  deleteManyAssessmentCandidateEmail,
+  deleteManyAssessmentQuiz,
+  deleteManyAssessmentQuizSubmission,
+  deleteManyAssessmentResult,
+  getAssessment,
   getAssessmentIds,
+  getAssessmentQuizSubmission,
   getAssessmentQuizzes,
   getAssessments,
+  getManyAssessmentResult,
+  getManyAssessmentResultId,
+  updateAssessment,
   updateAssessmentAcceptance,
+  updateAssessmentCandidateStatus,
+  updateAssessmentResult,
 } from './assessment'
-import {getActivityLogCount, getActivityLogs} from './candidate'
+import {
+  createNewQuizAttempt,
+  deleteManyActivityLog,
+  getActivityLogCount,
+  getActivityLogs,
+  getCandidateResult,
+} from './candidate'
 import {
   createQuiz,
   createQuizSolution,
+  createQuizSubmission,
   createQuizTestCase,
   deleteQuiz,
   deleteQuizSolution,
@@ -26,6 +49,22 @@ import {
   updateQuizSolution,
   updateQuizTestCase,
 } from './quiz'
+import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
+import {
+  createCandidatePoint,
+  getAssessmentComparativeScore,
+  getAssessmentComparativeScoreLevel,
+  getAssessmentPoints,
+  getAssessmentUsersBelowPointCount,
+  getAssessmentUsersCount,
+} from './analytic'
+import {AssessmentPoint} from '@/enums'
+import prisma from '../db/client'
+import {
+  convertToMinuteSecond,
+  getCandidatePointLevel,
+  getQuizTimeLimit,
+} from '../utils'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -185,6 +224,132 @@ export const updateQuizSolutionService = async ({
   return {quizSolution: solutions, quizTestCase: testCases}
 }
 
+export const createCandidateSubmissionService = async ({
+  assessmentId,
+  quizId,
+  userId,
+}: {
+  assessmentId: string
+  quizId: string
+  userId: string
+}) => {
+  const assessment = await getCandidateResult({userId, quizId, assessmentId})
+
+  const assessmentResult = assessment?.assessmentResults[0]
+
+  if (!assessmentResult) {
+    return null
+  }
+
+  const updatedAssessmentResult = await createNewQuizAttempt({
+    assessmentResultId: assessmentResult.id,
+  })
+  return {assessment, updatedAssessmentResult}
+}
+
+export const updateCandidateSubmissionService = async ({
+  userId,
+  quizId,
+  code,
+  assessmentQuizSubmissionId,
+}: {
+  userId: string
+  quizId: string
+  code: string
+  assessmentQuizSubmissionId: string
+}) => {
+  const submission = await createQuizSubmission({code, quizId, userId})
+
+  const difficultyLevel = submission.quiz.difficultyLevel.name
+
+  const assessmentQuizSubmission = await getAssessmentQuizSubmission({
+    assessmentQuizSubmissionId,
+  })
+
+  if (!assessmentQuizSubmission) {
+    return {}
+  }
+
+  const start = new Date(assessmentQuizSubmission?.start as Date).getTime()
+  const end = new Date().getTime()
+
+  const timeTaken =
+    Math.round(((end - start) / 1000 + Number.EPSILON) * 100) / 100
+
+  const assessmentResult = await updateAssessmentResult({
+    status: 'COMPLETED',
+    timeTaken,
+    assessmentQuizSubmissionId: assessmentQuizSubmissionId,
+    assessmentResultId: assessmentQuizSubmission.assessmentResultId,
+    submissionId: submission.id,
+  })
+
+  const assessmentPoint = await getAssessmentPoints()
+
+  let {id: quizPointId, point: quizPointInt} =
+    assessmentPoint![difficultyLevel + QUIZ_COMPLETION_POINT]
+  let {id: speedPointId, point: speedPointInt} =
+    assessmentPoint![AssessmentPoint.SpeedPoint]
+
+  const timeLimit = getQuizTimeLimit(difficultyLevel)
+  const minutesTaken = convertToMinuteSecond(timeTaken)?.minutes
+
+  if (minutesTaken <= timeLimit / 2) {
+    speedPointInt *= 1.2
+  } else if (minutesTaken <= timeLimit * 0.7) {
+    speedPointInt *= 1.1
+  } else if (minutesTaken <= timeLimit * 0.85) {
+    speedPointInt *= 1.05
+  } else if (minutesTaken > timeLimit) {
+    speedPointInt = 0
+  }
+
+  const totalPoint = quizPointInt + speedPointInt
+
+  const submissionPoint = [
+    {
+      userId,
+      point: quizPointInt,
+      assessmentPointId: quizPointId,
+    },
+    {
+      userId,
+      point: Math.round(speedPointInt),
+      assessmentPointId: speedPointId,
+    },
+  ]
+
+  await createCandidatePoint({
+    totalPoint,
+    submissionPoint,
+    quizId,
+    userId,
+    submissionId: submission.id,
+  })
+
+  const assessmentResults = await getManyAssessmentResult({
+    assessmentId: assessmentResult.assessmentId,
+    candidateId: userId,
+  })
+
+  const allCompleted = assessmentResults.every((r: IAssessmentResultProps) => {
+    r.status === 'COMPLETED'
+  })
+
+  if (allCompleted) {
+    updateAssessmentCandidateStatus({
+      candidateId: userId,
+      assessmentId: assessmentResult.assessmentId,
+    })
+  }
+  return {
+    submission,
+    assessmentQuizSubmission,
+    assessmentResults,
+    assessmentPoint,
+  }
+}
+
 export const createAssessmentService = async ({
   userId,
   title,
@@ -198,6 +363,133 @@ export const createAssessmentService = async ({
     quizIds,
   })
   return assessment
+}
+
+export const getAssessmentService = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  const assessment = await getAssessment({
+    assessmentId,
+  })
+
+  if (!assessment) {
+    return null
+  } else if (!assessment.candidates.length) {
+    return assessment
+  }
+
+  let maxPoint = 0
+  let maxQuizPoints: Record<string, number> = {}
+  const assignedQuizzes: any = []
+
+  const assessmentPoints = await getAssessmentPoints()
+
+  assessment.quizzes?.forEach((q) => {
+    const assessmentPointName = `${q.difficultyLevel.name}${QUIZ_COMPLETION_POINT}`
+    const difficultyPoint = assessmentPoints[assessmentPointName]?.point
+    const speedPoint =
+      assessmentPoints[AssessmentPoint.SpeedPoint]?.point *
+      MAX_SPEED_POINT_MULTIPLIER
+
+    const sum = difficultyPoint + speedPoint
+
+    assignedQuizzes.push(q.quiz)
+    maxPoint += sum
+    maxQuizPoints[q.id] = sum
+  })
+
+  const candidateSubmissions = assessment.submissions
+
+  for (let i = 0; i < candidateSubmissions.length; i++) {
+    const submissions = candidateSubmissions[i].data
+    const userId = candidateSubmissions[i].id
+
+    for (let j = 0; j < submissions.length; j++) {
+      let totalPoint = 0
+
+      const assessmentQuizSubmissions = submissions[j].assessmentQuizSubmissions
+      const quizId = submissions[j].quizId
+
+      if (assessmentQuizSubmissions.length) {
+        let point = 0
+
+        const quizSubmission = assessmentQuizSubmissions[0].submission
+
+        // TODO: Replace any type with a proper type
+        quizSubmission.submissionPoint.forEach((s: any) => {
+          point += s.point
+          totalPoint += s.point
+        })
+
+        const players = await getAssessmentUsersCount({quizId, userId})
+
+        const defeatedPlayers = await getAssessmentUsersBelowPointCount({
+          userId,
+          quizId,
+          point,
+        })
+
+        const comparativeScore = getAssessmentComparativeScore({
+          point,
+          usersCount: players,
+          quizPoint: maxQuizPoints[quizId],
+          usersBelowPointCount: defeatedPlayers,
+        })
+
+        const comparativeScoreLevel = getAssessmentComparativeScoreLevel({
+          comparativeScore,
+        })
+
+        quizSubmission.point = point
+        quizSubmission.comparativeScore = comparativeScore
+        quizSubmission.comparativeScoreLevel = comparativeScoreLevel
+        delete quizSubmission.submissionPoint
+      }
+      const totalPointLevel = getCandidatePointLevel(totalPoint)
+
+      submissions[j].totalPoint = totalPoint
+      submissions[j].totalPointLevel = totalPointLevel
+    }
+  }
+
+  return assessment
+}
+
+export const updateAssessmentDataService = async ({
+  title,
+  description,
+  assessmentId,
+}: IUpdateAssessmentDataServiceProps) => {
+  const assessment = await updateAssessment({title, description, assessmentId})
+
+  return assessment
+}
+
+export const deleteAssessmentService = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  const manyAssessmentQuizSubmissionId = await getManyAssessmentResultId({
+    assessmentId,
+  })
+
+  if (manyAssessmentQuizSubmissionId.length) {
+    await deleteManyAssessmentQuizSubmission({
+      manyAssessmentQuizSubmissionId,
+    })
+  }
+
+  await deleteManyAssessmentResult({assessmentId})
+  await deleteManyAssessmentQuiz({assessmentId})
+  await deleteManyAssessmentCandidate({assessmentId})
+  await deleteManyAssessmentCandidateEmail({assessmentId})
+  await deleteManyActivityLog({assessmentId})
+  const assessmentData = await deleteAssessmentData({assessmentId})
+
+  return {assessmentData}
 }
 
 export const deleteQuizService = async ({quizId}: {quizId: string}) => {

@@ -1,3 +1,38 @@
+export interface IAssessmentDataProps {
+  id: string
+  ownerId: string
+  title: string
+  description: string
+  createdAt: Date
+}
+
+export interface IUserProps {
+  id: string
+  name: string
+}
+
+export interface IAssessmentResultProps {
+  id: string
+  quizId: string
+  assessmentId: string
+  candidateId: string | null
+  timeTaken: number | null
+  status: 'COMPLETED' | 'STARTED' | 'PENDING'
+}
+
+export interface IAssessmentCandidateProps {
+  assessmentId: string
+  candidateId: string
+  status: 'PENDING' | 'COMPLETED'
+  token: string
+}
+
+export interface IAssessmentPointProps {
+  id: number
+  name: string
+  point: number
+}
+
 export interface IQuizDataProps {
   id: string
   title: string
@@ -169,13 +204,13 @@ export interface IGetAssessmentComparativeScoreProps {
   quizPoint?: number
 }
 
-export interface IAssessmentPointsProps {
-  [key: string]: {point: number; id: string}
+export interface IManyAssessmentPointProps {
+  [key: string]: {point: number; id: number}
 }
 
 export interface IGetAssessmentQuizPointProps {
   assessmentQuizzes: IAssessmentQuizProps[]
-  assessmentPoints: IAssessmentPointsProps
+  assessmentPoints: IManyAssessmentPointProps
 }
 
 export interface IUpdateQuizTestCaseProps {
@@ -226,4 +261,32 @@ export interface IUpdateQuizDataServiceProps {
 export interface IUpdateQuizSolutionServiceProps {
   quizSolution: IUpdateQuizSolutionProps[]
   quizTestCase: IUpdateQuizTestCaseProps[]
+}
+
+export interface ICreateCandidatePointProps {
+  submissionId: string
+  userId: string
+  quizId: string
+  totalPoint: number
+  submissionPoint: {userId: string; point: number; assessmentPointId: number}[]
+}
+
+export interface ICreateQuizSubmissionProps {
+  userId: string
+  quizId: string
+  code: string
+}
+
+export interface IUpdateAssessmentResultProps {
+  assessmentResultId: string
+  assessmentQuizSubmissionId: string
+  submissionId: string
+  timeTaken: number
+  status: 'COMPLETED' | 'PENDING' | 'STARTED'
+}
+
+export interface IUpdateAssessmentDataServiceProps {
+  title: string
+  description: string
+  assessmentId: string
 }

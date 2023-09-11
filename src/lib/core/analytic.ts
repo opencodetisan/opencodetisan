@@ -2,9 +2,11 @@ import {compressSync, decompressSync, strFromU8, strToU8} from 'fflate'
 import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {glob} from 'glob'
 import {
-  IAssessmentPointsProps,
+  IAssessmentPointProps,
+  ICreateCandidatePointProps,
   IGetAssessmentComparativeScoreProps,
   IGetAssessmentQuizPointProps,
+  IManyAssessmentPointProps,
 } from '@/types'
 import prisma from '../db/client'
 import {AssessmentComparativeScoreLevel, AssessmentPoint} from '@/enums'
@@ -63,16 +65,71 @@ export const readSessionReplay = async ({
 }
 
 export const getAssessmentPoints = async () => {
-  let object: IAssessmentPointsProps = {}
+  let object: IManyAssessmentPointProps = {}
   const assessmentPoints = await prisma.assessmentPoint.findMany()
   if (assessmentPoints.length === 0) {
     return {}
   } else {
     assessmentPoints.forEach(
-      (p: any) => (object[p.name] = {point: p.point, id: p.id}),
+      (p: IAssessmentPointProps) =>
+        (object[p.name] = {point: p.point, id: p.id}),
     )
   }
   return object
+}
+
+export const createCandidatePoint = async ({
+  submissionId,
+  userId,
+  quizId,
+  totalPoint,
+  submissionPoint,
+}: ICreateCandidatePointProps) => {
+  if (!userId) {
+    throw Error('missing userId')
+  } else if (!submissionId) {
+    throw Error('missing submissionId')
+  } else if (!quizId) {
+    throw Error('missing quizId')
+  } else if (!totalPoint) {
+    throw Error('missing totalPoint')
+  } else if (!submissionPoint) {
+    throw Error('missing submissionPoint')
+  }
+  const submission = await prisma.submission.update({
+    where: {
+      id: submissionId,
+    },
+    data: {
+      submissionPoint: {
+        createMany: {
+          data: submissionPoint,
+        },
+      },
+      quiz: {
+        update: {
+          quizPointCollection: {
+            upsert: {
+              where: {
+                userId_quizId: {
+                  userId,
+                  quizId,
+                },
+              },
+              create: {
+                userId,
+                point: totalPoint,
+              },
+              update: {
+                point: totalPoint,
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  return submission
 }
 
 export const getAssessmentComparativeScore = ({
@@ -97,7 +154,7 @@ export const getAssessmentComparativeScore = ({
     comparativeScore = Math.round(+((usersBelowPointCount / usersCount) * 100))
   }
 
-  return {comparativeScore, usersBelowPointCount}
+  return comparativeScore
 }
 
 export const getAssessmentComparativeScoreLevel = ({

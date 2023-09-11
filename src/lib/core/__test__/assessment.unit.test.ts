@@ -12,18 +12,50 @@ import {
   getAssessmentResult,
   getAssessments,
   updateAssessment,
-  updateAssessmentCandidateStatus,
   getAssessmentIds,
   getAssessmentQuizzes,
   updateAssessmentAcceptance,
   getAssessmentForReport,
+  getManyAssessmentResult,
+  updateAssessmentCandidateStatus,
+  deleteAssessmentData,
+  deleteManyAssessmentCandidateEmail,
+  deleteManyAssessmentCandidate,
+  deleteManyAssessmentQuiz,
+  deleteManyAssessmentResult,
+  deleteManyAssessmentQuizSubmission,
+  getManyAssessmentResultId,
+  updateAssessmentResult,
+  getAssessmentQuizSubmission,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
+import {deleteManyActivityLog} from '../candidate'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
+
+const getAssessmentOutputMock = {
+  data: {
+    id: uuid,
+    ownerId: uuid,
+    title: text,
+    description: text,
+    createdAt: date,
+  },
+  candidates: [],
+  submissions: [],
+  quizzes: [
+    {
+      id: uuid,
+      title: uuid,
+      instruction: text,
+      difficultyLevelId: number,
+      difficultyLevel: {name: text},
+    },
+  ],
+}
 
 const mockAssessment = {
   id: uuid,
@@ -31,8 +63,30 @@ const mockAssessment = {
   title: text,
   description: text,
   createdAt: date,
+  assessmentResults: [{id: uuid}],
+  assessmentCandidateEmail: [],
+  assessmentCandidates: [],
+  assessmentQuizzes: [
+    {
+      quiz: {
+        id: uuid,
+        title: uuid,
+        instruction: text,
+        difficultyLevelId: number,
+        difficultyLevel: {name: text},
+      },
+    },
+  ],
 }
 const mockAssessments = Array(2).fill(mockAssessment)
+
+const assessmentQuizSubmissionMock = {
+  id: uuid,
+  assessmentResultId: uuid,
+  submissionId: uuid,
+  start: date,
+  end: date,
+}
 
 const mockAssessmentCandidateEmail = {
   id: uuid,
@@ -275,38 +329,32 @@ describe('Assessment module', () => {
     )
   })
 
-  test('updateAssessmentCandidateStatus fn should update and return the assessmentCandidate data', async () => {
-    const assessmentCandidateData: any = {
+  test('updateAssessmentCandidateStatus fn should update and return assessment data', async () => {
+    const param: any = {
       assessmentId: uuid,
       candidateId: uuid,
     }
-    prismaMock.assessmentCandidate.update.mockResolvedValue(
-      mockAssessmentCandidate,
-    )
-    expect(
-      await updateAssessmentCandidateStatus(assessmentCandidateData),
-    ).toEqual(mockAssessmentCandidate)
+    prismaMock.assessment.update.mockResolvedValue(mockAssessment)
+    expect(await updateAssessmentCandidateStatus(param)).toEqual(mockAssessment)
   })
 
   test('missing assessmentId parameter should return a missing assessmentId error', async () => {
-    const assessmentCandidateData: any = {
+    const param: any = {
       // assessmentId: uuid,
       candidateId: uuid,
     }
     expect(
-      async () =>
-        await updateAssessmentCandidateStatus(assessmentCandidateData),
+      async () => await updateAssessmentCandidateStatus(param),
     ).rejects.toThrow(/^missing assessmentId$/)
   })
 
   test('missing candidateId parameter should return a missing candidateId error', async () => {
-    const assessmentCandidateData: any = {
+    const param: any = {
       assessmentId: uuid,
       // candidateId: uuid,
     }
     expect(
-      async () =>
-        await updateAssessmentCandidateStatus(assessmentCandidateData),
+      async () => await updateAssessmentCandidateStatus(param),
     ).rejects.toThrow(/^missing candidateId$/)
   })
 
@@ -432,7 +480,16 @@ describe('Assessment module', () => {
       assessmentId: uuid,
     }
     prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
-    expect(await getAssessment(data)).toEqual(mockAssessment)
+    expect(await getAssessment(data)).toEqual(getAssessmentOutputMock)
+  })
+
+  test('missing assessmentId parameter should return a missing assessmentId error', async () => {
+    const data: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getAssessment(data)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
   })
 
   test('deleteAssessmentResult fn should delete and return assessmentResult', async () => {
@@ -634,7 +691,7 @@ describe('Assessment module', () => {
       assessmentId: uuid,
     }
     prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
-    expect(await getAssessmentForReport(param)).toEqual(mockAssessment)
+    expect(await getAssessmentForReport(param)).toEqual(getAssessmentOutputMock)
   })
 
   test('missing assessmentId param should return a missing assessmentId error', async () => {
@@ -644,5 +701,261 @@ describe('Assessment module', () => {
     expect(async () => await getAssessmentForReport(param)).rejects.toThrow(
       /^missing assessmentId$/,
     )
+  })
+
+  test('getManyAssessmentResult fn should return many assessmentResults', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentResult.findMany.mockResolvedValue(
+      mockAssessmentResults,
+    )
+    expect(await getManyAssessmentResult(param)).toEqual(mockAssessmentResults)
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getManyAssessmentResult(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('deleteAssessmentData fn should return candidate data', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.delete.mockResolvedValue(mockAssessment)
+    expect(await deleteAssessmentData(param)).toEqual(mockAssessment)
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await deleteAssessmentData(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('deleteManyActivityLog fn should delete many and return count number', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.candidateActivityLog.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyActivityLog(param)).toEqual({count: 1})
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await deleteManyActivityLog(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('deleteManyAssessmentCandidateEmail fn should delete many candidate email and return count number', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentCandidateEmail.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyAssessmentCandidateEmail(param)).toEqual({count: 1})
+  })
+
+  test('missing deleteManyAssessmentCandidateEmail param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(
+      async () => await deleteManyAssessmentCandidateEmail(param),
+    ).rejects.toThrow(/^missing assessmentId$/)
+  })
+
+  test('deleteManyAssessmentCandidate fn should delete many candidate and return count number', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentCandidate.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyAssessmentCandidate(param)).toEqual({count: 1})
+  })
+
+  test('missing deleteManyAssessmentCandidate param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(
+      async () => await deleteManyAssessmentCandidate(param),
+    ).rejects.toThrow(/^missing assessmentId$/)
+  })
+
+  test('deleteManyAssessmentQuiz fn should delete many assessment quizzes and return count number', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentQuiz.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyAssessmentQuiz(param)).toEqual({count: 1})
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await deleteAssessmentQuiz(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('deleteManyAssessmentResult fn should delete many assessment results and return count number', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentResult.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyAssessmentResult(param)).toEqual({count: 1})
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await deleteManyAssessmentResult(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('deleteManyAssessmentQuizSubmission fn should delete many assessment quiz submissions and return count number', async () => {
+    const param: any = {manyAssessmentQuizSubmissionId: [uuid]}
+    prismaMock.assessmentQuizSubmission.deleteMany.mockResolvedValue({count: 1})
+    expect(await deleteManyAssessmentQuizSubmission(param)).toEqual({count: 1})
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {manyAssessmentQuizSubmissionId: undefined}
+    expect(
+      async () => await deleteManyAssessmentQuizSubmission(param),
+    ).rejects.toThrow(/^missing manyAssessmentQuizSubmissionId$/)
+  })
+
+  test('empty manyAssessmentQuizSubmissionId param should return a missing assessmentId error', async () => {
+    const param: any = {manyAssessmentQuizSubmissionId: []}
+    expect(
+      async () => await deleteManyAssessmentQuizSubmission(param),
+    ).rejects.toThrow(/^missing manyAssessmentQuizSubmissionId$/)
+  })
+
+  test('getManyAssessmentResultId fn should return many assessmentResult ids', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
+    expect(await getManyAssessmentResultId(param)).toEqual([uuid])
+  })
+
+  test('missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getManyAssessmentResultId(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('updateAssessmentResult fn should update and return assessmentResult', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    prismaMock.assessmentResult.update.mockResolvedValue(mockAssessmentResult)
+    expect(await updateAssessmentResult(param)).toEqual(mockAssessmentResult)
+  })
+
+  test('missing assessmentResultId param should return a missing assessmentResultId error', async () => {
+    const param: any = {
+      // assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing assessmentResultId$/,
+    )
+  })
+
+  test('missing assessmentQuizSubmissionId param should return a missing assessmentQuizSubmissionId error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      // assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing assessmentQuizSubmissionId$/,
+    )
+  })
+
+  test('missing submissionId param should return a missing submissionId error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      // submissionId: uuid,
+      timeTaken: number,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing submissionId$/,
+    )
+  })
+
+  test('Invalid timeTaken param should return an invalid timeTaken error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: text,
+      status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^invalid timeTaken$/,
+    )
+  })
+
+  test('Missing status param should return a missing status error', async () => {
+    const param: any = {
+      assessmentResultId: uuid,
+      assessmentQuizSubmissionId: uuid,
+      submissionId: uuid,
+      timeTaken: number,
+      // status: text,
+    }
+    expect(async () => await updateAssessmentResult(param)).rejects.toThrow(
+      /^missing status$/,
+    )
+  })
+
+  test('getAssessmentQuizSubmission fn should return getAssessmentQuizSubmission', async () => {
+    const param: any = {
+      assessmentQuizSubmissionId: uuid,
+    }
+    prismaMock.assessmentQuizSubmission.findUnique.mockResolvedValue(
+      assessmentQuizSubmissionMock,
+    )
+    expect(await getAssessmentQuizSubmission(param)).toEqual(
+      assessmentQuizSubmissionMock,
+    )
+  })
+
+  test('Missing assessmentQuizSubmissionId param should return a missing assessmentQuizSubmissionId error', async () => {
+    const param: any = {
+      // assessmentQuizSubmissionId: uuid,
+    }
+    expect(
+      async () => await getAssessmentQuizSubmission(param),
+    ).rejects.toThrow(/^missing assessmentQuizSubmissionId$/)
   })
 })

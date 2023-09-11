@@ -1,14 +1,18 @@
 import {
   IAddAssessmentQuizzesProps,
+  IAssessmentDataProps,
+  IAssessmentResultProps,
   ICandidateEmailStatusProps,
   ICreateAssessmentProps,
   IDeleteAssessmentQuizSubmissionsProps,
+  IQuizDataProps,
   IUpdateAssessmentAcceptanceProps,
-  IUpdateAssessmentCandidateStatusProps,
   IUpdateAssessmentProps,
+  IUpdateAssessmentResultProps,
+  IUserProps,
 } from '@/types'
 import prisma from '../db/client'
-import {CandidateActionId} from '@/enums'
+import {AssessmentStatus, CandidateActionId} from '@/enums'
 
 export const createAssessment = async ({
   userId,
@@ -32,18 +36,6 @@ export const createAssessment = async ({
       description,
       assessmentQuizzes: {
         create: quizIds.map((q) => ({quizId: q})),
-      },
-    },
-    include: {
-      assessmentCandidateEmail: true,
-      owner: {
-        select: {
-          adminContact: {
-            select: {
-              companyName: true,
-            },
-          },
-        },
       },
     },
   })
@@ -98,29 +90,6 @@ export const updateAssessment = async ({
   return updatedAssessment
 }
 
-export const updateAssessmentCandidateStatus = async ({
-  assessmentId,
-  candidateId,
-}: IUpdateAssessmentCandidateStatusProps) => {
-  if (!assessmentId) {
-    throw Error('missing assessmentId')
-  } else if (!candidateId) {
-    throw Error('missing candidateId')
-  }
-  const assessmentCandidate = await prisma.assessmentCandidate.update({
-    where: {
-      assessmentId_candidateId: {
-        assessmentId,
-        candidateId,
-      },
-    },
-    data: {
-      status: 'COMPLETED',
-    },
-  })
-  return assessmentCandidate
-}
-
 export const addAssessmentQuizzes = async ({
   quizIds,
   assessmentId,
@@ -160,6 +129,25 @@ export const getAssessmentResult = async ({
     },
   })
   return assessmentResult
+}
+
+export const getManyAssessmentResult = async ({
+  candidateId,
+  assessmentId,
+}: {
+  candidateId?: string
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentResults = await prisma.assessmentResult.findMany({
+    where: {
+      assessmentId,
+      candidateId: candidateId ?? undefined,
+    },
+  })
+  return assessmentResults
 }
 
 export const deleteAssessmentQuizSubmissions = async ({
@@ -309,13 +297,65 @@ export const getAssessment = async ({
       id: assessmentId,
     },
     select: {
+      id: true,
+      ownerId: true,
       title: true,
       description: true,
       createdAt: true,
       ...selections,
     },
   })
-  return assessment
+
+  if (!assessment) {
+    return null
+  }
+
+  const data: Record<string, string | Date | number> = {}
+  const candidates: Record<string, any>[] = []
+  const submissions: Record<string, any>[] = []
+  const quizzes: Record<string, any>[] = []
+
+  assessment?.assessmentQuizzes.forEach(
+    (q: {quiz: Partial<IQuizDataProps>}) => {
+      quizzes.push(q.quiz)
+    },
+  )
+
+  for (let key in assessment) {
+    const k = key as keyof IAssessmentDataProps
+
+    if (typeof assessment[k] === 'string' || key === 'createdAt') {
+      data[k] = assessment[k]
+    }
+  }
+
+  // TODO: Replace any type with a proper type
+  assessment?.assessmentCandidates.forEach((c: any) => {
+    const candidateData: IUserProps = {id: '', name: ''}
+    const candidate = c.candidate
+    const submissionData: {
+      id: string
+      name: string
+      data: IAssessmentResultProps[]
+    } = {id: '', name: '', data: []}
+
+    for (let key in candidate) {
+      const k = key as keyof IUserProps
+
+      if (typeof candidate[k] === 'string') {
+        candidateData[k] = candidate[k] as string
+      }
+    }
+
+    submissionData.id = candidate.id
+    submissionData.name = candidate.name as string
+    submissionData.data = candidate.assessmentResults
+
+    candidates.push(candidateData)
+    submissions.push(submissionData)
+  })
+
+  return {data, candidates, submissions, quizzes}
 }
 
 export const getAssessmentCompletedQuiz = async ({
@@ -340,6 +380,76 @@ export const getAssessmentCompletedQuiz = async ({
   return assessmentResults
 }
 
+export const getAssessmentQuizSubmission = async ({
+  assessmentQuizSubmissionId,
+}: {
+  assessmentQuizSubmissionId: string
+}) => {
+  if (!assessmentQuizSubmissionId) {
+    throw Error('missing assessmentQuizSubmissionId')
+  }
+
+  const assessmentQuizSubmission =
+    await prisma.assessmentQuizSubmission.findUnique({
+      where: {
+        id: assessmentQuizSubmissionId,
+      },
+    })
+
+  return assessmentQuizSubmission
+}
+
+export const getManyAssessmentResultId = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}): Promise<string[]> => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+
+  const assessment = await prisma.assessment.findUnique({
+    where: {
+      id: assessmentId,
+    },
+    select: {
+      assessmentResults: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  })
+
+  if (!assessment) {
+    return []
+  }
+
+  const assessmentResultIds = assessment.assessmentResults.map(
+    (result: Pick<IAssessmentResultProps, 'id'>) => result.id,
+  )
+
+  return assessmentResultIds
+}
+
+export const deleteManyAssessmentQuizSubmission = async ({
+  manyAssessmentQuizSubmissionId,
+}: {
+  manyAssessmentQuizSubmissionId: string[]
+}) => {
+  if (!manyAssessmentQuizSubmissionId?.length) {
+    throw Error('missing manyAssessmentQuizSubmissionId')
+  }
+  const assessmentResult = await prisma.assessmentQuizSubmission.deleteMany({
+    where: {
+      assessmentResultId: {
+        in: manyAssessmentQuizSubmissionId,
+      },
+    },
+  })
+  return assessmentResult
+}
+
 export const deleteAssessmentResult = async ({
   assessmentResultId,
 }: {
@@ -352,6 +462,71 @@ export const deleteAssessmentResult = async ({
     where: {id: assessmentResultId},
   })
   return assessmentResult
+}
+
+export const deleteManyAssessmentResult = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentResultCount = await prisma.assessmentResult.deleteMany({
+    where: {
+      assessmentId,
+    },
+  })
+  return assessmentResultCount
+}
+
+export const deleteManyAssessmentQuiz = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentQuizCount = await prisma.assessmentQuiz.deleteMany({
+    where: {
+      assessmentId,
+    },
+  })
+  return assessmentQuizCount
+}
+
+export const deleteManyAssessmentCandidate = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentCandidateCount = await prisma.assessmentCandidate.deleteMany({
+    where: {
+      assessmentId,
+    },
+  })
+  return assessmentCandidateCount
+}
+
+export const deleteManyAssessmentCandidateEmail = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentCandidateEmailCount =
+    await prisma.assessmentCandidateEmail.deleteMany({
+      where: {
+        assessmentId,
+      },
+    })
+  return assessmentCandidateEmailCount
 }
 
 export const deleteAssessmentQuiz = async ({
@@ -375,6 +550,22 @@ export const deleteAssessmentQuiz = async ({
     },
   })
   return assessmentResult
+}
+
+export const deleteAssessmentData = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessment = await prisma.assessment.delete({
+    where: {
+      id: assessmentId,
+    },
+  })
+  return assessment
 }
 
 export const getAssessmentIds = async ({
@@ -451,6 +642,88 @@ export const updateAssessmentAcceptance = async ({
         create: {
           userId: candidateId,
           userActionId: CandidateActionId.Accept,
+        },
+      },
+    },
+  })
+  return assessment
+}
+
+export const updateAssessmentResult = async ({
+  assessmentResultId,
+  assessmentQuizSubmissionId,
+  submissionId,
+  timeTaken,
+  status,
+}: IUpdateAssessmentResultProps) => {
+  if (!assessmentResultId) {
+    throw Error('missing assessmentResultId')
+  } else if (!assessmentQuizSubmissionId) {
+    throw Error('missing assessmentQuizSubmissionId')
+  } else if (!submissionId) {
+    throw Error('missing submissionId')
+  } else if (typeof timeTaken !== 'number') {
+    throw Error('invalid timeTaken')
+  } else if (!status) {
+    throw Error('missing status')
+  }
+
+  const assessmentResult = await prisma.assessmentResult.update({
+    where: {id: assessmentResultId},
+    data: {
+      status,
+      timeTaken,
+      assessmentQuizSubmissions: {
+        update: {
+          where: {
+            id: assessmentQuizSubmissionId,
+          },
+          data: {
+            end: new Date(),
+            submissionId,
+          },
+        },
+      },
+    },
+  })
+
+  return assessmentResult
+}
+
+export const updateAssessmentCandidateStatus = async ({
+  assessmentId,
+  candidateId,
+}: {
+  assessmentId: string
+  candidateId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!candidateId) {
+    throw Error('missing candidateId')
+  }
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      candidateActivityLog: {
+        create: {
+          userActionId: CandidateActionId.Complete,
+          userId: candidateId,
+        },
+      },
+      assessmentCandidates: {
+        update: {
+          where: {
+            assessmentId_candidateId: {
+              assessmentId,
+              candidateId,
+            },
+          },
+          data: {
+            status: AssessmentStatus.COMPLETED,
+          },
         },
       },
     },
