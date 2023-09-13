@@ -1,4 +1,10 @@
 import {CandidatePointLevel, QuizDifficulty} from '@/enums'
+import {type ClassValue, clsx} from 'clsx'
+import {twMerge} from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export const convertToMinuteSecond = (seconds: number) => {
   if (seconds === undefined) {
