@@ -61,9 +61,10 @@ model CodeLanguage {
 }
 
 model User {
-  id String @id @default(cuid())
+    id String @id @default(cuid())
     name String?
-        quizzes       Quiz[]
+    email String @unique
+    quizzes       Quiz[]
     submissions   Submission[]
     assessments Assessment[]
     adminContact AdminContact?
