@@ -2,9 +2,8 @@ import {Button} from '@/components/ui/button'
 import './globals.css'
 import type {Metadata} from 'next'
 import {Inter} from 'next/font/google'
-import {HomeIcon, GearIcon, LayersIcon} from '@radix-ui/react-icons'
-import Link from 'next/link'
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar'
+import {MainNav} from '@/components/ui/main-nav'
+import {MainHeader} from '@/components/ui/main-header'
 
 const inter = Inter({subsets: ['latin']})
 
@@ -17,77 +16,19 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <div className='flex'>
-          <nav
-            id='default-sidebar'
-            className='flex-none border-r border-gray-300 top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0'
-            aria-label='Sidebar'
-          >
-            <div className='h-full px-3 py-4 overflow-y-auto dark:bg-gray-800'>
-              <div className='flex justify-between mx-1'>
-                <Link
-                  href={`/`}
-                  className='flex items-center hover:bg-gray-300 rounded-lg p-2'
-                >
-                  <LayersIcon className='mr-2 h-4 w-4' />
-                  <p className='font-extrabold text-sm'>Yeet</p>
-                </Link>
-                <Avatar>
-                  <AvatarImage
-                    src='https://github.com/shadcn.png'
-                    alt='@shadcn'
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </div>
-              <ul className='text-xs font-normal mt-4'>
-                <li>
-                  <Link
-                    href={`/`}
-                    className='flex items-center hover:bg-gray-300 rounded-lg p-2'
-                  >
-                    <HomeIcon className='mr-2 h-4 w-4 text-gray-400' />
-                    <p>Dashboard</p>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/`}
-                    className='flex items-center hover:bg-gray-300 rounded-lg p-2'
-                  >
-                    <HomeIcon className='mr-2 h-4 w-4 text-gray-400' />
-                    <p>Assessment</p>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/`}
-                    className='flex items-center hover:bg-gray-300 rounded-lg p-2'
-                  >
-                    <HomeIcon className='mr-2 h-4 w-4 text-gray-400' />
-                    <p>Quiz</p>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/`}
-                    className='flex items-center hover:bg-gray-300 rounded-lg p-2'
-                  >
-                    <GearIcon className='mr-2 h-4 w-4 text-gray-400' />
-                    <p>Setting</p>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </nav>
-          <div className='flex-1'>
-            <nav className='h-14 border-b border-gray-300'>
-              <div className='flex items-center'></div>
+        <div className=''>
+          <div className=''>
+            <nav className='ml-2 px-5 pt-4'>
+              <MainHeader />
             </nav>
-            {children}
+            <div className='sticky top-0 bg-white border-b px-5 shadow-md'>
+              <MainNav />
+            </div>
+            <div className=''>{children}</div>
           </div>
         </div>
       </body>
     </html>
   )
 }
+// <div className='absolute w-full bottom-0 left-1/2 transform -translate-x-1/2 h-1 border-b-2 border-black'></div>
