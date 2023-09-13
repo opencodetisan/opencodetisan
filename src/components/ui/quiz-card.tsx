@@ -1,7 +1,3 @@
-// 'use client'
-
-import {cn} from '@/lib/utils'
-import Link from 'next/link'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from './card'
 import {Button} from './button'
 
@@ -11,7 +7,7 @@ export function QuizCard({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   return (
-    <Card>
+    <Card className='hover:shadow-md' {...props}>
       <CardHeader className='grid grid-cols-[1fr_110px] items-start gap-4 space-y-0'>
         <div className='space-y-1'>
           <CardTitle>shadcn/ui{title}</CardTitle>
