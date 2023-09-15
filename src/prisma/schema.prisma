@@ -66,6 +66,7 @@ model User {
   email String @unique
   emailVerified DateTime?
   image         String?
+  userKey       UserKey?
   accounts      Account[]
   sessions      Session[]
   quizzes       Quiz[]
@@ -77,6 +78,13 @@ model User {
   submissionPoint SubmissionPoint[]
   quizPointCollection QuizPointCollection[]
   candidateActivityLog CandidateActivityLog[]
+}
+
+model UserKey {
+  id String @id @default(cuid())
+  user   User @relation(fields: [userId], references: [id])
+  userId String @unique 
+  hashedPassword String
 }
 
 model Account {
