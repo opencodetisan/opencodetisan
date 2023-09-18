@@ -1,8 +1,9 @@
-import prisma from '@/lib/db/client'
 import {randomBytes, randomUUID} from 'crypto'
 import {NextApiRequest, NextApiResponse} from 'next'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import bcrypt from 'bcrypt'
+import {getUserForAuth} from '@/lib/core/user'
 
 async function auth(req: NextApiRequest, res: NextApiResponse) {
   const providers = [
@@ -13,23 +14,30 @@ async function auth(req: NextApiRequest, res: NextApiResponse) {
         username: {label: 'Username', type: 'text', placeholder: 'jsmith'},
         password: {label: 'Password', type: 'password'},
       },
-      async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
-        // const user = await res.json()
-
-        const user = await prisma.user.findUnique({
-          // where: {email: credentials?.username},
-          where: {email: 'email@email.com'},
-          select: {email: true, role: true, name: true},
-        })
-        if (user) {
-          return user
+      async authorize(credentials) {
+        if (!credentials?.password || !credentials?.username) {
+          return null
         }
+
+        const user = await getUserForAuth({email: credentials.username})
+
+        if (user && user.userKey?.hashedPassword) {
+          const hashedPassword = user.userKey?.hashedPassword
+          const isMatch = await bcrypt.compare(
+            credentials.password,
+            hashedPassword,
+          )
+
+          if (isMatch) {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            }
+          }
+        }
+
         return null
       },
     }),
