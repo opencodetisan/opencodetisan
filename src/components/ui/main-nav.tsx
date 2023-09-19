@@ -8,6 +8,7 @@ export function MainNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const pathname = usePathname()
   const navLinks = [
     {name: 'Dashboard', href: ''},
     {name: 'Assessments', href: ''},
@@ -17,7 +18,6 @@ export function MainNav({
   ]
 
   const components = navLinks.map((link) => {
-    const pathname = usePathname()
     const isActive = pathname === link.href
 
     return (
