@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/form'
 import {Input} from '@/components/ui/input'
 import {useForm} from 'react-hook-form'
+import {signIn} from 'next-auth/react'
+import {useSearchParams} from 'next/navigation'
 
 const formSchema = z.object({
   username: z.string().email({message: 'Invalid email address'}),
@@ -20,6 +22,9 @@ const formSchema = z.object({
 })
 
 export function SignInForm() {
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') ?? '/'
+
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO fix type err
     resolver: zodResolver(formSchema as any),
@@ -29,8 +34,10 @@ export function SignInForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  // TODO fix type err
+  function onSubmit(values: z.infer<typeof formSchema>, e: any) {
+    e.preventDefault()
+    signIn('credentials', {callbackUrl, ...values})
   }
 
   return (
