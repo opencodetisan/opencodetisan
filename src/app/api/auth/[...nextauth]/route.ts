@@ -18,24 +18,27 @@ async function auth(req: NextApiRequest, res: NextApiResponse) {
         if (!credentials?.password || !credentials?.username) {
           return null
         }
+        try {
+          const user = await getUserForAuth({email: credentials.username})
 
-        const user = await getUserForAuth({email: credentials.username})
+          if (user && user.userKey?.hashedPassword) {
+            const hashedPassword = user.userKey?.hashedPassword
+            const isMatch = await bcrypt.compare(
+              credentials.password,
+              hashedPassword,
+            )
 
-        if (user && user.userKey?.hashedPassword) {
-          const hashedPassword = user.userKey?.hashedPassword
-          const isMatch = await bcrypt.compare(
-            credentials.password,
-            hashedPassword,
-          )
-
-          if (isMatch) {
-            return {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
+            if (isMatch) {
+              return {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+              }
             }
           }
+        } catch (error) {
+          console.log(error)
         }
 
         return null
