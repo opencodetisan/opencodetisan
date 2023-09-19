@@ -8,7 +8,6 @@ import {getUserForAuth} from '@/lib/core/user'
 async function auth(req: NextApiRequest, res: NextApiResponse) {
   const providers = [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')
       name: 'Credentials',
       credentials: {
         username: {label: 'Username', type: 'text', placeholder: 'jsmith'},
@@ -55,13 +54,13 @@ async function auth(req: NextApiRequest, res: NextApiResponse) {
         return randomUUID?.() ?? randomBytes(32).toString('hex')
       },
     },
-    // pages: {
-    //   signIn: '/auth/signin',
-    //   signOut: '/auth/signout',
-    //   error: '/auth/error', // Error code passed in query string as ?error=
-    //   verifyRequest: '/auth/verify-request', // (used for check email message)
-    //   newUser: '/auth/new-user', // New users will be directed here on first sign in (leave the property out if not of interest)
-    // },
+    pages: {
+      signIn: '/signin',
+      // signOut: '/auth/signout',
+      // error: '/auth/error', // Error code passed in query string as ?error=
+      // verifyRequest: '/auth/verify-request', // (used for check email message)
+      // newUser: '/auth/new-user', // New users will be directed here on first sign in (leave the property out if not of interest)
+    },
     callbacks: {
       async jwt({token, user, account, profile}) {
         const isSignIn = user ? true : false
