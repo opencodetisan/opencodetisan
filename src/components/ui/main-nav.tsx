@@ -22,6 +22,7 @@ export function MainNav({
 
     return (
       <Link
+        key={link.name}
         href={link.href}
         className={`relative text-sm font-normal transition-colors h-full flex items-center ${
           isActive ? 'text-primary' : 'text-gray-500'
@@ -31,7 +32,7 @@ export function MainNav({
           {link.name}
         </p>
         <div
-          className={`absolute bottom-0 left-4 right-4 border-b-2 border-black transform translate-y-0.5 ${
+          className={`absolute bottom-0 left-3 right-3 border-b-2 border-black transform translate-y-0.5 ${
             isActive ? '' : 'hidden'
           }`}
         ></div>
