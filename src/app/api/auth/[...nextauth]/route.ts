@@ -1,12 +1,12 @@
 import {randomBytes, randomUUID} from 'crypto'
 import {NextApiRequest, NextApiResponse} from 'next'
-import NextAuth from 'next-auth'
+import NextAuth, {AuthOptions} from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcrypt'
 import {getUserForAuth} from '@/lib/core/user'
 
-async function auth(req: NextApiRequest, res: NextApiResponse) {
-  const providers = [
+const authOptions: AuthOptions = {
+  providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -43,40 +43,38 @@ async function auth(req: NextApiRequest, res: NextApiResponse) {
         return null
       },
     }),
-  ]
-
-  return await NextAuth(req, res, {
-    providers,
-    session: {
-      strategy: 'jwt',
-      maxAge: 30 * 24 * 60 * 60, // 30 days
-      generateSessionToken: () => {
-        return randomUUID?.() ?? randomBytes(32).toString('hex')
-      },
+  ],
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    generateSessionToken: () => {
+      return randomUUID?.() ?? randomBytes(32).toString('hex')
     },
-    pages: {
-      signIn: '/signin',
-      // signOut: '/auth/signout',
-      // error: '/auth/error', // Error code passed in query string as ?error=
-      // verifyRequest: '/auth/verify-request', // (used for check email message)
-      // newUser: '/auth/new-user', // New users will be directed here on first sign in (leave the property out if not of interest)
+  },
+  pages: {
+    signIn: '/signin',
+    // signOut: '/auth/signout',
+    // error: '/auth/error', // Error code passed in query string as ?error=
+    // verifyRequest: '/auth/verify-request', // (used for check email message)
+    // newUser: '/auth/new-user', // New users will be directed here on first sign in (leave the property out if not of interest)
+  },
+  callbacks: {
+    async jwt({token, user, account, profile}) {
+      const isSignIn = user ? true : false
+      if (isSignIn) {
+        token.user = user
+      }
+      return Promise.resolve(token)
     },
-    callbacks: {
-      async jwt({token, user, account, profile}) {
-        const isSignIn = user ? true : false
-        if (isSignIn) {
-          token.user = user
-        }
-        return Promise.resolve(token)
-      },
-      async session({session, token}) {
-        if (!session?.user || !token?.account) {
-          return session
-        }
+    async session({session, token}) {
+      if (!session?.user || !token?.account) {
         return session
-      },
+      }
+      return session
     },
-  })
+  },
 }
 
-export {auth as GET, auth as POST}
+const handler = NextAuth(authOptions)
+
+export {handler as GET, handler as POST}
