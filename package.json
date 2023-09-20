@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate --schema=./src/prisma/schema.prisma && next build",
     "start": "next start",
     "lint": "next lint",
     "test:unit": "jest unit",
