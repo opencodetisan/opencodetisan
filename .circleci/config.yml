@@ -27,9 +27,7 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          command: npm run build
-          environment:
-            DATABASE_URL: $DB_URL
+          command: DATABASE_URL=$DB_URL npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
