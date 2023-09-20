@@ -1,4 +1,3 @@
-# This config was automatically generated from your source code
 # Stacks detected: deps:node:.,test:jest:
 version: 2.1
 orbs:
