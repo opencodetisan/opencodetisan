@@ -1,3 +1,4 @@
+# This config was automatically generated from your source code
 # Stacks detected: deps:node:.,test:jest:
 version: 2.1
 orbs:
@@ -27,10 +28,9 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          command: |
-            echo 'export DATABASE_URL=${DB_URL}' >> $BASH_ENV
-      - run:
           command: npm run build
+          environment:
+            DATABASE_URL: postgres://iamcodetisan:c7hY0tyVZrOQ@ep-sparkling-wave-32352812.ap-southeast-1.aws.neon.tech/neondb
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
