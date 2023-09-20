@@ -1,4 +1,4 @@
-import {CandidatePointLevel, QuizDifficulty} from '@/enums'
+import {CandidatePointLevel, QuizDifficulty, UserRole} from '@/enums'
 import {type ClassValue, clsx} from 'clsx'
 import {twMerge} from 'tailwind-merge'
 
@@ -35,5 +35,16 @@ export const getQuizTimeLimit = (difficultyLevel: string) => {
       return 30
     default:
       return 5
+  }
+}
+
+export const getRoleURLSegment = (role: UserRole) => {
+  switch (role) {
+    case UserRole.User:
+      return '/u'
+    case UserRole.Admin:
+      return '/a'
+    case UserRole.Candidate:
+      return 'c'
   }
 }
