@@ -29,7 +29,7 @@ jobs:
       - run:
           command: npm run build
           environment:
-            DATABASE_URL: $DATABASE_URL
+            DATABASE_URL: $DB_URL
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
