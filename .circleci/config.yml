@@ -27,7 +27,10 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          command: DATABASE_URL=${DB_URL} npm run build
+          command: |
+            echo 'export DATABASE_URL=${DB_URL}' >> $BASH_ENV
+      - run:
+          command: npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
