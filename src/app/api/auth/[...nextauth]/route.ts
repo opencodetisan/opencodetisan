@@ -59,16 +59,15 @@ const authOptions: AuthOptions = {
     // newUser: '/auth/new-user', // New users will be directed here on first sign in (leave the property out if not of interest)
   },
   callbacks: {
-    async jwt({token, user, account, profile}) {
-      const isSignIn = user ? true : false
-      if (isSignIn) {
+    jwt({token, user, account, profile}) {
+      if (user) {
         token.user = user
       }
-      return Promise.resolve(token)
+      return token
     },
-    async session({session, token}) {
-      if (!session?.user || !token?.account) {
-        return session
+    session({session, token}) {
+      if (token.user) {
+        session.user = token.user
       }
       return session
     },
