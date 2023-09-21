@@ -28,6 +28,8 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          command: npx prisma migrate dev --schema=./src/prisma/schema.prisma
+      - run:
           command: npm run build
           environment:
             DATABASE_URL: postgres://iamcodetisan:c7hY0tyVZrOQ@ep-sparkling-wave-32352812.ap-southeast-1.aws.neon.tech/neondb
