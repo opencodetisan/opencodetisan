@@ -85,6 +85,7 @@ model User {
   submissionPoint SubmissionPoint[]
   quizPointCollection QuizPointCollection[]
   candidateActivityLog CandidateActivityLog[]
+  passwordRecoveryToken PasswordRecoveryToken[]
 }
 
 model UserKey {
@@ -92,6 +93,16 @@ model UserKey {
   user   User @relation(fields: [userId], references: [id])
   userId String @unique 
   hashedPassword String
+}
+
+model PasswordRecoveryToken {
+  id String @id @default(cuid())
+  token String
+  isRecovered Boolean @default(false)
+  createdAt  DateTime   @default(now())
+  expiredAt  DateTime
+  user     User       @relation(fields: [userId], references: [id])
+  userId   String
 }
 
 model Account {
