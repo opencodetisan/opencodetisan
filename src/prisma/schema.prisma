@@ -97,7 +97,7 @@ model UserKey {
 
 model PasswordRecoveryToken {
   id String @id @default(cuid())
-  token String
+  token String @unique
   isRecovered Boolean @default(false)
   createdAt  DateTime   @default(now())
   expiredAt  DateTime
