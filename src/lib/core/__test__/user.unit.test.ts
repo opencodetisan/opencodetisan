@@ -1,6 +1,6 @@
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '@/lib/db/prisma-mock-singleton'
-import {createUserToken} from '../user'
+import {createUserToken, getUserByEmail} from '../user'
 import {UserRole} from '@/enums'
 
 const uuid = faker.string.uuid()
@@ -59,6 +59,24 @@ describe('User module', () => {
     }
     expect(async () => await createUserToken(param)).rejects.toThrow(
       /^missing expiredAt$/,
+    )
+  })
+
+  test('getUserByEmail function should return user by email', async () => {
+    const param: any = {
+      email: text,
+    }
+    prismaMock.user.findUnique.mockResolvedValue(user)
+    const result = await getUserByEmail(param)
+    expect(result).toEqual(user)
+  })
+
+  test('Missing email parameter should raise an missing email error', async () => {
+    const param: any = {
+      // email: text,
+    }
+    expect(async () => await getUserByEmail(param)).rejects.toThrow(
+      /^missing email$/,
     )
   })
 })
