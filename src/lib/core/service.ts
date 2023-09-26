@@ -65,6 +65,10 @@ import {
   getCandidatePointLevel,
   getQuizTimeLimit,
 } from '../utils'
+import {createUserToken, getUserByEmail} from './user'
+import {randomBytes, randomUUID} from 'crypto'
+import {DateTime} from 'luxon'
+import {sendPassRecoveryMail} from '../nodemailer'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -522,4 +526,32 @@ export const deleteQuizService = async ({quizId}: {quizId: string}) => {
     quizSolution,
     quizTestCase,
   }
+}
+
+export const initPassRecoveryService = async ({
+  email,
+  expiredAtSeconds,
+}: {
+  email: string
+  expiredAtSeconds: number
+}) => {
+  const user = await getUserByEmail({email})
+
+  if (!user) {
+    return null
+  }
+
+  const token = randomUUID?.() ?? randomBytes(32).toString('hex')
+
+  const expiredAt = DateTime.now().plus({seconds: expiredAtSeconds}).toJSDate()
+
+  const userToken = await createUserToken({
+    expiredAt,
+    token,
+    email,
+  })
+
+  const result = await sendPassRecoveryMail({recipient: email, token})
+
+  return result
 }
