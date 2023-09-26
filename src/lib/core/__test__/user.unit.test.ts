@@ -1,6 +1,11 @@
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '@/lib/db/prisma-mock-singleton'
-import {createUserToken, getUserByEmail, getUserForAuth} from '../user'
+import {
+  createUserToken,
+  getUserByEmail,
+  getUserForAuth,
+  updateUserPassword,
+} from '../user'
 import {UserRole} from '@/enums'
 
 const uuid = faker.string.uuid()
@@ -15,6 +20,15 @@ const user = {
   emailVerified: null,
   image: null,
   role: UserRole.User,
+}
+
+const passwordRecoveryToken = {
+  id: uuid,
+  token: uuid,
+  isRecovered: true,
+  createdAt: date,
+  expiredAt: date,
+  userId: uuid,
 }
 
 describe('User module', () => {
@@ -95,6 +109,38 @@ describe('User module', () => {
     }
     expect(async () => await getUserForAuth(param)).rejects.toThrow(
       /^missing email$/,
+    )
+  })
+
+  test('updateUserPassword function should update user password and return token data', async () => {
+    const param: any = {
+      token: uuid,
+      password: text,
+    }
+    prismaMock.passwordRecoveryToken.update.mockResolvedValue(
+      passwordRecoveryToken,
+    )
+    const result = await updateUserPassword(param)
+    expect(result).toEqual(passwordRecoveryToken)
+  })
+
+  test('Missing token parameter should raise an missing token error', async () => {
+    const param: any = {
+      // token: uuid,
+      password: text,
+    }
+    expect(async () => await updateUserPassword(param)).rejects.toThrow(
+      /^missing token$/,
+    )
+  })
+
+  test('Missing password parameter should raise an missing password error', async () => {
+    const param: any = {
+      token: uuid,
+      // password: text,
+    }
+    expect(async () => await updateUserPassword(param)).rejects.toThrow(
+      /^missing password$/,
     )
   })
 })
