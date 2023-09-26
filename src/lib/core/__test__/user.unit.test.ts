@@ -1,0 +1,64 @@
+import {faker} from '@faker-js/faker'
+import {prismaMock} from '@/lib/db/prisma-mock-singleton'
+import {createUserToken} from '../user'
+import {UserRole} from '@/enums'
+
+const uuid = faker.string.uuid()
+const text = faker.lorem.text()
+const date = faker.date.anytime()
+const number = faker.number.int()
+
+const user = {
+  id: uuid,
+  name: text,
+  email: text,
+  emailVerified: null,
+  image: null,
+  role: UserRole.User,
+}
+
+describe('User module', () => {
+  test('createUserToken function should save the new password recovery token', async () => {
+    const param: any = {
+      email: text,
+      token: text,
+      expiredAt: date,
+    }
+    prismaMock.user.update.mockResolvedValue(user)
+    const savedQuiz = await createUserToken(param)
+    expect(savedQuiz).toEqual(user)
+  })
+
+  test('Missing email parameter should raise an missing email error', async () => {
+    const param: any = {
+      // email: text,
+      token: text,
+      expiredAt: date,
+    }
+    expect(async () => await createUserToken(param)).rejects.toThrow(
+      /^missing email$/,
+    )
+  })
+
+  test('Missing token parameter should raise an missing token error', async () => {
+    const param: any = {
+      email: text,
+      // token: text,
+      expiredAt: date,
+    }
+    expect(async () => await createUserToken(param)).rejects.toThrow(
+      /^missing token$/,
+    )
+  })
+
+  test('Missing expiredAt parameter should raise an missing expiredAt error', async () => {
+    const param: any = {
+      email: text,
+      token: text,
+      // expiredAt: date,
+    }
+    expect(async () => await createUserToken(param)).rejects.toThrow(
+      /^missing expiredAt$/,
+    )
+  })
+})

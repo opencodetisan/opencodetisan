@@ -32,3 +32,37 @@ export const getUserByEmail = async ({email}: {email: string}) => {
   })
   return user
 }
+
+export const createUserToken = async ({
+  email,
+  token,
+  expiredAt,
+}: {
+  email: string
+  token: string
+  expiredAt: Date
+}) => {
+  if (!email) {
+    throw Error('missing email')
+  } else if (!token) {
+    throw Error('missing token')
+  } else if (!expiredAt) {
+    throw Error('missing expiredAt')
+  }
+
+  const user = await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      passwordRecoveryToken: {
+        create: {
+          token,
+          expiredAt,
+        },
+      },
+    },
+  })
+
+  return user
+}
