@@ -2,6 +2,7 @@ import {faker} from '@faker-js/faker'
 import {prismaMock} from '@/lib/db/prisma-mock-singleton'
 import {
   createUserToken,
+  getPasswordRecoveryToken,
   getUserByEmail,
   getUserForAuth,
   updateUserPassword,
@@ -140,7 +141,27 @@ describe('User module', () => {
       // password: text,
     }
     expect(async () => await updateUserPassword(param)).rejects.toThrow(
-      /^missing password$/,
+      /^missing encryptedPassword$/,
+    )
+  })
+
+  test('getPasswordRecoveryToken function should update user password and return token data', async () => {
+    const param: any = {
+      token: uuid,
+    }
+    prismaMock.passwordRecoveryToken.findUnique.mockResolvedValue(
+      passwordRecoveryToken,
+    )
+    const result = await getPasswordRecoveryToken(param)
+    expect(result).toEqual(passwordRecoveryToken)
+  })
+
+  test('Missing token parameter should raise an missing token error', async () => {
+    const param: any = {
+      // token: uuid,
+    }
+    expect(async () => await getPasswordRecoveryToken(param)).rejects.toThrow(
+      /^missing token$/,
     )
   })
 })

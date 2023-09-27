@@ -101,3 +101,13 @@ export const updateUserPassword = async ({
 
   return result
 }
+
+export const getPasswordRecoveryToken = async ({token}: {token: string}) => {
+  if (!token) {
+    throw Error('missing token')
+  }
+  const result = await prisma.passwordRecoveryToken.findUnique({
+    where: {token},
+  })
+  return result
+}
