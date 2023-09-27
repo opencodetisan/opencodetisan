@@ -65,10 +65,16 @@ import {
   getCandidatePointLevel,
   getQuizTimeLimit,
 } from '../utils'
-import {createUserToken, getUserByEmail} from './user'
+import {
+  createUserToken,
+  getPasswordRecoveryToken,
+  getUserByEmail,
+  updateUserPassword,
+} from './user'
 import {randomBytes, randomUUID} from 'crypto'
 import {DateTime} from 'luxon'
 import {sendPassRecoveryMail} from '../nodemailer'
+import bcrypt from 'bcrypt'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -554,4 +560,27 @@ export const initPassRecoveryService = async ({
   const result = await sendPassRecoveryMail({recipient: email, token})
 
   return result
+}
+
+export const recoverPasswordService = async ({
+  password,
+  token,
+}: {
+  password: string
+  token: string
+}) => {
+  const passwordRecoveryToken = await getPasswordRecoveryToken({token})
+  if (!passwordRecoveryToken) {
+    return null
+  }
+  const now = DateTime.now()
+  const expiredAt = DateTime.fromJSDate(passwordRecoveryToken?.expiredAt)
+  const diffInMinutes = now.diff(expiredAt, 'minutes').toObject()
+  if (!diffInMinutes.minutes || diffInMinutes.minutes > 0) {
+    return null
+  }
+  const encryptedPassword = await bcrypt.hash(password, 10)
+  const userToken = await updateUserPassword({encryptedPassword, token})
+
+  return {userToken}
 }
