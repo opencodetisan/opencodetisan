@@ -536,10 +536,10 @@ export const deleteQuizService = async ({quizId}: {quizId: string}) => {
 
 export const initPassRecoveryService = async ({
   email,
-  expiredAtSeconds,
+  expiredInSeconds,
 }: {
   email: string
-  expiredAtSeconds: number
+  expiredInSeconds: number
 }) => {
   const user = await getUserByEmail({email})
 
@@ -549,7 +549,7 @@ export const initPassRecoveryService = async ({
 
   const token = randomUUID?.() ?? randomBytes(32).toString('hex')
 
-  const expiredAt = DateTime.now().plus({seconds: expiredAtSeconds}).toJSDate()
+  const expiredAt = DateTime.now().plus({seconds: expiredInSeconds}).toJSDate()
 
   const userToken = await createUserToken({
     expiredAt,
@@ -557,9 +557,9 @@ export const initPassRecoveryService = async ({
     email,
   })
 
-  const result = await sendPassRecoveryMail({recipient: email, token})
+  const emailStatus = await sendPassRecoveryMail({recipient: email, token})
 
-  return result
+  return {emailStatus, user, userToken, token}
 }
 
 export const recoverPasswordService = async ({
