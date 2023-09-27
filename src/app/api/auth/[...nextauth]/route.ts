@@ -20,8 +20,8 @@ const authOptions: AuthOptions = {
         try {
           const user = await getUserForAuth({email: credentials.username})
 
-          if (user && user.userKey?.hashedPassword) {
-            const hashedPassword = user.userKey?.hashedPassword
+          if (user && user.userKey?.password) {
+            const hashedPassword = user.userKey?.password
             const isMatch = await bcrypt.compare(
               credentials.password,
               hashedPassword,
