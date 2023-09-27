@@ -69,15 +69,15 @@ export const createUserToken = async ({
 
 export const updateUserPassword = async ({
   token,
-  password,
+  encryptedPassword,
 }: {
   token: string
-  password: string
+  encryptedPassword: string
 }) => {
   if (!token) {
     throw Error('missing token')
-  } else if (!password) {
-    throw Error('missing password')
+  } else if (!encryptedPassword) {
+    throw Error('missing encryptedPassword')
   }
 
   const result = await prisma.passwordRecoveryToken.update({
@@ -91,7 +91,7 @@ export const updateUserPassword = async ({
         update: {
           userKey: {
             update: {
-              password,
+              password: encryptedPassword,
             },
           },
         },
