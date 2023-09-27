@@ -1,27 +1,23 @@
-import {createUserToken, getUserByEmail} from '@/lib/core/user'
-import prisma from '@/lib/db/client'
-import {sendPassRecoveryMail} from '@/lib/nodemailer'
 import {NextResponse} from 'next/server'
-import {randomBytes, randomUUID} from 'node:crypto'
-import nodemailer from 'nodemailer'
+import {initPassRecoveryService} from '@/lib/core/service'
+import {Prisma} from '@prisma/client'
 
 export async function POST(request: Request) {
   try {
     const req = await request.json()
     const email = req.username
 
-    const user = await getUserByEmail({email})
-
-    const token = randomUUID?.() ?? randomBytes(32).toString('hex')
-
-    const userToken = await createUserToken({
-      expiredAt: new Date(),
-      token,
-      email,
-    })
-
-    const result = await sendPassRecoveryMail({recipient: email, token})
+    const result = await initPassRecoveryService({email, expiredInSeconds: 300})
 
     return NextResponse.json({})
-  } catch (error) {}
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        console.log(error.message)
+        return NextResponse.json({})
+      }
+    }
+    console.log('Unexpected error: ', error)
+    return NextResponse.json({})
+  }
 }
