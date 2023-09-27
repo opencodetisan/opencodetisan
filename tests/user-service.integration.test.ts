@@ -1,7 +1,34 @@
-import {recoverPasswordService} from '@/lib/core/service'
+import {
+  initPassRecoveryService,
+  recoverPasswordService,
+} from '@/lib/core/service'
+import {getPasswordRecoveryToken} from '@/lib/core/user'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
 import {DateTime} from 'luxon'
+
+jest.mock('nodemailer')
+import nodemailer from 'nodemailer'
+
+const sendMailMock = jest.fn()
+// TODO: fix type error
+// @ts-ignore
+nodemailer.createTransport.mockReturnValue({sendMail: sendMailMock})
+
+const number = faker.number.int()
+const text = faker.lorem.text()
+
+const nodemailerResponse = {
+  accepted: ['example@gmail.com'],
+  rejected: [],
+  ehlo: [],
+  envelopeTime: number,
+  messageTime: number,
+  messageSize: number,
+  response: text,
+  envelope: {from: 'example@gmail.com', to: ['example@gmail.com']},
+  messageId: text,
+}
 
 describe('Integration test: User', () => {
   describe('Integration test: recoverPasswordService', () => {
@@ -80,6 +107,67 @@ describe('Integration test: User', () => {
       expect(userKey_1?.user.passwordRecoveryToken[0].isRecovered).toBe(true)
       expect(userKey_2?.password).toBe('example2')
       expect(userKey_2?.user.passwordRecoveryToken[0].isRecovered).toBe(false)
+    })
+  })
+
+  describe('Integration test: initPassRecoveryService', () => {
+    const word = faker.lorem.word()
+    const userId_1 = faker.string.uuid()
+    const email_1 = 'user1@example.com'
+    const email_2 = 'user2@example.com'
+
+    beforeAll(async () => {
+      sendMailMock.mockClear()
+      // TODO: fix type error
+      // @ts-ignore
+      nodemailer.createTransport.mockClear()
+
+      await prisma.user.create({
+        data: {
+          id: userId_1,
+          name: word,
+          email: email_1,
+        },
+      })
+    })
+
+    afterAll(async () => {
+      await prisma.passwordRecoveryToken.deleteMany({where: {userId: userId_1}})
+      await prisma.user.deleteMany({
+        where: {id: {in: [userId_1]}},
+      })
+    })
+
+    test('it should store new password recovery token and send an e-mail', async () => {
+      sendMailMock.mockResolvedValue(nodemailerResponse)
+
+      const passwordRecovery_1 = await initPassRecoveryService({
+        email: email_1,
+        expiredInSeconds: 300,
+      })
+      const passwordRecovery_2 = await initPassRecoveryService({
+        email: email_2,
+        expiredInSeconds: 300,
+      })
+      const passwordRecoveryToken = await getPasswordRecoveryToken({
+        token: passwordRecovery_1?.token as string,
+      })
+
+      const tokenCreatedAt = DateTime.fromJSDate(
+        passwordRecoveryToken?.createdAt as Date,
+      )
+      const tokenExpiredAt = DateTime.fromJSDate(
+        passwordRecoveryToken?.expiredAt as Date,
+      )
+      const diffInMinutes = tokenExpiredAt
+        .diff(tokenCreatedAt, 'minutes')
+        .toObject()
+
+      expect(nodemailer.createTransport).toHaveBeenCalledTimes(1)
+      expect(passwordRecovery_1?.emailStatus).toEqual(nodemailerResponse)
+      expect(passwordRecovery_1?.token).toEqual(passwordRecoveryToken?.token)
+      expect(diffInMinutes.minutes).toBeCloseTo(5)
+      expect(passwordRecovery_2).toBeNull()
     })
   })
 })
