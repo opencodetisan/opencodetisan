@@ -15,8 +15,10 @@ export async function POST(request: Request) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2025') {
         console.log(error.message)
+        return NextResponse.json({})
       }
     }
+    console.log('Unexpected error: ', error)
     return NextResponse.json({})
   }
 }
