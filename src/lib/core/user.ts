@@ -13,7 +13,7 @@ export const getUserForAuth = async ({email}: {email: string}) => {
       name: true,
       userKey: {
         select: {
-          hashedPassword: true,
+          password: true,
         },
       },
     },
