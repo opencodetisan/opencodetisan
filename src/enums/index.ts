@@ -43,5 +43,5 @@ export enum QuizDifficulty {
 export enum UserRole {
   Candidate = 'CANDIDATE',
   Admin = 'ADMIN',
-  User = 'USER',
+  Recruiter = 'RECRUITER',
 }
