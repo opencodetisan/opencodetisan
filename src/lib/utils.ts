@@ -40,8 +40,8 @@ export const getQuizTimeLimit = (difficultyLevel: string) => {
 
 export const getRoleURLSegment = (role: UserRole) => {
   switch (role) {
-    case UserRole.User:
-      return '/u'
+    case UserRole.Recruiter:
+      return '/r'
     case UserRole.Admin:
       return '/a'
     case UserRole.Candidate:
