@@ -62,7 +62,7 @@ model CodeLanguage {
 
 enum UserRole {
   ADMIN
-  USER
+  RECRUITER
   CANDIDATE
 }
 
