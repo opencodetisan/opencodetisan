@@ -13,12 +13,13 @@ import {
 } from '@/components/ui/form'
 import {Input} from '@/components/ui/input'
 import {useForm} from 'react-hook-form'
-import {signIn} from 'next-auth/react'
-import {useSearchParams} from 'next/navigation'
+import {signIn, useSession} from 'next-auth/react'
+import {useRouter, useSearchParams} from 'next/navigation'
+import {getRoleURLSegment} from '@/lib/utils'
 
 const formSchema = z.object({
   username: z.string().email({message: 'Invalid email address'}),
-  password: z.string().min(4),
+  password: z.string().min(4, {message: 'Invalid password'}),
 })
 
 export function SignInForm() {
