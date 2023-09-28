@@ -16,14 +16,20 @@ export default withAuth(
     const role = user.role
     const roleURLSegment = getRoleURLSegment(role)
 
-    if (pathname.startsWith('/a') && role !== UserRole.Admin) {
+    if (pathname.startsWith('/auth-redirect')) {
       return NextResponse.redirect(
         new URL(roleURLSegment, process.env.NEXTAUTH_URL),
       )
-    } else if (pathname.startsWith('/u') && role === UserRole.Candidate) {
-      return NextResponse.redirect(
-        new URL(roleURLSegment, process.env.NEXTAUTH_URL),
-      )
+    } else {
+      if (role === UserRole.Recruiter && !pathname.startsWith('/r')) {
+        return NextResponse.redirect(
+          new URL(roleURLSegment, process.env.NEXTAUTH_URL),
+        )
+      } else if (role === UserRole.Candidate && !pathname.startsWith('/c')) {
+        return NextResponse.redirect(
+          new URL(roleURLSegment, process.env.NEXTAUTH_URL),
+        )
+      }
     }
 
     const response = NextResponse.next()
@@ -38,4 +44,6 @@ export default withAuth(
   },
 )
 
-export const config = {matcher: ['/a/:path*', '/u/:path*', '/c/:path*']}
+export const config = {
+  matcher: ['/auth-redirect', '/a/:path*', '/r/:path*', '/c/:path*'],
+}
