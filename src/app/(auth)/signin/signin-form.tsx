@@ -2,7 +2,6 @@
 
 import {zodResolver} from '@hookform/resolvers/zod'
 import * as z from 'zod'
-
 import {Button} from '@/components/ui/button'
 import {
   Form,
@@ -13,9 +12,8 @@ import {
 } from '@/components/ui/form'
 import {Input} from '@/components/ui/input'
 import {useForm} from 'react-hook-form'
-import {signIn, useSession} from 'next-auth/react'
+import {signIn} from 'next-auth/react'
 import {useRouter, useSearchParams} from 'next/navigation'
-import {getRoleURLSegment} from '@/lib/utils'
 import {Card, CardContent} from '@/components/ui/card'
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons'
 
@@ -25,9 +23,6 @@ const formSchema = z.object({
 })
 
 export function SignInForm() {
-  const {data} = useSession()
-  const role = data?.user?.role
-  const roleURLSegment = getRoleURLSegment(role!)
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/auth-redirect'
   const router = useRouter()
