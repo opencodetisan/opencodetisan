@@ -16,6 +16,8 @@ import {useForm} from 'react-hook-form'
 import {signIn, useSession} from 'next-auth/react'
 import {useRouter, useSearchParams} from 'next/navigation'
 import {getRoleURLSegment} from '@/lib/utils'
+import {Card, CardContent} from '@/components/ui/card'
+import {ExclamationTriangleIcon} from '@radix-ui/react-icons'
 
 const formSchema = z.object({
   username: z.string().email({message: 'Invalid email address'}),
@@ -29,6 +31,8 @@ export function SignInForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/auth-redirect'
   const router = useRouter()
+  const isInvalidCredentials =
+    searchParams.get('error') === 'CredentialsSignin' ?? false
 
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO fix type err
@@ -75,6 +79,14 @@ export function SignInForm() {
             </FormItem>
           )}
         />
+        {isInvalidCredentials && (
+          <Card className='border-red-400 bg-red-50'>
+            <CardContent className='flex space-x-2 items-center p-3 text-red-500 font-medium'>
+              <ExclamationTriangleIcon />
+              <p className='text-xs'>Incorrect email or password.</p>
+            </CardContent>
+          </Card>
+        )}
         <div className='flex justify-end'>
           <Button
             className='pr-0 text-sm text-blue-500 font-normal'
