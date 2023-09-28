@@ -23,8 +23,12 @@ const formSchema = z.object({
 })
 
 export function SignInForm() {
+  const {data} = useSession()
+  const role = data?.user?.role
+  const roleURLSegment = getRoleURLSegment(role)
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/'
+  const callbackUrl = searchParams.get('callbackUrl') ?? `/${roleURLSegment}`
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO fix type err
