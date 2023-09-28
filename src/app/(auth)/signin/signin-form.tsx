@@ -16,6 +16,8 @@ import {signIn} from 'next-auth/react'
 import {useRouter, useSearchParams} from 'next/navigation'
 import {Card, CardContent} from '@/components/ui/card'
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons'
+import {useState} from 'react'
+import {Icons} from '@/components/ui/icons'
 
 const formSchema = z.object({
   username: z.string().email({message: 'Invalid email address'}),
@@ -23,6 +25,7 @@ const formSchema = z.object({
 })
 
 export function SignInForm() {
+  const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/auth-redirect'
   const router = useRouter()
@@ -40,6 +43,7 @@ export function SignInForm() {
 
   // TODO fix type err
   function onSubmit(values: z.infer<typeof formSchema>, e: any) {
+    setIsLoading(true)
     e.preventDefault()
     signIn('credentials', {callbackUrl, ...values})
   }
@@ -51,6 +55,7 @@ export function SignInForm() {
         className='space-y-2 flex flex-col'
       >
         <FormField
+          disabled={isLoading}
           control={form.control}
           name='username'
           render={({field}) => (
@@ -63,6 +68,7 @@ export function SignInForm() {
           )}
         />
         <FormField
+          disabled={isLoading}
           control={form.control}
           name='password'
           render={({field}) => (
@@ -94,7 +100,10 @@ export function SignInForm() {
             Forgot password?
           </Button>
         </div>
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' disabled={isLoading}>
+          {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
+          Submit
+        </Button>
       </form>
     </Form>
   )
