@@ -50,14 +50,14 @@ export function EmailForm({setIsExecuted}: IEmailFormProps) {
         body: JSON.stringify({...values}),
       })
 
-      if (response.ok) {
-        setIsExecuted(true)
+      if (!response.ok) {
+        return toast({
+          title: 'Server error',
+          description: 'Failed to recover password.',
+        })
       }
 
-      toast({
-        title: 'Server error',
-        description: 'Failed to recover password.',
-      })
+      setIsExecuted(true)
       setIsLoading(false)
     } catch (error) {
       if (error instanceof Error) {
