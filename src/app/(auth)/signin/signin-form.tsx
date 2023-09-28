@@ -79,6 +79,10 @@ export function SignInForm() {
           <Button
             className='pr-0 text-sm text-blue-500 font-normal'
             variant='link'
+            type='button'
+            onClick={() => {
+              router.push('/password-recovery')
+            }}
           >
             Forgot password?
           </Button>
