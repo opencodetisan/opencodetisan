@@ -42,7 +42,7 @@ export function EmailForm({setIsExecuted}: IEmailFormProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/password-recoverys', {
+      const response = await fetch('/api/password-recovery', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
