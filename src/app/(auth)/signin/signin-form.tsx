@@ -27,7 +27,6 @@ const formSchema = z.object({
 export function SignInForm() {
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/auth-redirect'
   const router = useRouter()
   const isInvalidCredentials =
     searchParams.get('error') === 'CredentialsSignin' ?? false
@@ -45,7 +44,7 @@ export function SignInForm() {
   function onSubmit(values: z.infer<typeof formSchema>, e: any) {
     setIsLoading(true)
     e.preventDefault()
-    signIn('credentials', {callbackUrl, ...values})
+    signIn('credentials', {callbackUrl: '/auth-redirect', ...values})
   }
 
   return (
