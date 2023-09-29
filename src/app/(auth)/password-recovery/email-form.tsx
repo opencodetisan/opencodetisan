@@ -75,6 +75,7 @@ export function EmailForm({setIsExecuted}: IEmailFormProps) {
         className='space-y-2 flex flex-col'
       >
         <FormField
+          disabled={isLoading}
           control={form.control}
           name='username'
           render={({field}) => (
@@ -92,7 +93,7 @@ export function EmailForm({setIsExecuted}: IEmailFormProps) {
             </FormItem>
           )}
         />
-        <Button type='submit'>
+        <Button type='submit' disabled={isLoading}>
           {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
           Continue
         </Button>
