@@ -7,6 +7,7 @@ export const sendPassRecoveryMail = async ({recipient, token}: any) => {
       <div>
         <a href="${link}">Click here</a> to recover your password.
       </div>
+      <p>Password recovery session will be closed in 5 minutes.</p>
   `
 
   const message = {
