@@ -93,6 +93,7 @@ export function RecoverPasswordForm() {
         className='space-y-2 flex flex-col'
       >
         <FormField
+          disabled={isLoading}
           control={form.control}
           name='password'
           render={({field}) => (
@@ -111,6 +112,7 @@ export function RecoverPasswordForm() {
           )}
         />
         <FormField
+          disabled={isLoading}
           control={form.control}
           name='confirmPassword'
           render={({field}) => (
@@ -128,7 +130,7 @@ export function RecoverPasswordForm() {
             </FormItem>
           )}
         />
-        <Button type='submit'>
+        <Button type='submit' disabled={isLoading}>
           {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
           Confirm
         </Button>
