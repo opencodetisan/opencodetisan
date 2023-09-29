@@ -15,25 +15,23 @@ export default withAuth(
     const user = req.nextauth.token?.user as IUserProps
     const role = user.role
     const roleURLSegment = getRoleURLSegment(role)
+    const referer = req.headers.get('referer') as string
+    const defaultUrl = new URL(roleURLSegment, process.env.NEXTAUTH_URL)
+    const callbackUrl = referer
+      ? new URL(referer).searchParams.get('callbackUrl')
+      : undefined
 
     if (pathname.startsWith('/auth-redirect')) {
-      return NextResponse.redirect(
-        new URL(roleURLSegment, process.env.NEXTAUTH_URL),
-      )
+      return NextResponse.redirect(callbackUrl ?? defaultUrl)
+    } else if (pathname.startsWith('/a') && role === UserRole.Admin) {
+      return NextResponse.next()
+    } else if (pathname.startsWith('/r') && role === UserRole.Recruiter) {
+      return NextResponse.next()
+    } else if (pathname.startsWith('/c') && role === UserRole.Candidate) {
+      return NextResponse.next()
     } else {
-      if (role === UserRole.Recruiter && !pathname.startsWith('/r')) {
-        return NextResponse.redirect(
-          new URL(roleURLSegment, process.env.NEXTAUTH_URL),
-        )
-      } else if (role === UserRole.Candidate && !pathname.startsWith('/c')) {
-        return NextResponse.redirect(
-          new URL(roleURLSegment, process.env.NEXTAUTH_URL),
-        )
-      }
+      return NextResponse.redirect(defaultUrl)
     }
-
-    const response = NextResponse.next()
-    return response
   },
   {
     callbacks: {
