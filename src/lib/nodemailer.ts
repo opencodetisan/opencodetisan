@@ -1,12 +1,20 @@
 import nodemailer from 'nodemailer'
 
 export const sendPassRecoveryMail = async ({recipient, token}: any) => {
+  const link = `${process.env.NEXTAUTH_URL}/recover-password?token=${token}`
+  const html = `
+      <p>You have requasted an password reovery. Follow the link below to recover your password</p>
+      <div>
+        <a href="${link}">Click here</a> to recover your password.
+      </div>
+  `
+
   const message = {
     from: process.env.NODEMAILER_USERNAME,
     to: recipient,
-    subject: `${process.env.NEXTAUTH_URL}/recover-password?token=${token}`,
+    subject: 'OpenCodetisan password recovery',
     text: 'message',
-    html: '<button>HTML version of the message</button>',
+    html,
   }
 
   const transporter = nodemailer.createTransport({
@@ -18,14 +26,6 @@ export const sendPassRecoveryMail = async ({recipient, token}: any) => {
       pass: process.env.NODEMAILER_PASSWORD,
     },
   })
-
-  // transporter.verify(function (error, success) {
-  //   if (error) {
-  //     console.log(error)
-  //   } else {
-  //     console.log('Server is ready to take our messages')
-  //   }
-  // })
 
   const result = await transporter.sendMail(message)
   return result
