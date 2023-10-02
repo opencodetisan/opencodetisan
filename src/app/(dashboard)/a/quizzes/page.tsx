@@ -9,12 +9,10 @@ export default function Home() {
   // console.log(data)
 
   return (
-    <div className='px-72 pt-6 bg-stone-50'>
-      <div className='grid grid-cols-3 gap-4'>
-        <QuizCard title={'yeet'} />
-        <QuizCard title={'yeet'} />
-        <QuizCard title={'yeet'} />
-      </div>
+    <div className='grid grid-cols-3 gap-4'>
+      <QuizCard title={'yeet'} />
+      <QuizCard title={'yeet'} />
+      <QuizCard title={'yeet'} />
     </div>
   )
 }

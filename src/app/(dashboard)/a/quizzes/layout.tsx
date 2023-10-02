@@ -7,7 +7,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <h2 className='text-3xl tracking-tight'>Quizzes</h2>
       </div>
       <Separator />
-      {children}
+      <div className='px-72 pt-6'>{children}</div>
     </div>
   )
 }
