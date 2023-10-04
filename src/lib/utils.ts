@@ -6,6 +6,7 @@ import {
 } from '@/enums'
 import {type ClassValue, clsx} from 'clsx'
 import {twMerge} from 'tailwind-merge'
+import {SiJavascript, SiPython, SiCsharp} from 'react-icons/si'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -75,6 +76,43 @@ export const getDifficultyLevel = (levelId: number = 1) => {
       return {
         name: 'Easy',
         color: 'green',
+      }
+  }
+}
+
+export const getCodeLanguage = (difficultyLevelId: number = 1) => {
+  switch (difficultyLevelId) {
+    case 1:
+      return {
+        pretty: 'JavaScript',
+        mode: 'javascript',
+        lang: 'javascript',
+        indentUnit: 2,
+        icon: SiJavascript,
+      }
+    case 2:
+      return {
+        pretty: 'Python',
+        mode: 'python',
+        lang: 'python',
+        indentUnit: 4,
+        icon: SiPython,
+      }
+    case 3:
+      return {
+        pretty: 'C#',
+        mode: 'text/x-csharp',
+        lang: 'csharp',
+        indentUnit: 4,
+        icon: SiCsharp,
+      }
+    default:
+      return {
+        pretty: 'JavaScript',
+        mode: 'javascript',
+        lang: 'javascript',
+        indentUnit: 2,
+        icon: SiJavascript,
       }
   }
 }
