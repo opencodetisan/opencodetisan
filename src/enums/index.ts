@@ -45,3 +45,9 @@ export enum UserRole {
   Admin = 'ADMIN',
   Recruiter = 'RECRUITER',
 }
+
+export enum DifficultyLevel {
+  Easy = 1,
+  Medium,
+  Hard,
+}
