@@ -12,7 +12,7 @@ import {fetcher} from '@/lib/fetcher'
 import {useState} from 'react'
 import useSWR from 'swr'
 
-export async function ManyQuizCard({
+export function ManyQuizCard({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
