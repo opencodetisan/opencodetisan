@@ -51,3 +51,9 @@ export enum DifficultyLevel {
   Medium,
   Hard,
 }
+export enum CodeLangMode {
+  Javascript = 'javascript',
+  Python = 'python',
+  Php = 'php',
+  Csharp = 'text/x-csharp',
+}
