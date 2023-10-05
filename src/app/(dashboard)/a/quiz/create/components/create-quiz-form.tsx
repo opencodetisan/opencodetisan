@@ -24,8 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {useState} from 'react'
+import {createContext, useState} from 'react'
 import {QuizInstruction} from './quiz-instruction'
+import {QuizSolution} from './quiz-solution'
 
 const formSchema = z.object({
   title: z
@@ -43,6 +44,7 @@ export function CreateQuizForm({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const [instruction, setInstruction] = useState('**Hello world!!!**')
+  const [solution, setSolution] = useState('')
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -77,6 +79,16 @@ export function CreateQuizForm({
           instruction={instruction}
           setInstruction={setInstruction}
         />
+      </div>
+      <div>
+        <div>
+          <h3 className='text-lg font-medium'>Solution</h3>
+          <p className='text-sm text-muted-foreground'>
+            Configure the basic configurations for your quiz.
+          </p>
+        </div>
+        <Separator className='my-6' />
+        <QuizSolution solution={solution} setSolution={setSolution} />
       </div>
       <div className='flex justify-end'>
         <Button
