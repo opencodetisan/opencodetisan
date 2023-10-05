@@ -15,15 +15,16 @@ const getLangExtension = (mode: string) => {
   }
 }
 
-export function CodeEditor({
+export const CodeEditor = ({
   className,
   value,
   onChange,
   readOnly,
-  mode,
+  codeLanguage,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
-  const extension = getLangExtension(mode)
+}: React.HTMLAttributes<HTMLElement>) => {
+  const extension = getLangExtension(codeLanguage)
+
   return (
     <CodeMirror
       height='384px'
