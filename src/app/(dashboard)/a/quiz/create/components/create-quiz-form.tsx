@@ -45,6 +45,9 @@ export function CreateQuizForm({
   const [instruction, setInstruction] = useState('**Hello world!!!**')
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+    },
   })
 
   function onSubmit(data: z.infer<typeof formSchema>) {
