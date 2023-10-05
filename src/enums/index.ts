@@ -39,3 +39,9 @@ export enum QuizDifficulty {
   Medium = 'medium',
   Hard = 'hard',
 }
+
+export enum UserRole {
+  Candidate = 'CANDIDATE',
+  Admin = 'ADMIN',
+  Recruiter = 'RECRUITER',
+}

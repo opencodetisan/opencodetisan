@@ -16,6 +16,8 @@ import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
 import {inspect} from 'node:util'
 
+const email = 'user@example.com'
+
 const inspectItem = (item: any) => {
   console.log(
     inspect(item, {
@@ -86,7 +88,9 @@ const createFakeUsers = async () => {
   const promises: Promise<any>[] = []
   const uuids = [faker.string.uuid(), faker.string.uuid()]
   uuids.forEach((id) => {
-    promises.push(prisma.user.create({data: {id, name: faker.lorem.word()}}))
+    promises.push(
+      prisma.user.create({data: {id, name: faker.lorem.word(), email}}),
+    )
   })
   return Promise.all(promises)
 }
@@ -162,7 +166,7 @@ describe('Integration test: Assessment', () => {
     beforeAll(async () => {
       const createQuizPromises: Promise<any>[] = []
 
-      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.user.create({data: {id: userId, name: word, email}})
       await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
       await prisma.difficultyLevel.create({
         data: {id: difficultyLevelId, name: word},
@@ -227,7 +231,7 @@ describe('Integration test: Assessment', () => {
 
     beforeAll(async () => {
       user = await prisma.user.create({
-        data: {id: userId, name: faker.lorem.word()},
+        data: {id: userId, name: faker.lorem.word(), email},
       })
       await prisma.codeLanguage.create({
         data: {id: codeLanguageId, name: text},
@@ -298,6 +302,8 @@ describe('Integration test: Assessment', () => {
     const word = faker.lorem.word()
     const text = faker.lorem.text()
     const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const email_1 = 'user1@example.com'
+    const email_2 = 'user2@example.com'
     const codeLanguages = [
       {id: faker.number.int({min: 1, max: 100}), name: text},
     ]
@@ -313,8 +319,8 @@ describe('Integration test: Assessment', () => {
     let assessmentPoints: Record<string, any>[]
 
     beforeAll(async () => {
-      await prisma.user.create({data: {id: users[0].id}})
-      await prisma.user.create({data: {id: users[1].id}})
+      await prisma.user.create({data: {id: users[0].id, email: email_1}})
+      await prisma.user.create({data: {id: users[1].id, email: email_2}})
       await createManyFakeCodeLanguage(codeLanguages)
       for (let i = 0; i < quizzes.length; i++) {
         await createFakeQuizzes({
@@ -411,6 +417,8 @@ describe('Integration test: Assessment', () => {
     const word = faker.lorem.words()
     const text = faker.lorem.text()
     const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const email_1 = 'user1@example.com'
+    const email_2 = 'user2@example.com'
     const codeLanguages = [
       {id: faker.number.int({min: 1, max: 100}), name: text},
     ]
@@ -422,8 +430,8 @@ describe('Integration test: Assessment', () => {
     let createdAssessment: Record<string, any>
 
     beforeAll(async () => {
-      await prisma.user.create({data: {id: users[0].id}})
-      await prisma.user.create({data: {id: users[1].id}})
+      await prisma.user.create({data: {id: users[0].id, email: email_1}})
+      await prisma.user.create({data: {id: users[1].id, email: email_2}})
       await createManyFakeCodeLanguage(codeLanguages)
       for (let i = 0; i < quizzes.length; i++) {
         await createFakeQuizzes({
@@ -478,7 +486,7 @@ describe('Integration test: Assessment', () => {
     let assessmentQuizSubmissionId: string
 
     beforeAll(async () => {
-      await prisma.user.create({data: {id: users[0].id}})
+      await prisma.user.create({data: {id: users[0].id, email}})
       await createManyFakeCodeLanguage(codeLanguages)
       for (let i = 0; i < quizzes.length; i++) {
         await createFakeQuizzes({
@@ -553,7 +561,7 @@ describe('Integration test: Assessment', () => {
     ]
 
     beforeAll(async () => {
-      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.user.create({data: {id: userId, name: word, email}})
       assessments = await prisma.assessment.createMany({
         data: [
           {id: assessmentId_1, title: word, description: word, ownerId: userId},
@@ -622,7 +630,7 @@ describe('Integration test: Assessment', () => {
     let createdAssessment: any
 
     beforeAll(async () => {
-      await prisma.user.create({data: {id: users[0].id}})
+      await prisma.user.create({data: {id: users[0].id, email}})
       await createManyFakeCodeLanguage(codeLanguages)
       for (let i = 0; i < quizzes.length; i++) {
         await createFakeQuizzes({

@@ -29,7 +29,6 @@ model Quiz {
     solutions             Solution[]
     locale String @default("")
     status QuizStatus @default(DRAFT)
-    //challenges Challenge[]
     assessmentQuizzes AssessmentQuiz[]
     assessmentResults AssessmentResult[]
     quizPointCollection QuizPointCollection[]
@@ -49,7 +48,6 @@ model DifficultyLevel {
   id      Int    @id @default(autoincrement())
     name    String @unique
     quizzes Quiz[]
-    //courses Course[]
 }
 
 model CodeLanguage {
@@ -57,21 +55,48 @@ model CodeLanguage {
     name       String @unique
     prettyName String @default("")
     quizzes    Quiz[]
-    //courses    Course[]
+}
+
+enum UserRole {
+  ADMIN
+  RECRUITER
+  CANDIDATE
 }
 
 model User {
   id String @id @default(cuid())
-    name String?
-        quizzes       Quiz[]
-    submissions   Submission[]
-    assessments Assessment[]
-    adminContact AdminContact?
-    assessmentResults AssessmentResult[]
-    assessmentCandidates AssessmentCandidate[]
-    submissionPoint SubmissionPoint[]
-    quizPointCollection QuizPointCollection[]
-    candidateActivityLog CandidateActivityLog[]
+  name String?
+  email String @unique
+  emailVerified DateTime?
+  image         String?
+  role UserRole @default(CANDIDATE)
+  userKey       UserKey?
+  quizzes       Quiz[]
+  submissions   Submission[]
+  assessments Assessment[]
+  assessmentResults AssessmentResult[]
+  assessmentCandidates AssessmentCandidate[]
+  submissionPoint SubmissionPoint[]
+  quizPointCollection QuizPointCollection[]
+  candidateActivityLog CandidateActivityLog[]
+  passwordRecoveryToken PasswordRecoveryToken[]
+}
+
+model UserKey {
+  id String @id @default(cuid())
+  user   User @relation(fields: [userId], references: [id])
+  userId String @unique 
+  password String
+}
+
+model PasswordRecoveryToken {
+  id String @id @default(cuid())
+  token String @unique
+  isRecovered Boolean @default(false)
+  createdAt  DateTime   @default(now())
+  expiredAt  DateTime
+  user     User       @relation(fields: [userId], references: [id])
+  userId   String
 }
 
 model Solution {
@@ -157,14 +182,6 @@ model AssessmentCandidateEmail {
   assessmentId String 
 }
 
-model AdminContact {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id])
-  userId String @unique
-  companyName String
-  contactNumber Int
-}
-
 model AssessmentResult {
   id String @id @default(cuid())
   quiz Quiz @relation(fields: [quizId], references: [id])
@@ -215,32 +232,6 @@ model SubmissionPoint {
   assessmentPointId Int
   submission Submission @relation(fields: [submissionId], references: [id])
   submissionId String
-}
-
-model Price {
-  id String @id @default(cuid())
-  stripePriceId String @unique
-  stripeProductId String 
-  amount Float
-  label String
-  description String?
-  priceFeature PriceFeature[]
-}
-
-model PriceFeature {
-  price Price @relation(fields: [priceId], references: [id]) 
-  priceId String 
-  feature Feature @relation(fields: [featureId], references: [id])
-  featureId Int
-  value String
-
-  @@id([priceId, featureId])
-}
-
-model Feature {
-  id Int @id @default(autoincrement())
-  name String @unique
-  priceFeature PriceFeature[]
 }
 
 model QuizPointCollection {

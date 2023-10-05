@@ -7,6 +7,7 @@ import {
 } from '@/lib/core/service'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
+const email = 'user@example.com'
 
 describe('Integration test: Quiz ', () => {
   describe('Integration test: createQuizService', () => {
@@ -24,7 +25,7 @@ describe('Integration test: Quiz ', () => {
       await prisma.difficultyLevel.create({
         data: {id: difficultyLevelId, name: word},
       })
-      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.user.create({data: {id: userId, name: word, email}})
     })
 
     afterAll(async () => {
@@ -123,7 +124,7 @@ describe('Integration test: Quiz ', () => {
         ],
       }
 
-      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.user.create({data: {id: userId, name: word, email}})
       await prisma.codeLanguage.create({
         data: {id: codeLanguageId, name: word},
       })
@@ -198,7 +199,7 @@ describe('Integration test: Quiz ', () => {
       await prisma.difficultyLevel.create({
         data: {id: difficultyLevelId, name: word},
       })
-      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.user.create({data: {id: userId, name: word, email}})
       createdQuiz = await createQuizService(param)
 
       quizId = createdQuiz.quizData.id
@@ -288,7 +289,7 @@ describe('Integration test: Quiz ', () => {
       await prisma.difficultyLevel.create({
         data: {id: difficultyLevelId, name: word},
       })
-      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.user.create({data: {id: userId, name: word, email}})
       const createdQuiz = await createQuizService(param)
 
       quizId = createdQuiz.quizData.id
@@ -367,7 +368,7 @@ describe('Integration test: Quiz ', () => {
         ],
       }
 
-      await prisma.user.create({data: {id: userId, name: word}})
+      await prisma.user.create({data: {id: userId, name: word, email}})
       await prisma.codeLanguage.create({
         data: {id: codeLanguageId, name: word},
       })

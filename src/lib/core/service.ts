@@ -65,6 +65,16 @@ import {
   getCandidatePointLevel,
   getQuizTimeLimit,
 } from '../utils'
+import {
+  createUserToken,
+  getPasswordRecoveryToken,
+  getUserByEmail,
+  updateUserPassword,
+} from './user'
+import {randomBytes, randomUUID} from 'crypto'
+import {DateTime} from 'luxon'
+import {sendPassRecoveryMail} from '../nodemailer'
+import bcrypt from 'bcrypt'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -522,4 +532,55 @@ export const deleteQuizService = async ({quizId}: {quizId: string}) => {
     quizSolution,
     quizTestCase,
   }
+}
+
+export const initPassRecoveryService = async ({
+  email,
+  expiredInSeconds,
+}: {
+  email: string
+  expiredInSeconds: number
+}) => {
+  const user = await getUserByEmail({email})
+
+  if (!user) {
+    return null
+  }
+
+  const token = randomUUID?.() ?? randomBytes(32).toString('hex')
+
+  const expiredAt = DateTime.now().plus({seconds: expiredInSeconds}).toJSDate()
+
+  const userToken = await createUserToken({
+    expiredAt,
+    token,
+    email,
+  })
+
+  const emailStatus = await sendPassRecoveryMail({recipient: email, token})
+
+  return {emailStatus, user, userToken, token}
+}
+
+export const recoverPasswordService = async ({
+  password,
+  token,
+}: {
+  password: string
+  token: string
+}) => {
+  const passwordRecoveryToken = await getPasswordRecoveryToken({token})
+  if (!passwordRecoveryToken) {
+    return null
+  }
+  const now = DateTime.now()
+  const expiredAt = DateTime.fromJSDate(passwordRecoveryToken?.expiredAt)
+  const diffInMinutes = now.diff(expiredAt, 'minutes').toObject()
+  if (!diffInMinutes.minutes || diffInMinutes.minutes > 0) {
+    return null
+  }
+  const encryptedPassword = await bcrypt.hash(password, 10)
+  const userToken = await updateUserPassword({encryptedPassword, token})
+
+  return {userToken}
 }
