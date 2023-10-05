@@ -24,6 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {useState} from 'react'
+import {QuizInstruction} from './quiz-instruction'
 
 const formSchema = z.object({
   title: z
@@ -40,6 +42,7 @@ export function CreateQuizForm({
   title,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const [instruction, setInstruction] = useState('**Hello world!!!**')
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -61,83 +64,26 @@ export function CreateQuizForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='w-2/3 space-y-6'>
         <div>
-          <h3 className='text-lg font-medium'>Basic Configurations</h3>
+          <h3 className='text-lg font-medium'>Instruction</h3>
           <p className='text-sm text-muted-foreground'>
             Configure the basic configurations for your quiz.
           </p>
         </div>
-        <Separator />
-        <Card>
-          <CardHeader className='space-y-8'>
-            <FormField
-              control={form.control}
-              name='title'
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='codeLanguage'
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Code Language</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a code language' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value='javascript'>Javascript</SelectItem>
-                      <SelectItem value='python'>Python</SelectItem>
-                      <SelectItem value='csharp'>C#</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='difficultyLevel'
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Difficulty level</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a difficulty level' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value='easy'>Easy</SelectItem>
-                      <SelectItem value='medium'>Medium</SelectItem>
-                      <SelectItem value='hard'>Hard</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardHeader>
-        </Card>
-        <div className='flex justify-end'>
-          <Button type='submit'>Submit</Button>
-        </div>
-      </form>
-    </Form>
+        <Separator className='my-6' />
+        <QuizInstruction
+          instruction={instruction}
+          setInstruction={setInstruction}
+        />
+      </div>
+      <div className='flex justify-end'>
+        <Button
+          onClick={() => {
+            form.handleSubmit(onSubmit)()
+          }}
+        >
+          Submit
+        </Button>
+      </div>
+    </div>
   )
 }
