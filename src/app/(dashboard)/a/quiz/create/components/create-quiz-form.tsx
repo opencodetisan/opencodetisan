@@ -19,8 +19,8 @@ const formSchema = z.object({
   title: z
     .string({required_error: 'Please type in quiz title'})
     .min(4, {message: 'Title must contain at least 4 character(s)'}),
-  codeLanguage: z.string({required_error: 'Please select a coding language'}),
-  difficultyLevel: z.string({
+  codeLanguageId: z.string({required_error: 'Please select a coding language'}),
+  difficultyLevelId: z.string({
     required_error: 'Please select a coding language',
   }),
   input1: z.string().min(1, {message: 'Please type in the input'}),
@@ -52,7 +52,7 @@ export function CreateQuizForm({
       output2: '',
     },
   })
-  const codeLanguage = form.watch('codeLanguage')
+  const codeLanguage = form.watch('codeLanguageId')
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     // setIsLoading(true)

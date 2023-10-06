@@ -45,7 +45,7 @@ export function QuizSolution({
               <CodeEditor
                 value={solution}
                 onChange={setSolution}
-                codeLanguage={codeLanguage}
+                codeLanguageId={codeLanguage}
               />
             </div>
           </ReflexElement>
@@ -56,7 +56,7 @@ export function QuizSolution({
               <CodeEditor
                 value={testRunner}
                 onChange={setTestRunner}
-                codeLanguage={codeLanguage}
+                codeLanguageId={codeLanguage}
               />
             </div>
           </ReflexElement>

@@ -41,7 +41,7 @@ export function QuizDetails({
         />
         <FormField
           control={form.control}
-          name='codeLanguage'
+          name='codeLanguageId'
           render={({field}) => (
             <FormItem>
               <FormLabel>Code Language</FormLabel>
@@ -52,9 +52,9 @@ export function QuizDetails({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='javascript'>Javascript</SelectItem>
-                  <SelectItem value='python'>Python</SelectItem>
-                  <SelectItem value='csharp'>C#</SelectItem>
+                  <SelectItem value='1'>Javascript</SelectItem>
+                  <SelectItem value='2'>Python</SelectItem>
+                  <SelectItem value='3'>C#</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -63,7 +63,7 @@ export function QuizDetails({
         />
         <FormField
           control={form.control}
-          name='difficultyLevel'
+          name='difficultyLevelId'
           render={({field}) => (
             <FormItem>
               <FormLabel>Difficulty level</FormLabel>
@@ -74,9 +74,9 @@ export function QuizDetails({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='easy'>Easy</SelectItem>
-                  <SelectItem value='medium'>Medium</SelectItem>
-                  <SelectItem value='hard'>Hard</SelectItem>
+                  <SelectItem value='1'>Easy</SelectItem>
+                  <SelectItem value='2'>Medium</SelectItem>
+                  <SelectItem value='3'>Hard</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
