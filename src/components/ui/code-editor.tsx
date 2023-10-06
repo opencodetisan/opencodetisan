@@ -2,15 +2,17 @@ import CodeMirror from '@uiw/react-codemirror'
 import {javascript} from '@codemirror/lang-javascript'
 import {CodeLangMode} from '@/enums'
 import {memo} from 'react'
+import {python} from '@codemirror/lang-python'
+import {csharp} from '@replit/codemirror-lang-csharp'
 
 const getLangExtension = (mode: string) => {
   switch (mode) {
-    // case CodeLangMode.Csharp:
-    //   return [StreamLanguage.define(csharp)]
+    case CodeLangMode.Csharp:
+      return [csharp()]
     case CodeLangMode.Javascript:
       return [javascript()]
-    // case CodeLangMode.Python:
-    //   return [python()]
+    case CodeLangMode.Python:
+      return [python()]
     default:
       return []
   }
