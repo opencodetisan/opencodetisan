@@ -68,8 +68,20 @@ export function CreateQuizForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='w-2/3 space-y-6'>
+    <div className={`${className} space-y-16`}>
+      <Form {...form}>
+        <form>
+          <div>
+            <h3 className='text-lg font-medium'>Basic Configurations</h3>
+            <p className='text-sm text-muted-foreground'>
+              Configure the basic configurations for your quiz.
+            </p>
+          </div>
+          <Separator className='my-6' />
+          <QuizDetails />
+        </form>
+      </Form>
+      <div>
         <div>
           <h3 className='text-lg font-medium'>Instruction</h3>
           <p className='text-sm text-muted-foreground'>
