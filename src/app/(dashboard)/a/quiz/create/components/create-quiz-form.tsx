@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {createContext, useState} from 'react'
+import {createContext, useDeferredValue, useMemo, useState} from 'react'
 import {QuizInstruction} from './quiz-instruction'
 import {QuizSolution} from './quiz-solution'
 
@@ -45,6 +45,7 @@ export function CreateQuizForm({
 }: React.HTMLAttributes<HTMLElement>) {
   const [instruction, setInstruction] = useState('**Hello world!!!**')
   const [solution, setSolution] = useState('')
+  const deferredSolution = useDeferredValue(solution)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
