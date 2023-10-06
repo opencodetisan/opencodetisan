@@ -37,8 +37,9 @@ export function QuizSolution({
       <TabsContent
         value='solution'
         className='bg-white p-1 border rounded-md shadow-sm'
+        style={{height: '55vh'}}
       >
-        <ReflexContainer style={{height: '400px'}} orientation='vertical'>
+        <ReflexContainer orientation='vertical'>
           <ReflexElement className='left-pane'>
             <div className='pane-content'>
               <p className='text-xs'>Solution</p>
