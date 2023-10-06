@@ -6,7 +6,9 @@ export function QuizInstruction({
   instruction,
   setInstruction,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+} // TODO: type
+// }: React.HTMLAttributes<HTMLElement>) {
+: any) {
   return (
     <div>
       <MDEditor

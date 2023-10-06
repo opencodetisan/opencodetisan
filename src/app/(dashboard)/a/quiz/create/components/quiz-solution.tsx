@@ -22,9 +22,9 @@ export function QuizSolution({
   setSolution,
   testRunner,
   setTestRunner,
-  // codeLanguage,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+} // TODO: type
+: any) {
   const {codeLanguage} = useContext(CodeEditorContext)
   const form = useFormContext()
 

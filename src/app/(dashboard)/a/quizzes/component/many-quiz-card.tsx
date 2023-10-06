@@ -24,7 +24,8 @@ export function ManyQuizCard({
 
   let content = <></>
 
-  content = data?.map((quiz) => {
+  // TODO: type
+  content = data?.map((quiz: any) => {
     return (
       <QuizCard
         key={quiz.id}
