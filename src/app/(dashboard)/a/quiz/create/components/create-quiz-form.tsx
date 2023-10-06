@@ -14,6 +14,7 @@ import {QuizSolution} from './quiz-solution'
 import {CodeEditorContext} from './context'
 import {StatusCode} from '@/enums'
 import {usePathname, useRouter} from 'next/navigation'
+import {Icons} from '@/components/ui/icons'
 
 const formSchema = z.object({
   title: z
@@ -37,6 +38,7 @@ export function CreateQuizForm({
   const router = useRouter()
   const pathname = usePathname()
   const userRoleURLSegment = pathname.split('/')[1]
+  const [isLoading, setIsLoading] = useState(false)
   const [instruction, setInstruction] = useState('**Hello world!!!**')
   const [solution, setSolution] = useState('')
   const deferredSolution = useDeferredValue(solution)
@@ -55,7 +57,7 @@ export function CreateQuizForm({
   const codeLanguage = form.watch('codeLanguageId')
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    // setIsLoading(true)
+    setIsLoading(true)
 
     try {
       const response = await fetch('/api/create-quiz', {
@@ -66,8 +68,8 @@ export function CreateQuizForm({
         body: JSON.stringify({...data, instruction, solution, testRunner}),
       })
 
-      // setIsLoading(false)
       if (response.status === StatusCode.InternalServerError) {
+        setIsLoading(false)
         return toast({
           title: 'Internal server error',
           description: 'Failed to create coding quiz.',
@@ -137,10 +139,12 @@ export function CreateQuizForm({
       </div>
       <div className='flex justify-end'>
         <Button
+          disabled={isLoading}
           onClick={() => {
             form.handleSubmit(onSubmit)()
           }}
         >
+          {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
           Submit
         </Button>
       </div>
