@@ -12,6 +12,8 @@ import {useDeferredValue, useState} from 'react'
 import {QuizInstruction} from './quiz-instruction'
 import {QuizSolution} from './quiz-solution'
 import {CodeEditorContext} from './context'
+import {StatusCode} from '@/enums'
+import {usePathname, useRouter} from 'next/navigation'
 
 const formSchema = z.object({
   title: z
