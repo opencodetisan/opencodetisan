@@ -191,6 +191,14 @@ export const getQuizService = async ({quizId}: {quizId: string}) => {
   return quiz
 }
 
+export const getManyQuizService = async ({userId}: {userId?: string}) => {
+  const quizzes = await prisma.quiz.findMany({
+    where: {userId},
+    include: {user: {select: {name: true}}},
+  })
+  return quizzes
+}
+
 export const updateQuizDataService = async ({
   quizData,
 }: IUpdateQuizDataServiceProps) => {
