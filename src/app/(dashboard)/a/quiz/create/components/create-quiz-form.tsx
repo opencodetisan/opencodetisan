@@ -52,6 +52,7 @@ export function CreateQuizForm({
       title: '',
     },
   })
+  const codeLanguage = form.watch('codeLanguage')
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     console.log(data)
