@@ -21,6 +21,10 @@ const formSchema = z.object({
   difficultyLevel: z.string({
     required_error: 'Please select a coding language',
   }),
+  input1: z.string().min(1, {message: 'Please type in the input'}),
+  input2: z.string().min(1, {message: 'Please type in the input'}),
+  output1: z.string().min(1, {message: 'Please type in the output'}),
+  output2: z.string().min(1, {message: 'Please type in the output'}),
 })
 
 export function CreateQuizForm({
@@ -35,6 +39,10 @@ export function CreateQuizForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
+      input1: '',
+      input2: '',
+      output1: '',
+      output2: '',
     },
   })
   const codeLanguage = form.watch('codeLanguage')
