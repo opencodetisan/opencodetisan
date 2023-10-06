@@ -4,6 +4,7 @@ import {CodeLangMode} from '@/enums'
 import {memo} from 'react'
 import {python} from '@codemirror/lang-python'
 import {csharp} from '@replit/codemirror-lang-csharp'
+import {getCodeLanguage} from '@/lib/utils'
 
 const getLangExtension = (mode: string) => {
   switch (mode) {
@@ -19,19 +20,14 @@ const getLangExtension = (mode: string) => {
 }
 
 export const CodeEditor = memo(
-  ({
-    className,
-    value,
-    onChange,
-    readOnly,
-    codeLanguage,
-    ...props
-  }: React.HTMLAttributes<HTMLElement>) => {
+  //TODO: type
+  ({className, value, onChange, readOnly, codeLanguageId, ...props}: any) => {
+    const codeLanguage = getCodeLanguage(parseInt(codeLanguageId)).mode
     const extension = getLangExtension(codeLanguage)
 
     return (
       <CodeMirror
-        height='384px'
+        height='51vh'
         value={value}
         // theme={githubDark}
         extensions={extension}
@@ -41,3 +37,4 @@ export const CodeEditor = memo(
     )
   },
 )
+CodeEditor.displayName = 'CodeEditor'
