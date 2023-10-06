@@ -5,26 +5,10 @@ import {QuizDetails} from './quiz-details'
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {toast} from '@/components/ui/use-toast'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import {Form} from '@/components/ui/form'
 import {Button} from '@/components/ui/button'
-import {Input} from '@/components/ui/input'
-import {Card, CardHeader} from '@/components/ui/card'
 import {Separator} from '@/components/ui/separator'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {createContext, useDeferredValue, useMemo, useState} from 'react'
+import {useDeferredValue, useState} from 'react'
 import {QuizInstruction} from './quiz-instruction'
 import {QuizSolution} from './quiz-solution'
 import {CodeEditorContext} from './context'
@@ -56,8 +40,6 @@ export function CreateQuizForm({
   const codeLanguage = form.watch('codeLanguage')
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data)
-
     toast({
       title: 'You submitted the following values:',
       description: (
