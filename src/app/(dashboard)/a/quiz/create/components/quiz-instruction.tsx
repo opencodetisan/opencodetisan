@@ -11,6 +11,7 @@ export function QuizInstruction({
     <div>
       <MDEditor
         className='border-white'
+        height={400}
         data-color-mode='light'
         value={instruction}
         onChange={setInstruction}
