@@ -32,6 +32,9 @@ export function CreateQuizForm({
   title,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const userRoleURLSegment = pathname.split('/')[1]
   const [instruction, setInstruction] = useState('**Hello world!!!**')
   const [solution, setSolution] = useState('')
   const deferredSolution = useDeferredValue(solution)
@@ -49,15 +52,38 @@ export function CreateQuizForm({
   })
   const codeLanguage = form.watch('codeLanguage')
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    // setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/create-quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({...data, instruction, solution, testRunner}),
+      })
+
+      // setIsLoading(false)
+      if (response.status === StatusCode.InternalServerError) {
+        return toast({
+          title: 'Internal server error',
+          description: 'Failed to create coding quiz.',
+          variant: 'destructive',
+        })
+      }
+
+      toast({
+        title: 'You have successfully created a coding quiz.',
+        description: 'Redirecting ...',
+      })
+
+      setTimeout(() => {
+        router.push(`/${userRoleURLSegment}/quizzes`)
+      }, 2000)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
