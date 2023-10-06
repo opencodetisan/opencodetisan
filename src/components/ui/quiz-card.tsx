@@ -16,8 +16,8 @@ export function QuizCard({
   codeLanguageId,
   updatedat,
   author,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) {
+  ...props // TODO: type
+}: any) {
   const pathname = usePathname()
   const userRoleURLSegment = pathname.split('/')[1]
   const difficultyLevel = getDifficultyLevel(difficultyLevelId)
