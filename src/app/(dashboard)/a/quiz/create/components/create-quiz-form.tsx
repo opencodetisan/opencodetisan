@@ -35,6 +35,8 @@ export function CreateQuizForm({
   const [instruction, setInstruction] = useState('**Hello world!!!**')
   const [solution, setSolution] = useState('')
   const deferredSolution = useDeferredValue(solution)
+  const [testRunner, setTestRunner] = useState('')
+  const deferredTestRunner = useDeferredValue(testRunner)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,11 +96,15 @@ export function CreateQuizForm({
         </div>
         <Separator className='my-6' />
         <CodeEditorContext.Provider value={{codeLanguage}}>
-          <QuizSolution
-            solution={deferredSolution}
-            setSolution={setSolution}
-            codeLanguage={codeLanguage}
-          />
+          <Form {...form}>
+            <QuizSolution
+              solution={deferredSolution}
+              setSolution={setSolution}
+              testRunner={deferredTestRunner}
+              setTestRunner={setTestRunner}
+              codeLanguage={codeLanguage}
+            />
+          </Form>
         </CodeEditorContext.Provider>
       </div>
       <div className='flex justify-end'>

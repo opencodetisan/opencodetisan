@@ -49,7 +49,11 @@ export function QuizSolution({
           <ReflexElement className='right-pane'>
             <p className='text-xs'>Test runner</p>
             <div className='pane-content'>
-              <CodeEditor />
+              <CodeEditor
+                value={testRunner}
+                onChange={setTestRunner}
+                codeLanguage={codeLanguage}
+              />
             </div>
           </ReflexElement>
         </ReflexContainer>
