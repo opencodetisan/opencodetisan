@@ -27,6 +27,7 @@ import {
 import {createContext, useDeferredValue, useMemo, useState} from 'react'
 import {QuizInstruction} from './quiz-instruction'
 import {QuizSolution} from './quiz-solution'
+import {CodeEditorContext} from './context'
 
 const formSchema = z.object({
   title: z
@@ -102,7 +103,13 @@ export function CreateQuizForm({
           </p>
         </div>
         <Separator className='my-6' />
-        <QuizSolution solution={solution} setSolution={setSolution} />
+        <CodeEditorContext.Provider value={{codeLanguage}}>
+          <QuizSolution
+            solution={deferredSolution}
+            setSolution={setSolution}
+            codeLanguage={codeLanguage}
+          />
+        </CodeEditorContext.Provider>
       </div>
       <div className='flex justify-end'>
         <Button
