@@ -57,3 +57,8 @@ export enum CodeLangMode {
   Php = 'php',
   Csharp = 'text/x-csharp',
 }
+
+export enum StatusCode {
+  OK = 200,
+  InternalServerError = 500,
+}
