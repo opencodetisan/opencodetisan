@@ -42,7 +42,11 @@ export function QuizSolution({
           <ReflexElement className='left-pane'>
             <div className='pane-content'>
               <p className='text-xs'>Solution</p>
-              <CodeEditor value={solution} onChange={setSolution} />
+              <CodeEditor
+                value={solution}
+                onChange={setSolution}
+                codeLanguage={codeLanguage}
+              />
             </div>
           </ReflexElement>
           <ReflexSplitter className='mx-1' />
