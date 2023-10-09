@@ -10,40 +10,36 @@ import {
 } from '@/components/ui/card'
 import {CodeEditor} from '@/components/ui/code-editor'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
+import {fetcher} from '@/lib/fetcher'
+import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import MDEditor from '@uiw/react-md-editor'
+import {useParams} from 'next/navigation'
 import {useState} from 'react'
 import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import 'react-reflex/styles.css'
-
-function RowData({name, value}: {name: string; value: string}) {
-  return (
-    <div className='flex items-center space-x-10'>
-      <p className='self-start w-32 text-sm text-muted-foreground'>{name}</p>
-      <p className='w-96 border line-clamp-2'>{value}</p>
-    </div>
-  )
-}
-const codeLanguageId = 1
+import useSWR from 'swr'
 
 export default function MainComponent({
   className,
   title,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const param = useParams()
+  const {data} = useSWR(
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz/${param.qid}`,
+    fetcher,
+  )
   const [instruction, setInstruction] = useState('')
   const [solution, setSolution] = useState('')
   const [testRunner, setTestRunner] = useState('')
-  const basicConfig = ['Title', 'Code Language', 'Difficulty Level']
-  const basicConfigComponent = basicConfig.map((name: string) => {
-    return (
-      <RowData
-        name={name}
-        value={
-          'eeeeeeee eeeeeeeeeee eeeeeeeee eeeeeee eeeeeeee eeee eeeeeeeee eeeeeee eeeeee eeeeee eeeeee eeeeeeeeee eeeeeeee eeeeee eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-        }
-      />
-    )
-  })
+
+  if (!data) {
+    return <></>
+  }
+
+  const {quizData, quizSolution, quizTestCase} = data.data
+  const codeLanguage = getCodeLanguage(quizData.codeLanguageId).pretty
+  const difficultyLevel = getDifficultyLevel(quizData.difficultyLevelId).name
 
   return (
     <div className='space-y-6 w-2/4'>
