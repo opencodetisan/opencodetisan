@@ -71,7 +71,7 @@ export default function MainComponent({
         className='border-white'
         height={400}
         data-color-mode='light'
-        value={instruction}
+        value={quizData.instruction}
         onChange={setInstruction}
         hideToolbar={true}
         preview='preview'
@@ -92,9 +92,9 @@ export default function MainComponent({
               <div className='pane-content'>
                 <p className='text-xs'>Solution</p>
                 <CodeEditor
-                  value={solution}
+                  value={quizSolution[0].code}
                   onChange={setSolution}
-                  codeLanguageId={codeLanguageId}
+                  codeLanguageId={quizData.codeLanguageId}
                   readOnly={true}
                 />
               </div>
@@ -104,9 +104,9 @@ export default function MainComponent({
               <p className='text-xs'>Test runner</p>
               <div className='pane-content'>
                 <CodeEditor
-                  value={testRunner}
+                  value={quizSolution[0].testRunner}
                   onChange={setTestRunner}
-                  codeLanguageId={codeLanguageId}
+                  codeLanguageId={quizData.codeLanguageId}
                   readOnly={true}
                 />
               </div>
