@@ -11,13 +11,32 @@ import {
 import {CodeEditor} from '@/components/ui/code-editor'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import {fetcher} from '@/lib/fetcher'
-import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
+import {cn, getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import MDEditor from '@uiw/react-md-editor'
 import {useParams} from 'next/navigation'
 import {useState} from 'react'
 import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import 'react-reflex/styles.css'
 import useSWR from 'swr'
+
+function RowData({
+  name,
+  value,
+  className,
+}: {
+  name: string
+  value: string
+  className?: any
+}) {
+  return (
+    <div className={cn(className, 'flex items-center space-x-10')}>
+      <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
+        {name}
+      </p>
+      <p className='w-96 line-clamp-2'>{value}</p>
+    </div>
+  )
+}
 
 export default function MainComponent({
   className,
@@ -46,24 +65,9 @@ export default function MainComponent({
       <Card className=''>
         <CardHeader></CardHeader>
         <CardContent className='space-y-2 text-sm'>
-          <div className='flex items-center space-x-10'>
-            <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
-              Title
-            </p>
-            <p className='w-96 line-clamp-2'>{quizData.title}</p>
-          </div>
-          <div className='flex items-center space-x-10'>
-            <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
-              Code Language
-            </p>
-            <p className='w-96 line-clamp-2'>{codeLanguage}</p>
-          </div>
-          <div className='flex items-center space-x-10'>
-            <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
-              Difficulty Level
-            </p>
-            <p className='line-clamp-2 w-full'>{difficultyLevel}</p>
-          </div>
+          <RowData name={'Title'} value={quizData.title} />
+          <RowData name={'Code langugage'} value={codeLanguage} />
+          <RowData name={'Difficulty level'} value={difficultyLevel} />
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
