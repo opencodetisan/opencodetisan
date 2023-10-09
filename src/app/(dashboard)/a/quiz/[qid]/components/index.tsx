@@ -47,22 +47,22 @@ export default function MainComponent({
         <CardHeader></CardHeader>
         <CardContent className='space-y-2 text-sm'>
           <div className='flex items-center space-x-10'>
-            <p className='self-start w-32 text-sm text-muted-foreground'>
+            <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
               Title
             </p>
             <p className='w-96 line-clamp-2'>{quizData.title}</p>
           </div>
           <div className='flex items-center space-x-10'>
-            <p className='self-start w-32 text-sm text-muted-foreground'>
+            <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
               Code Language
             </p>
             <p className='w-96 line-clamp-2'>{codeLanguage}</p>
           </div>
           <div className='flex items-center space-x-10'>
-            <p className='self-start w-32 text-sm text-muted-foreground'>
+            <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
               Difficulty Level
             </p>
-            <p className='w-96 line-clamp-2'>{difficultyLevel}</p>
+            <p className='line-clamp-2 w-full'>{difficultyLevel}</p>
           </div>
         </CardContent>
         <CardFooter></CardFooter>
