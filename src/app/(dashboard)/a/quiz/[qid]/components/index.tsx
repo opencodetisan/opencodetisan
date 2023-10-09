@@ -31,7 +31,6 @@ export function SectionHeader({
     <>
       <h3 className='text-lg font-medium'>{title}</h3>
       {subTitle && <p className='text-sm text-muted-foreground'>{subTitle}</p>}
-      <Separator className='my-6' />
     </>
   )
 }
@@ -81,6 +80,7 @@ export default function MainComponent({
     <div className='space-y-16 w-2/4'>
       <div>
         <SectionHeader title='Basic Configuration' />
+        <Separator className='my-6' />
         <Card className=''>
           <CardHeader></CardHeader>
           <CardContent className='space-y-2 text-sm'>
@@ -93,6 +93,7 @@ export default function MainComponent({
       </div>
       <div>
         <SectionHeader title='Instruction' />
+        <Separator className='my-6' />
         <MDEditor
           className='border-white'
           height={400}
@@ -106,6 +107,7 @@ export default function MainComponent({
       </div>
       <div>
         <SectionHeader title='Solution' />
+        <Separator className='my-6' />
         <Tabs defaultValue='solution' className=''>
           <TabsList className='grid w-full grid-cols-2'>
             <TabsTrigger value='solution'>Solution</TabsTrigger>
