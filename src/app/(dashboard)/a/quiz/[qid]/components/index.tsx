@@ -1,5 +1,6 @@
 'use client'
 
+import {Button} from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -79,7 +80,10 @@ export default function MainComponent({
   return (
     <div className='space-y-16 w-2/4'>
       <div>
-        <SectionHeader title='Basic Configuration' />
+        <div className='flex justify-between items-center'>
+          <SectionHeader title='Basic Configuration' />
+          <Button variant={'outline'}>Edit</Button>
+        </div>
         <Separator className='my-6' />
         <Card className=''>
           <CardHeader></CardHeader>
@@ -92,7 +96,10 @@ export default function MainComponent({
         </Card>
       </div>
       <div>
-        <SectionHeader title='Instruction' />
+        <div className='flex justify-between items-center'>
+          <SectionHeader title='Instruction' />
+          <Button variant={'outline'}>Edit</Button>
+        </div>
         <Separator className='my-6' />
         <MDEditor
           className='border-white'
@@ -106,7 +113,10 @@ export default function MainComponent({
         />
       </div>
       <div>
-        <SectionHeader title='Solution' />
+        <div className='flex justify-between items-center'>
+          <SectionHeader title='Solution' />
+          <Button variant={'outline'}>Edit</Button>
+        </div>
         <Separator className='my-6' />
         <Tabs defaultValue='solution' className=''>
           <TabsList className='grid w-full grid-cols-2'>
