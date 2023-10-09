@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import {CodeEditor} from '@/components/ui/code-editor'
+import {Separator} from '@/components/ui/separator'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import {fetcher} from '@/lib/fetcher'
 import {cn, getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
@@ -18,6 +19,22 @@ import {useState} from 'react'
 import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import 'react-reflex/styles.css'
 import useSWR from 'swr'
+
+export function SectionHeader({
+  title,
+  subTitle,
+}: {
+  title: string
+  subTitle?: string
+}) {
+  return (
+    <>
+      <h3 className='text-lg font-medium'>{title}</h3>
+      {subTitle && <p className='text-sm text-muted-foreground'>{subTitle}</p>}
+      <Separator className='my-6' />
+    </>
+  )
+}
 
 function RowData({
   name,
@@ -61,71 +78,80 @@ export default function MainComponent({
   const difficultyLevel = getDifficultyLevel(quizData.difficultyLevelId).name
 
   return (
-    <div className='space-y-6 w-2/4'>
-      <Card className=''>
-        <CardHeader></CardHeader>
-        <CardContent className='space-y-2 text-sm'>
-          <RowData name={'Title'} value={quizData.title} />
-          <RowData name={'Code langugage'} value={codeLanguage} />
-          <RowData name={'Difficulty level'} value={difficultyLevel} />
-        </CardContent>
-        <CardFooter></CardFooter>
-      </Card>
-      <MDEditor
-        className='border-white'
-        height={400}
-        data-color-mode='light'
-        value={quizData.instruction}
-        onChange={setInstruction}
-        hideToolbar={true}
-        preview='preview'
-        {...props}
-      />
-      <Tabs defaultValue='solution' className=''>
-        <TabsList className='grid w-full grid-cols-2'>
-          <TabsTrigger value='solution'>Solution</TabsTrigger>
-          <TabsTrigger value='testcase'>Test Cases</TabsTrigger>
-        </TabsList>
-        <TabsContent
-          value='solution'
-          className='bg-white p-1 border rounded-md shadow-sm'
-          style={{height: '55vh'}}
-        >
-          <ReflexContainer orientation='vertical'>
-            <ReflexElement className='left-pane'>
-              <div className='pane-content'>
-                <p className='text-xs'>Solution</p>
-                <CodeEditor
-                  value={quizSolution[0].code}
-                  onChange={setSolution}
-                  codeLanguageId={quizData.codeLanguageId}
-                  readOnly={true}
-                />
-              </div>
-            </ReflexElement>
-            <ReflexSplitter className='mx-1' />
-            <ReflexElement className='right-pane'>
-              <p className='text-xs'>Test runner</p>
-              <div className='pane-content'>
-                <CodeEditor
-                  value={quizSolution[0].testRunner}
-                  onChange={setTestRunner}
-                  codeLanguageId={quizData.codeLanguageId}
-                  readOnly={true}
-                />
-              </div>
-            </ReflexElement>
-          </ReflexContainer>
-        </TabsContent>
-        <TabsContent value='testcase'>
-          <Card
-            className='flex justify-center items-center h-[50vh]'
-            style={{height: '50vh'}}
+    <div className='space-y-16 w-2/4'>
+      <div>
+        <SectionHeader title='Basic Configuration' />
+        <Card className=''>
+          <CardHeader></CardHeader>
+          <CardContent className='space-y-2 text-sm'>
+            <RowData name={'Title'} value={quizData.title} />
+            <RowData name={'Code langugage'} value={codeLanguage} />
+            <RowData name={'Difficulty level'} value={difficultyLevel} />
+          </CardContent>
+          <CardFooter></CardFooter>
+        </Card>
+      </div>
+      <div>
+        <SectionHeader title='Instruction' />
+        <MDEditor
+          className='border-white'
+          height={400}
+          data-color-mode='light'
+          value={quizData.instruction}
+          onChange={setInstruction}
+          hideToolbar={true}
+          preview='preview'
+          {...props}
+        />
+      </div>
+      <div>
+        <SectionHeader title='Solution' />
+        <Tabs defaultValue='solution' className=''>
+          <TabsList className='grid w-full grid-cols-2'>
+            <TabsTrigger value='solution'>Solution</TabsTrigger>
+            <TabsTrigger value='testcase'>Test Cases</TabsTrigger>
+          </TabsList>
+          <TabsContent
+            value='solution'
+            className='bg-white p-1 border rounded-md shadow-sm'
+            style={{height: '55vh'}}
           >
-            <CardHeader className='space-y-6 w-2/3'></CardHeader>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            <ReflexContainer orientation='vertical'>
+              <ReflexElement className='left-pane'>
+                <div className='pane-content'>
+                  <p className='text-xs'>Solution</p>
+                  <CodeEditor
+                    value={quizSolution[0].code}
+                    onChange={setSolution}
+                    codeLanguageId={quizData.codeLanguageId}
+                    readOnly={true}
+                  />
+                </div>
+              </ReflexElement>
+              <ReflexSplitter className='mx-1' />
+              <ReflexElement className='right-pane'>
+                <p className='text-xs'>Test runner</p>
+                <div className='pane-content'>
+                  <CodeEditor
+                    value={quizSolution[0].testRunner}
+                    onChange={setTestRunner}
+                    codeLanguageId={quizData.codeLanguageId}
+                    readOnly={true}
+                  />
+                </div>
+              </ReflexElement>
+            </ReflexContainer>
+          </TabsContent>
+          <TabsContent value='testcase'>
+            <Card
+              className='flex justify-center items-center h-[50vh]'
+              style={{height: '50vh'}}
+            >
+              <CardHeader className='space-y-6 w-2/3'></CardHeader>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }
