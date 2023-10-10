@@ -36,6 +36,9 @@ import {useForm} from 'react-hook-form'
 import {z} from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {Form} from '@/components/ui/form'
+import {StatusCode} from '@/enums'
+import {toast} from '@/components/ui/use-toast'
+import {Icons} from '@/components/ui/icons'
 
 export function SectionHeader({
   title,
@@ -219,9 +222,38 @@ export default function MainComponent({
 }
 
 function BasicConfigurationDialog({children, handleSubmit}: any) {
-  const onSubmit = (data) => {
-    console.log(data)
+  const [isLoading, setIsLoading] = useState(false)
+  const param = useParams()
+  const onSubmit = async (data) => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/update-quiz-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({...data, id: param.qid}),
+      })
+
+      if (response.status === StatusCode.InternalServerError) {
+        return toast({
+          title: 'Internal server error',
+          description: 'Failed to create coding quiz.',
+          variant: 'destructive',
+        })
+      }
+
+      toast({
+        title: 'Changes saved.',
+      })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
