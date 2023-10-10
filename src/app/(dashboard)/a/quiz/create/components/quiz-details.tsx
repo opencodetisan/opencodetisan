@@ -18,9 +18,12 @@ import {useFormContext} from 'react-hook-form'
 
 export function QuizDetails({
   className,
-  title,
+  isLoading,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: {
+  className?: React.HTMLAttributes<HTMLElement>
+  isLoading: boolean
+}) {
   const form = useFormContext()
 
   return (
@@ -29,6 +32,7 @@ export function QuizDetails({
         <FormField
           control={form.control}
           name='title'
+          disabled={isLoading}
           render={({field}) => (
             <FormItem>
               <FormLabel>Title</FormLabel>
@@ -42,6 +46,7 @@ export function QuizDetails({
         <FormField
           control={form.control}
           name='codeLanguageId'
+          disabled={isLoading}
           render={({field}) => (
             <FormItem>
               <FormLabel>Code Language</FormLabel>
@@ -64,6 +69,7 @@ export function QuizDetails({
         <FormField
           control={form.control}
           name='difficultyLevelId'
+          disabled={isLoading}
           render={({field}) => (
             <FormItem>
               <FormLabel>Difficulty level</FormLabel>

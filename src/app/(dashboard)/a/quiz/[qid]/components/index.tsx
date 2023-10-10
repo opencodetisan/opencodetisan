@@ -264,14 +264,18 @@ function BasicConfigurationDialog({children, handleSubmit}: any) {
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <QuizDetails />
+        <QuizDetails isLoading={isLoading} />
         <DialogFooter>
           <Button
             type='submit'
+            disabled={isLoading}
             onClick={() => {
               handleSubmit(onSubmit)()
             }}
           >
+            {isLoading && (
+              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            )}
             Save changes
           </Button>
         </DialogFooter>
