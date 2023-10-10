@@ -27,10 +27,15 @@ import {fetcher} from '@/lib/fetcher'
 import {cn, getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import MDEditor from '@uiw/react-md-editor'
 import {useParams} from 'next/navigation'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import 'react-reflex/styles.css'
 import useSWR from 'swr'
+import {QuizDetails} from '../../create/components/quiz-details'
+import {useForm} from 'react-hook-form'
+import {z} from 'zod'
+import {zodResolver} from '@hookform/resolvers/zod'
+import {Form} from '@/components/ui/form'
 
 export function SectionHeader({
   title,
@@ -66,6 +71,16 @@ function RowData({
   )
 }
 
+const formSchema = z.object({
+  title: z
+    .string({required_error: 'Please type in quiz title'})
+    .min(4, {message: 'Title must contain at least 4 character(s)'}),
+  codeLanguageId: z.string({required_error: 'Please select a coding language'}),
+  difficultyLevelId: z.string({
+    required_error: 'Please select a coding language',
+  }),
+})
+
 export default function MainComponent({
   className,
   title,
@@ -79,6 +94,26 @@ export default function MainComponent({
   const [instruction, setInstruction] = useState('')
   const [solution, setSolution] = useState('')
   const [testRunner, setTestRunner] = useState('')
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+    },
+  })
+
+  useEffect(() => {
+    if (data) {
+      const quizData = data.data.quizData
+      const quizTitle = quizData.title
+      const quizDifficultyLevelId = quizData.difficultyLevelId
+      const quizCodeLanguageId = quizData.codeLanguageId
+      form.reset({
+        title: quizTitle,
+        codeLanguageId: quizCodeLanguageId.toString(),
+        difficultyLevelId: quizDifficultyLevelId.toString(),
+      })
+    }
+  }, [data])
 
   if (!data) {
     return <></>
@@ -93,9 +128,11 @@ export default function MainComponent({
       <div>
         <div className='flex justify-between items-center'>
           <SectionHeader title='Basic Configuration' />
-          <BasicConfigurationDialog>
-            <Button variant={'outline'}>Edit</Button>
-          </BasicConfigurationDialog>
+          <Form {...form}>
+            <BasicConfigurationDialog handleSubmit={form.handleSubmit}>
+              <Button variant={'outline'}>Edit</Button>
+            </BasicConfigurationDialog>
+          </Form>
         </div>
         <Separator className='my-6' />
         <Card className=''>
