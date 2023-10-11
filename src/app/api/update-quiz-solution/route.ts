@@ -16,17 +16,11 @@ export async function POST(request: Request) {
     }
 
     const req = await request.json()
-    const {solution} = req
+    const {solution, testCases} = req
 
     updateQuizSolutionService({
       quizSolution: solution,
-      quizTestCase: [
-        {
-          input: 'yeet',
-          output: 'yeet',
-          testCaseId: 'clnils46o000582jfa2kmuuey',
-        },
-      ],
+      quizTestCase: testCases,
     })
 
     return NextResponse.json({})
