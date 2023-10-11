@@ -39,6 +39,7 @@ import {Form} from '@/components/ui/form'
 import {StatusCode} from '@/enums'
 import {toast} from '@/components/ui/use-toast'
 import {Icons} from '@/components/ui/icons'
+import {QuizTestCaseForm} from '../../create/components/quiz-solution'
 
 export function SectionHeader({
   title,
@@ -181,6 +182,7 @@ export default function MainComponent({
             defaultSolutionValue={quizSolution[0].code}
             defaultTestRunnerValue={quizSolution[0].testRunner}
             codeLanguageId={quizData.codeLanguageId}
+            testCases={quizTestCase}
             mutate={mutate}
           >
             <Button variant={'outline'}>Edit</Button>
@@ -373,6 +375,13 @@ function QuizInstructionDialog({children, defaultValue, mutate}: any) {
   )
 }
 
+const testCaseFormSchema = z.object({
+  input1: z.string().min(1, {message: 'Please type in the input'}),
+  input2: z.string().min(1, {message: 'Please type in the input'}),
+  output1: z.string().min(1, {message: 'Please type in the output'}),
+  output2: z.string().min(1, {message: 'Please type in the output'}),
+})
+
 function QuizSolutionDialog({
   children,
   solutionId,
@@ -385,8 +394,28 @@ function QuizSolutionDialog({
   const [isLoading, setIsLoading] = useState(false)
   const [solution, setSolution] = useState(defaultSolutionValue)
   const [testRunner, setTestRunner] = useState(defaultTestRunnerValue)
+  const form = useForm<z.infer<typeof testCaseFormSchema>>({
+    resolver: zodResolver(testCaseFormSchema as any),
+    defaultValues: {
+      input1: '',
+      input2: '',
+      output1: '',
+      output2: '',
+    },
+  })
 
-  const onSubmit = async () => {
+  useEffect(() => {
+    if (testCases) {
+      form.reset({
+        input1: testCases[0]?.input ?? '',
+        input2: testCases[1]?.input ?? '',
+        output1: testCases[0]?.output ?? '',
+        output2: testCases[1]?.output ?? '',
+      })
+    }
+  }, [codeLanguageId])
+
+  const onSubmit = async (data: z.infer<typeof testCaseFormSchema>) => {
     setIsLoading(true)
 
     try {
@@ -397,6 +426,18 @@ function QuizSolutionDialog({
         },
         body: JSON.stringify({
           solution: [{code: solution, solutionId, testRunner}],
+          testCases: [
+            {
+              testCaseId: testCases[0].id,
+              input: data.input1,
+              output: data.output1,
+            },
+            {
+              testCaseId: testCases[1].id,
+              input: data.input2,
+              output: data.output2,
+            },
+          ],
         }),
       })
 
@@ -464,12 +505,11 @@ function QuizSolutionDialog({
             </ReflexContainer>
           </TabsContent>
           <TabsContent value='testcase'>
-            <Card
-              className='flex justify-center items-center h-[50vh]'
-              style={{height: '50vh'}}
-            >
-              <CardHeader className='space-y-6 w-2/3'></CardHeader>
-            </Card>
+            <Form {...form}>
+              <form>
+                <QuizTestCaseForm />
+              </form>
+            </Form>
           </TabsContent>
         </Tabs>
         <DialogFooter>
@@ -477,7 +517,7 @@ function QuizSolutionDialog({
             type='submit'
             disabled={isLoading}
             onClick={() => {
-              onSubmit()
+              form.handleSubmit(onSubmit)()
             }}
           >
             {isLoading && (
