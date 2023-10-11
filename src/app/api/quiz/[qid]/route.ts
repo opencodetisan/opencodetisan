@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server'
-import {getQuizService, recoverPasswordService} from '@/lib/core/service'
+import {getQuizService} from '@/lib/core/service'
 
 export async function GET(request: Request, {params}: {params: {qid: string}}) {
   try {
