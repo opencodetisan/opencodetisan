@@ -151,7 +151,9 @@ export default function MainComponent({
       <div>
         <div className='flex justify-between items-center'>
           <SectionHeader title='Instruction' />
-          <Button variant={'outline'}>Edit</Button>
+          <QuizInstructionDialog defaultValue={quizData.instruction}>
+            <Button variant={'outline'}>Edit</Button>
+          </QuizInstructionDialog>
         </div>
         <Separator className='my-6' />
         <MDEditor
@@ -271,6 +273,77 @@ function BasicConfigurationDialog({children, handleSubmit}: any) {
             disabled={isLoading}
             onClick={() => {
               handleSubmit(onSubmit)()
+            }}
+          >
+            {isLoading && (
+              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            )}
+            Save changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function QuizInstructionDialog({children, defaultValue}: any) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [instruction, setInstruction] = useState(defaultValue)
+  const param = useParams()
+  const onSubmit = async () => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/update-quiz-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({instruction, id: param.qid}),
+      })
+
+      if (response.status === StatusCode.InternalServerError) {
+        return toast({
+          title: 'Internal server error',
+          description: 'Failed to save changes.',
+          variant: 'destructive',
+        })
+      }
+
+      toast({
+        title: 'Changes saved.',
+      })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className='sm:max-w-[100rem]'>
+        <DialogHeader>
+          <DialogTitle>Edit instruction</DialogTitle>
+          <DialogDescription>
+            Make changes to your coding quiz instruction here.
+          </DialogDescription>
+        </DialogHeader>
+        <MDEditor
+          className='border-white'
+          height={700}
+          data-color-mode='light'
+          value={instruction}
+          onChange={setInstruction}
+          overflow={false}
+        />
+        <DialogFooter>
+          <Button
+            type='submit'
+            disabled={isLoading}
+            onClick={() => {
+              onSubmit()
             }}
           >
             {isLoading && (
