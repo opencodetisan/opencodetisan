@@ -22,9 +22,8 @@ export function QuizSolution({
   setSolution,
   testRunner,
   setTestRunner,
-  ...props
-} // TODO: type
-: any) {
+  ...props // TODO: type
+}: any) {
   const {codeLanguage} = useContext(CodeEditorContext)
   const form = useFormContext()
 
@@ -133,5 +132,79 @@ export function QuizSolution({
         </Card>
       </TabsContent>
     </Tabs>
+  )
+}
+
+export function QuizTestCaseForm() {
+  const form = useFormContext()
+
+  return (
+    <Card
+      className='flex justify-center items-center h-[50vh]'
+      style={{height: '50vh'}}
+    >
+      <CardHeader className='space-y-6 w-2/3'>
+        <FormField
+          control={form.control}
+          name='input1'
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>
+                <p className='text-sm text-muted-foreground'>Input 1</p>
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='input2'
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>
+                <p className='text-sm text-muted-foreground'>Input 2</p>
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='output1'
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>
+                <p className='text-sm text-muted-foreground'>Output 1</p>
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='output2'
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>
+                <p className='text-sm text-muted-foreground'>Output 2</p>
+              </FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </CardHeader>
+    </Card>
   )
 }
