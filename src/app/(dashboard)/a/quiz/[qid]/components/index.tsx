@@ -90,7 +90,7 @@ export default function MainComponent({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const param = useParams()
-  const {data} = useSWR(
+  const {data, mutate} = useSWR(
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz/${param.qid}`,
     fetcher,
   )
@@ -151,7 +151,10 @@ export default function MainComponent({
       <div>
         <div className='flex justify-between items-center'>
           <SectionHeader title='Instruction' />
-          <QuizInstructionDialog defaultValue={quizData.instruction}>
+          <QuizInstructionDialog
+            defaultValue={quizData.instruction}
+            mutate={mutate}
+          >
             <Button variant={'outline'}>Edit</Button>
           </QuizInstructionDialog>
         </div>
@@ -286,7 +289,7 @@ function BasicConfigurationDialog({children, handleSubmit}: any) {
   )
 }
 
-function QuizInstructionDialog({children, defaultValue}: any) {
+function QuizInstructionDialog({children, defaultValue, mutate}: any) {
   const [isLoading, setIsLoading] = useState(false)
   const [instruction, setInstruction] = useState(defaultValue)
   const param = useParams()
@@ -310,6 +313,7 @@ function QuizInstructionDialog({children, defaultValue}: any) {
         })
       }
 
+      mutate()
       toast({
         title: 'Changes saved.',
       })
