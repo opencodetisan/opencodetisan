@@ -44,8 +44,10 @@ export async function POST(request: Request) {
 
     // TODO: scalability
     const quizTestCases = [
-      [{input: input1, output: output1}],
-      [{input: input2, output: output2}],
+      [
+        {input: input1, output: output1},
+        {input: input2, output: output2},
+      ],
     ]
 
     const quiz = await createQuizService({
