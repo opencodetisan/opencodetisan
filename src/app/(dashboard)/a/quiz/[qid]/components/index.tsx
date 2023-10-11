@@ -176,7 +176,15 @@ export default function MainComponent({
       <div>
         <div className='flex justify-between items-center'>
           <SectionHeader title='Solution' />
-          <Button variant={'outline'}>Edit</Button>
+          <QuizSolutionDialog
+            solutionId={quizSolution[0].id}
+            defaultSolutionValue={quizSolution[0].code}
+            defaultTestRunnerValue={quizSolution[0].testRunner}
+            codeLanguageId={quizData.codeLanguageId}
+            mutate={mutate}
+          >
+            <Button variant={'outline'}>Edit</Button>
+          </QuizSolutionDialog>
         </div>
         <Separator className='my-6' />
         <Tabs defaultValue='solution' className=''>
@@ -346,6 +354,124 @@ function QuizInstructionDialog({children, defaultValue, mutate}: any) {
           onChange={setInstruction}
           overflow={false}
         />
+        <DialogFooter>
+          <Button
+            type='submit'
+            disabled={isLoading}
+            onClick={() => {
+              onSubmit()
+            }}
+          >
+            {isLoading && (
+              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            )}
+            Save changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function QuizSolutionDialog({
+  children,
+  solutionId,
+  defaultSolutionValue,
+  defaultTestRunnerValue,
+  codeLanguageId,
+  testCases,
+  mutate,
+}: any) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [solution, setSolution] = useState(defaultSolutionValue)
+  const [testRunner, setTestRunner] = useState(defaultTestRunnerValue)
+
+  const onSubmit = async () => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/update-quiz-solution', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          solution: [{code: solution, solutionId, testRunner}],
+        }),
+      })
+
+      if (response.status === StatusCode.InternalServerError) {
+        return toast({
+          title: 'Internal server error',
+          description: 'Failed to save changes.',
+          variant: 'destructive',
+        })
+      }
+
+      mutate()
+      toast({
+        title: 'Changes saved.',
+      })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className='sm:max-w-[100rem]'>
+        <DialogHeader>
+          <DialogTitle>Edit solution</DialogTitle>
+          <DialogDescription>
+            Make changes to your coding quiz solution here.
+          </DialogDescription>
+        </DialogHeader>
+        <Tabs defaultValue='solution' className=''>
+          <TabsList className='grid w-full grid-cols-2'>
+            <TabsTrigger value='solution'>Solution</TabsTrigger>
+            <TabsTrigger value='testcase'>Test Cases</TabsTrigger>
+          </TabsList>
+          <TabsContent
+            value='solution'
+            className='bg-white p-1 border rounded-md shadow-sm'
+            style={{height: '55vh'}}
+          >
+            <ReflexContainer orientation='vertical'>
+              <ReflexElement className='left-pane'>
+                <div className='pane-content'>
+                  <p className='text-xs'>Solution</p>
+                  <CodeEditor
+                    value={solution}
+                    onChange={setSolution}
+                    codeLanguageId={codeLanguageId}
+                  />
+                </div>
+              </ReflexElement>
+              <ReflexSplitter className='mx-1' />
+              <ReflexElement className='right-pane'>
+                <p className='text-xs'>Test runner</p>
+                <div className='pane-content'>
+                  <CodeEditor
+                    value={testRunner}
+                    onChange={setTestRunner}
+                    codeLanguageId={codeLanguageId}
+                  />
+                </div>
+              </ReflexElement>
+            </ReflexContainer>
+          </TabsContent>
+          <TabsContent value='testcase'>
+            <Card
+              className='flex justify-center items-center h-[50vh]'
+              style={{height: '50vh'}}
+            >
+              <CardHeader className='space-y-6 w-2/3'></CardHeader>
+            </Card>
+          </TabsContent>
+        </Tabs>
         <DialogFooter>
           <Button
             type='submit'
