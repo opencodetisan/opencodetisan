@@ -132,7 +132,10 @@ export default function MainComponent({
         <div className='flex justify-between items-center'>
           <SectionHeader title='Basic Configuration' />
           <Form {...form}>
-            <BasicConfigurationDialog handleSubmit={form.handleSubmit}>
+            <BasicConfigurationDialog
+              handleSubmit={form.handleSubmit}
+              mutate={mutate}
+            >
               <Button variant={'outline'}>Edit</Button>
             </BasicConfigurationDialog>
           </Form>
@@ -226,7 +229,7 @@ export default function MainComponent({
   )
 }
 
-function BasicConfigurationDialog({children, handleSubmit}: any) {
+function BasicConfigurationDialog({children, handleSubmit, mutate}: any) {
   const [isLoading, setIsLoading] = useState(false)
   const param = useParams()
   const onSubmit = async (data) => {
@@ -249,6 +252,7 @@ function BasicConfigurationDialog({children, handleSubmit}: any) {
         })
       }
 
+      mutate()
       toast({
         title: 'Changes saved.',
       })
