@@ -80,8 +80,8 @@ export const getDifficultyLevel = (levelId: number = 1) => {
   }
 }
 
-export const getCodeLanguage = (difficultyLevelId: number = 1) => {
-  switch (difficultyLevelId) {
+export const getCodeLanguage = (codeLanguageId: number = 1) => {
+  switch (codeLanguageId) {
     case 1:
       return {
         pretty: 'JavaScript',
