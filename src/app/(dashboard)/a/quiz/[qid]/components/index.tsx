@@ -90,11 +90,12 @@ export default function MainComponent({
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz/${param.qid}`,
     fetcher,
   )
-  const [instruction, setInstruction] = useState('')
+  const [instruction, setInstruction] = useState('**Hello world!!!**')
   const [solution, setSolution] = useState('')
   const [testRunner, setTestRunner] = useState('')
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    // TODO: type
+    resolver: zodResolver(formSchema as any),
     defaultValues: {
       title: '',
     },
@@ -177,7 +178,8 @@ export default function MainComponent({
           height={400}
           data-color-mode='light'
           value={quizData.instruction}
-          onChange={setInstruction}
+          // TODO: any type
+          onChange={setInstruction as any}
           hideToolbar={true}
           preview='preview'
           {...props}
