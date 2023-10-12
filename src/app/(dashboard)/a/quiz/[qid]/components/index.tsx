@@ -113,7 +113,7 @@ export default function MainComponent({
         difficultyLevelId: quizDifficultyLevelId.toString(),
       })
     }
-  }, [data])
+  }, [data, form])
 
   if (!data || !data.data) {
     return <></>
@@ -448,7 +448,7 @@ function QuizSolutionDialog({
         output2: testCases[1]?.output ?? '',
       })
     }
-  }, [codeLanguageId])
+  }, [form, codeLanguageId, testCases])
 
   const onSubmit = async (data: z.infer<typeof testCaseFormSchema>) => {
     setIsLoading(true)
@@ -581,7 +581,7 @@ function DeleteQuizDialog({children, title}: any) {
     } else if (!isDisabled) {
       setIsDisabled(true)
     }
-  }, [title, input])
+  }, [title, input, isDisabled])
 
   const onSubmit = async () => {
     setIsLoading(true)
