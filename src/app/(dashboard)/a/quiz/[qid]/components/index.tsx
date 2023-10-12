@@ -126,7 +126,7 @@ export default function MainComponent({
   const testCaseContent = quizTestCase.map(
     (test: IQuizTestCaseProps, i: number) => {
       return (
-        <div className='space-y-2'>
+        <div key={test.id} className='space-y-2'>
           <p>Test case {i + 1}</p>
           <div>
             <RowData name='Input' value={test.input} />
