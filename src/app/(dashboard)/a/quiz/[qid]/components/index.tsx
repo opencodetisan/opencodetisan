@@ -115,7 +115,7 @@ export default function MainComponent({
     }
   }, [data])
 
-  if (!data) {
+  if (!data || !data.data) {
     return <></>
   }
 
