@@ -32,6 +32,7 @@ import {StatusCode} from '@/enums'
 import {toast} from '@/components/ui/use-toast'
 import {Icons} from '@/components/ui/icons'
 import {QuizTestCaseForm} from '../../create/components/quiz-solution'
+import {IQuizTestCaseProps} from '@/types'
 
 export function SectionHeader({
   title,
@@ -121,17 +122,19 @@ export default function MainComponent({
   const codeLanguage = getCodeLanguage(quizData.codeLanguageId).pretty
   const difficultyLevel = getDifficultyLevel(quizData.difficultyLevelId).name
 
-  const testCaseContent = quizTestCase.map((test, i) => {
-    return (
-      <div className='space-y-2'>
-        <p>Test case {i + 1}</p>
-        <div>
-          <RowData name='Input' value={test.input} />
-          <RowData name='Output' value={test.output} />
+  const testCaseContent = quizTestCase.map(
+    (test: IQuizTestCaseProps, i: number) => {
+      return (
+        <div className='space-y-2'>
+          <p>Test case {i + 1}</p>
+          <div>
+            <RowData name='Input' value={test.input} />
+            <RowData name='Output' value={test.output} />
+          </div>
         </div>
-      </div>
-    )
-  })
+      )
+    },
+  )
 
   return (
     <div className='space-y-16 w-2/4'>
