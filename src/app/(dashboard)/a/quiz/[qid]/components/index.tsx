@@ -66,11 +66,13 @@ function RowData({
   className?: any
 }) {
   return (
-    <div className={cn(className, 'flex items-center space-x-10')}>
+    <div
+      className={cn(className, 'flex justify-between items-center space-x-10')}
+    >
       <p className='flex-none self-start w-32 text-sm text-muted-foreground'>
         {name}
       </p>
-      <p className='w-96 line-clamp-2'>{value}</p>
+      <p className='line-clamp-2'>{value}</p>
     </div>
   )
 }
@@ -126,6 +128,18 @@ export default function MainComponent({
   const {quizData, quizSolution, quizTestCase} = data.data
   const codeLanguage = getCodeLanguage(quizData.codeLanguageId).pretty
   const difficultyLevel = getDifficultyLevel(quizData.difficultyLevelId).name
+
+  const testCaseContent = quizTestCase.map((test, i) => {
+    return (
+      <div className='space-y-2'>
+        <p>Test case {i + 1}</p>
+        <div>
+          <RowData name='Input' value={test.input} />
+          <RowData name='Output' value={test.output} />
+        </div>
+      </div>
+    )
+  })
 
   return (
     <div className='space-y-16 w-2/4'>
@@ -230,7 +244,9 @@ export default function MainComponent({
               className='flex justify-center items-center h-[50vh]'
               style={{height: '50vh'}}
             >
-              <CardHeader className='space-y-6 w-2/3'></CardHeader>
+              <CardHeader className='space-y-6 w-2/3'>
+                {testCaseContent}
+              </CardHeader>
             </Card>
           </TabsContent>
         </Tabs>
