@@ -276,7 +276,8 @@ export default function MainComponent({
 function BasicConfigurationDialog({children, handleSubmit, mutate}: any) {
   const [isLoading, setIsLoading] = useState(false)
   const param = useParams()
-  const onSubmit = async (data) => {
+  // TODO: type
+  const onSubmit = async (data: any) => {
     setIsLoading(true)
 
     try {

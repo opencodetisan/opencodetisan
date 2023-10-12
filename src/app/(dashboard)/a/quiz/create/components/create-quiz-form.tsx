@@ -45,7 +45,8 @@ export function CreateQuizForm({
   const [testRunner, setTestRunner] = useState('')
   const deferredTestRunner = useDeferredValue(testRunner)
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    // TODO: type
+    resolver: zodResolver(formSchema as any),
     defaultValues: {
       title: '',
       input1: '',
