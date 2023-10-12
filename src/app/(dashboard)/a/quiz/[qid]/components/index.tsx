@@ -604,6 +604,7 @@ function DeleteQuizDialog({children, title}: any) {
 
       toast({
         title: 'Coding quiz successfully deleted.',
+        description: 'Redirecting...',
       })
 
       setTimeout(() => {
