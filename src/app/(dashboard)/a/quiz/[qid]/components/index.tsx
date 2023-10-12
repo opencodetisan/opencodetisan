@@ -315,7 +315,7 @@ function BasicConfigurationDialog({children, handleSubmit, mutate}: any) {
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            {`Make changes to your profile here. Click save when you're done.`}
           </DialogDescription>
         </DialogHeader>
         <QuizDetails isLoading={isLoading} />
@@ -633,7 +633,7 @@ function DeleteQuizDialog({children, title}: any) {
         <DialogFooter className=''>
           <div className='w-full flex flex-col sm:justify-center space-y-2'>
             <DialogDescription>
-              To confirm, type "{title}" in the input box below
+              {`To confirm, type "${title}" in the input box below`}
             </DialogDescription>
             <Input
               className='h-8'
