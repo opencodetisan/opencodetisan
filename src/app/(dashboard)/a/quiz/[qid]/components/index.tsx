@@ -210,7 +210,7 @@ export default function MainComponent({
             className='bg-white p-1 border rounded-md shadow-sm'
             style={{height: '55vh'}}
           >
-            <ReflexContainer orientation='vertical'>
+            <ReflexContainer className='z-0' orientation='vertical'>
               <ReflexElement className='left-pane'>
                 <div className='pane-content'>
                   <p className='text-xs'>Solution</p>
