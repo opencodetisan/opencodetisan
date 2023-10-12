@@ -102,7 +102,7 @@ export function CreateQuizForm({
             </p>
           </div>
           <Separator className='my-6' />
-          <QuizDetails />
+          <QuizDetails isLoading={isLoading} />
         </form>
       </Form>
       <div>
