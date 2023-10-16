@@ -1,6 +1,5 @@
 import {PageHeader} from '@/components/ui/page-header'
 import {Separator} from '@/components/ui/separator'
-import {CreateQuizForm} from '../../quiz/create/components/create-quiz-form'
 import {CreateAssessmentMain} from './component'
 
 export default function CreateAssessment() {
