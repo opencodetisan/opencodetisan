@@ -11,7 +11,7 @@ import {StatusCode} from '@/enums'
 import {usePathname, useRouter} from 'next/navigation'
 import {Icons} from '@/components/ui/icons'
 import {AssessmentDetails} from './assessment-details'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {SectionHeader} from '../../../quiz/[qid]/components'
 import {
   Dialog,
@@ -29,6 +29,9 @@ import {ColumnDef} from '@tanstack/react-table'
 import {fetcher} from '@/lib/fetcher'
 import {DataTable} from '@/components/ui/data-table'
 import useSWR from 'swr'
+import SelectedQuizTable from './selected-quiz-table'
+import {Card} from '@/components/ui/card'
+import {IQuizDataProps} from '@/types'
 
 const formSchema = z.object({
   title: z
@@ -111,6 +114,9 @@ export function CreateAssessmentMain({
   // const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
+  const [selectedQuizzes, setSelectedQuizzes] = useState<IQuizDataProps[] | []>(
+    [],
+  )
   // const userRoleURLSegment = pathname.split('/')[1]
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO: type
@@ -120,6 +126,20 @@ export function CreateAssessmentMain({
       description: '',
     },
   })
+
+  useEffect(() => {
+    const newSelectedQuizzes: IQuizDataProps[] = []
+
+    for (const key in rowSelection) {
+      const index = parseInt(key.split('/')[1])
+      newSelectedQuizzes.push(data[index])
+    }
+    setSelectedQuizzes(newSelectedQuizzes)
+  }, [rowSelection, data, setSelectedQuizzes])
+
+  if (!data) {
+    return <></>
+  }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
@@ -181,6 +201,13 @@ export function CreateAssessmentMain({
           </QuizTableDialog>
         </div>
         <Separator className='my-6' />
+        <Card>
+          <SelectedQuizTable
+            setRowSelection={setRowSelection}
+            rowSelection={rowSelection}
+            selectedQuizzes={selectedQuizzes}
+          />
+        </Card>
       </div>
     </div>
   )
