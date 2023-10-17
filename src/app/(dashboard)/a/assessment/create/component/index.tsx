@@ -296,6 +296,9 @@ function AddCandidateDialog({
                 <FormItem>
                   <FormControl>
                     <Textarea
+                      onFocus={() => {
+                        form.clearErrors()
+                      }}
                       placeholder='Type email addresses here...'
                       {...field}
                     />
