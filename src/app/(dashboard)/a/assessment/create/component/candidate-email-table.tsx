@@ -17,36 +17,35 @@ export default function CandidateEmailTable({
   setCandidateEmails,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
-  const tableRowContent = candidateEmails?.split(',').map((email: string) => {
-    email.trim()
-    if (email === '') {
-      return <></>
-    }
-    const onRemove = () => {
-      const newCandidateEmails = candidateEmails.replace(email, '')
-      setCandidateEmails(newCandidateEmails === ',' ? '' : newCandidateEmails)
-    }
-    return (
-      <TableRow key={email}>
-        <TableCell className='font-medium'>{email}</TableCell>
-        <TableCell className='text-right'>
-          <Button variant={'destructive'} className='h-8' onClick={onRemove}>
-            Remove
-          </Button>
-        </TableCell>
-      </TableRow>
-    )
-  })
+  const tableRowContent = candidateEmails.map(
+    (email: string, index: number) => {
+      const onRemove = () => {
+        const newCandidateEmails = [...candidateEmails]
+        newCandidateEmails.splice(index, 1)
+        setCandidateEmails(newCandidateEmails)
+      }
+      return (
+        <TableRow key={email}>
+          <TableCell className='font-medium'>{email}</TableCell>
+          <TableCell className='text-right'>
+            <Button variant={'destructive'} className='h-8' onClick={onRemove}>
+              Remove
+            </Button>
+          </TableCell>
+        </TableRow>
+      )
+    },
+  )
 
   return (
     <div className={cn(className)}>
       <Table>
-        {candidateEmails !== '' && (
+        {candidateEmails[0] && (
           <TableCaption className='mb-3'>
             A list of your candidate email addresses.
           </TableCaption>
         )}
-        {candidateEmails === '' && (
+        {!candidateEmails[0] && (
           <TableCaption className='mb-3'>{`Click 'Add' button to insert candidate email addresses.`}</TableCaption>
         )}
         <TableHeader>
