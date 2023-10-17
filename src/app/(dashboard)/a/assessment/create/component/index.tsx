@@ -42,6 +42,7 @@ import {Card} from '@/components/ui/card'
 import {IQuizDataProps} from '@/types'
 import {Textarea} from '@/components/ui/textarea'
 import {DialogClose} from '@radix-ui/react-dialog'
+import CandidateEmailTable from './candidate-email-table'
 
 const formSchema = z.object({
   title: z
@@ -238,12 +239,19 @@ export function CreateAssessmentMain({
   )
 }
 
-const emailFormSchema = z.object({
-  email: z.string().min(1, {message: 'please type'}),
-})
-
 const re =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+const emailFormSchema = z.object({
+  email: z
+    .string()
+    .min(1, {message: 'please type'})
+    .transform((string) => string.split(',').map((e) => e.trim()))
+    .refine((emailArray) => {
+      const isValidEmail = emailArray.every((e) => re.test(e.trim()))
+      return isValidEmail
+    }),
+})
 
 function AddCandidateDialog({
   children,
@@ -252,24 +260,18 @@ function AddCandidateDialog({
 }: any) {
   const [open, setOpen] = useState(false)
   const form = useForm<z.infer<typeof emailFormSchema>>({
+    reValidateMode: 'onSubmit',
+    shouldFocusError: false,
     resolver: zodResolver(emailFormSchema),
   })
 
   useEffect(() => {
-    form.reset({email: candidateEmails})
+    form.reset({email: candidateEmails.join(',')})
   }, [form, candidateEmails])
 
   const onSubmit = (value: z.infer<typeof emailFormSchema>) => {
-    const newCandidateEmails = value.email
-      .split(',')
-      .map((e: string) => e.trim())
-    const isValidEmails = newCandidateEmails.every((e) => re.test(e))
-    console.log(isValidEmails)
-    if (!isValidEmails) {
-      // form.trigger('email')
-    }
     setCandidateEmails(value.email)
-    // setOpen(false)
+    setOpen(false)
   }
 
   return (
