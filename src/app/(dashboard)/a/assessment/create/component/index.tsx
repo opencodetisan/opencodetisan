@@ -4,7 +4,15 @@ import {z} from 'zod'
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {toast} from '@/components/ui/use-toast'
-import {Form} from '@/components/ui/form'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import {Button} from '@/components/ui/button'
 import {Separator} from '@/components/ui/separator'
 import {StatusCode} from '@/enums'
@@ -32,6 +40,8 @@ import useSWR from 'swr'
 import SelectedQuizTable from './selected-quiz-table'
 import {Card} from '@/components/ui/card'
 import {IQuizDataProps} from '@/types'
+import {Textarea} from '@/components/ui/textarea'
+import {DialogClose} from '@radix-ui/react-dialog'
 
 const formSchema = z.object({
   title: z
@@ -114,6 +124,7 @@ export function CreateAssessmentMain({
   // const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
+  const [candidateEmails, setCandidateEmails] = useState([])
   const [selectedQuizzes, setSelectedQuizzes] = useState<IQuizDataProps[] | []>(
     [],
   )
@@ -209,7 +220,97 @@ export function CreateAssessmentMain({
           />
         </Card>
       </div>
+      <div>
+        <div className='flex justify-between items-center'>
+          <SectionHeader title='Candidates' />
+          <AddCandidateDialog
+            data={data}
+            candidateEmails={candidateEmails}
+            setCandidateEmails={setCandidateEmails}
+          >
+            <Button variant={'outline'}>Add</Button>
+          </AddCandidateDialog>
+        </div>
+        <Separator className='my-6' />
+        <Card></Card>
+      </div>
     </div>
+  )
+}
+
+const emailFormSchema = z.object({
+  email: z.string().min(1, {message: 'please type'}),
+})
+
+const re =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+function AddCandidateDialog({
+  children,
+  candidateEmails,
+  setCandidateEmails,
+}: any) {
+  const [open, setOpen] = useState(false)
+  const form = useForm<z.infer<typeof emailFormSchema>>({
+    resolver: zodResolver(emailFormSchema),
+  })
+
+  useEffect(() => {
+    form.reset({email: candidateEmails})
+  }, [form, candidateEmails])
+
+  const onSubmit = (value: z.infer<typeof emailFormSchema>) => {
+    const newCandidateEmails = value.email
+      .split(',')
+      .map((e: string) => e.trim())
+    const isValidEmails = newCandidateEmails.every((e) => re.test(e))
+    console.log(isValidEmails)
+    if (!isValidEmails) {
+      // form.trigger('email')
+    }
+    setCandidateEmails(value.email)
+    // setOpen(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className='sm:max-w-[30rem]'>
+        <DialogHeader>
+          <DialogTitle>Add Candidates</DialogTitle>
+          <DialogDescription>
+            {`Use comma (,) to separate email addresses.`}
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='w-2/3 space-y-6'
+          >
+            <FormField
+              control={form.control}
+              name='email'
+              render={({field}) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      placeholder='Type email addresses here...'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
