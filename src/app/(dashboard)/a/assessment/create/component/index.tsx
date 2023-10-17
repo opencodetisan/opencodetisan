@@ -233,7 +233,12 @@ export function CreateAssessmentMain({
           </AddCandidateDialog>
         </div>
         <Separator className='my-6' />
-        <Card></Card>
+        <Card>
+          <CandidateEmailTable
+            candidateEmails={candidateEmails}
+            setCandidateEmails={setCandidateEmails}
+          />
+        </Card>
       </div>
     </div>
   )
