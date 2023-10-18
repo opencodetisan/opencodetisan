@@ -8,6 +8,8 @@ import {Card, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {PersonIcon} from '@radix-ui/react-icons'
 import {AssessmentStatus} from '@/enums'
+import {TooltipProvider} from '@radix-ui/react-tooltip'
+import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip'
 
 export function AssessmentCard({
   className,
@@ -49,10 +51,19 @@ export function AssessmentCard({
                     ? AssessmentStatus.COMPLETED
                     : AssessmentStatus.PENDING}
                 </Badge>
-                <div className='flex items-center space-x-2'>
-                  <PersonIcon className='text-2xl' />
-                  <p>{candidateAmount}</p>
-                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className='flex items-center space-x-2'>
+                        <PersonIcon className='text-2xl' />
+                        <p>{candidateAmount}</p>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className='bg-black text-white text-xs'>
+                      <p>Candidates</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <CardTitle className='text-lg line-clamp-2'>{title}</CardTitle>
               <p className='line-clamp-2 text-secondary-foreground'>
