@@ -250,12 +250,26 @@ const re =
 const emailFormSchema = z.object({
   email: z
     .string()
-    .min(1, {message: 'please type'})
+    .min(1, {message: 'Text area cannot be empty.'})
     .transform((string) => string.split(',').map((e) => e.trim()))
-    .refine((emailArray) => {
-      const isValidEmail = emailArray.every((e) => re.test(e.trim()))
-      return isValidEmail
-    }),
+    .refine(
+      (emailArray) => {
+        if (!emailArray) {
+          return false
+        }
+        const isValidEmail = emailArray.every((e) => re.test(e.trim()))
+        return isValidEmail
+      },
+      (emailArray) => {
+        if (!emailArray) {
+          return {message: ''}
+        }
+        const invalidEmail = emailArray.filter(
+          (e) => re.test(e.trim()) === false,
+        )
+        return {message: `Invalid email addresses: "${invalidEmail}"`}
+      },
+    ),
 })
 
 function AddCandidateDialog({
