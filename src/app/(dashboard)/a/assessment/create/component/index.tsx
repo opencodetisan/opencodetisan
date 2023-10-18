@@ -297,17 +297,14 @@ function AddCandidateDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='sm:max-w-[30rem]'>
-        <DialogHeader>
+        <DialogHeader className='mb-16'>
           <DialogTitle>Add Candidates</DialogTitle>
           <DialogDescription>
             {`Use comma (,) to separate email addresses.`}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='w-2/3 space-y-6'
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
               control={form.control}
               name='email'
@@ -318,11 +315,14 @@ function AddCandidateDialog({
                       onFocus={() => {
                         form.clearErrors()
                       }}
+                      className='min-h-[160px]'
                       placeholder='Type email addresses here...'
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <div className='h-16 w-96'>
+                    <FormMessage className='line-clamp-3' />
+                  </div>
                 </FormItem>
               )}
             />
