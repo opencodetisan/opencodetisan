@@ -1,7 +1,7 @@
 import {updateAssessmentDataService} from '@/lib/core/service'
 import {NextResponse} from 'next/server'
 
-export async function POST(request: Request) {
+export async function PUT(request: Request) {
   try {
     const {title, description, id} = await request.json()
 
