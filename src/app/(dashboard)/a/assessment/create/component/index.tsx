@@ -121,15 +121,15 @@ export function CreateAssessmentMain({
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/get-many-quizzes?showAll=true`,
     fetcher,
   )
-  // const router = useRouter()
-  // const pathname = usePathname()
+  const router = useRouter()
+  const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [candidateEmails, setCandidateEmails] = useState([])
   const [selectedQuizzes, setSelectedQuizzes] = useState<IQuizDataProps[] | []>(
     [],
   )
-  // const userRoleURLSegment = pathname.split('/')[1]
+  const userRoleURLSegment = pathname.split('/')[1]
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO: type
     resolver: zodResolver(formSchema as any),
@@ -243,6 +243,17 @@ export function CreateAssessmentMain({
             setCandidateEmails={setCandidateEmails}
           />
         </Card>
+      </div>
+      <div className='flex justify-end'>
+        <Button
+          disabled={isLoading}
+          onClick={() => {
+            form.handleSubmit(onSubmit)()
+          }}
+        >
+          {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
+          Submit
+        </Button>
       </div>
     </div>
   )
