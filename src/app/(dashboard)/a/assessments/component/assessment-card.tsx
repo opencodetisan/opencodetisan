@@ -13,6 +13,7 @@ import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip'
 
 export function AssessmentCard({
   className,
+  id,
   title,
   description,
   difficultyLevelId,
@@ -35,7 +36,7 @@ export function AssessmentCard({
     : false
 
   return (
-    <Link href={`/${userRoleURLSegment}/quiz/${quizId}`}>
+    <Link href={`/${userRoleURLSegment}/assessment/${id}`}>
       <Card className='hover:shadow-md hover:cursor-pointer h-full' {...props}>
         <CardHeader className='h-full'>
           <div className='flex flex-col space-y-5 h-full justify-between'>
