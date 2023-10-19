@@ -40,7 +40,7 @@ export default function SelectedQuizTable({
           <TableCell className='font-medium'>{selectedQuiz.title}</TableCell>
           <TableCell>{codeLanguage}</TableCell>
           <TableCell>{difficultyLevel}</TableCell>
-          <TableCell className='w-[100px] '>
+          <TableCell className='w-[100px] text-right'>
             <Button variant={'destructive'} className='h-8' onClick={onRemove}>
               Remove
             </Button>
