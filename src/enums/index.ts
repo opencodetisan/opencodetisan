@@ -45,3 +45,20 @@ export enum UserRole {
   Admin = 'ADMIN',
   Recruiter = 'RECRUITER',
 }
+
+export enum DifficultyLevel {
+  Easy = 1,
+  Medium,
+  Hard,
+}
+export enum CodeLangMode {
+  Javascript = 'javascript',
+  Python = 'python',
+  Php = 'php',
+  Csharp = 'text/x-csharp',
+}
+
+export enum StatusCode {
+  OK = 200,
+  InternalServerError = 500,
+}

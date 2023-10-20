@@ -1,6 +1,12 @@
-import {CandidatePointLevel, QuizDifficulty, UserRole} from '@/enums'
+import {
+  CandidatePointLevel,
+  DifficultyLevel,
+  QuizDifficulty,
+  UserRole,
+} from '@/enums'
 import {type ClassValue, clsx} from 'clsx'
 import {twMerge} from 'tailwind-merge'
+import {SiJavascript, SiPython, SiCsharp} from 'react-icons/si'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -46,5 +52,67 @@ export const getRoleURLSegment = (role: UserRole) => {
       return '/a'
     case UserRole.Candidate:
       return 'c'
+  }
+}
+
+export const getDifficultyLevel = (levelId: number = 1) => {
+  switch (levelId) {
+    case DifficultyLevel.Easy:
+      return {
+        name: 'Easy',
+        color: 'bg-green-600',
+      }
+    case DifficultyLevel.Medium:
+      return {
+        name: 'Medium',
+        color: 'bg-yellow-600',
+      }
+    case DifficultyLevel.Hard:
+      return {
+        name: 'Hard',
+        color: 'bg-red-600',
+      }
+    default:
+      return {
+        name: 'Easy',
+        color: 'green',
+      }
+  }
+}
+
+export const getCodeLanguage = (codeLanguageId: number = 1) => {
+  switch (codeLanguageId) {
+    case 1:
+      return {
+        pretty: 'JavaScript',
+        mode: 'javascript',
+        lang: 'javascript',
+        indentUnit: 2,
+        icon: SiJavascript,
+      }
+    case 2:
+      return {
+        pretty: 'Python',
+        mode: 'python',
+        lang: 'python',
+        indentUnit: 4,
+        icon: SiPython,
+      }
+    case 3:
+      return {
+        pretty: 'C#',
+        mode: 'text/x-csharp',
+        lang: 'csharp',
+        indentUnit: 4,
+        icon: SiCsharp,
+      }
+    default:
+      return {
+        pretty: 'JavaScript',
+        mode: 'javascript',
+        lang: 'javascript',
+        indentUnit: 2,
+        icon: SiJavascript,
+      }
   }
 }

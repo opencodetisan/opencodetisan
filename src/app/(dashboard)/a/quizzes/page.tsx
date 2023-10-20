@@ -1,20 +1,19 @@
-'use client'
+import {PageHeader} from '@/components/ui/page-header'
+import {RedirectButton} from '@/components/ui/redirect-button'
+import {Separator} from '@/components/ui/separator'
+import {ManyQuizCard} from './component/many-quiz-card'
 
-import {QuizCard} from '@/components/ui/quiz-card'
-import {fetcher} from '@/lib/fetcher'
-import useSWR from 'swr'
-
-export default function Home() {
-  const {data, error, isLoading} = useSWR('/api/get-many-quizzes', fetcher)
-  // console.log(data)
-
+export default function Quizzes() {
   return (
-    <div className='px-72 pt-6 bg-stone-50'>
-      <div className='grid grid-cols-3 gap-4'>
-        <QuizCard title={'yeet'} />
-        <QuizCard title={'yeet'} />
-        <QuizCard title={'yeet'} />
+    <>
+      <div className='flex justify-between px-72 py-12 bg-white'>
+        <PageHeader title='Quizzes' />
+        <RedirectButton title='Add' />
       </div>
-    </div>
+      <Separator />
+      <div className='px-72 pt-6'>
+        <ManyQuizCard />
+      </div>
+    </>
   )
 }

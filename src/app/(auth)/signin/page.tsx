@@ -1,5 +1,3 @@
-'use client'
-
 import '../../globals.css'
 import {SignInForm} from './signin-form'
 

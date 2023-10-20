@@ -12,7 +12,7 @@ export function MainHeader({
   return (
     <div
       className={cn(
-        'h-full flex justify-between items-center space-x-4 lg:space-x-6',
+        'h-full flex justify-between items-center space-x-4 lg:space-x-6 bg-white',
         className,
       )}
       {...props}
