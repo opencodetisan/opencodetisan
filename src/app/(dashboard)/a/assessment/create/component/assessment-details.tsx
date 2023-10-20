@@ -1,6 +1,7 @@
 'use client'
 
 import {Card, CardHeader} from '@/components/ui/card'
+import {DateTimePicker} from '@/components/ui/date-time-picker/date-time-picker'
 import {
   FormControl,
   FormField,
@@ -52,6 +53,46 @@ export function AssessmentDetails({
             </FormItem>
           )}
         />
+        <div className='flex space-x-4'>
+          <FormField
+            control={form.control}
+            name='startAt'
+            disabled={isLoading}
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Starting date</FormLabel>
+                <FormControl>
+                  <DateTimePicker
+                    granularity={'minute'}
+                    onChange={(date) => {
+                      field.onChange(!!date ? date.toString() : null)
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='endAt'
+            disabled={isLoading}
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Ending date</FormLabel>
+                <FormControl>
+                  <DateTimePicker
+                    granularity={'minute'}
+                    onChange={(date) => {
+                      field.onChange(!!date ? date.toString() : null)
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </CardHeader>
     </Card>
   )

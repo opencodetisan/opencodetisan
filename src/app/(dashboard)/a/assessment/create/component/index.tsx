@@ -49,6 +49,8 @@ const formSchema = z.object({
     .string({required_error: 'Please type in quiz title'})
     .min(4, {message: 'Title must contain at least 4 character(s)'}),
   description: z.string(),
+  startAt: z.string({required_error: 'Date cannot be empty'}),
+  endAt: z.string({required_error: 'Date cannot be empty'}),
 })
 
 type IQuiz = {
