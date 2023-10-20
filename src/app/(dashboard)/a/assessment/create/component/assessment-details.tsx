@@ -54,44 +54,48 @@ export function AssessmentDetails({
           )}
         />
         <div className='flex space-x-4'>
-          <FormField
-            control={form.control}
-            name='startAt'
-            disabled={isLoading}
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>Starting date</FormLabel>
-                <FormControl>
-                  <DateTimePicker
-                    granularity={'minute'}
-                    onChange={(date) => {
-                      field.onChange(!!date ? date.toString() : null)
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='endAt'
-            disabled={isLoading}
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>Ending date</FormLabel>
-                <FormControl>
-                  <DateTimePicker
-                    granularity={'minute'}
-                    onChange={(date) => {
-                      field.onChange(!!date ? date.toString() : null)
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className='grow'>
+            <FormField
+              control={form.control}
+              name='startAt'
+              disabled={isLoading}
+              render={({field}) => (
+                <FormItem>
+                  <FormLabel>Starting date</FormLabel>
+                  <FormControl>
+                    <DateTimePicker
+                      granularity={'minute'}
+                      onChange={(date) => {
+                        field.onChange(!!date ? date.toString() : null)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className='grow'>
+            <FormField
+              control={form.control}
+              name='endAt'
+              disabled={isLoading}
+              render={({field}) => (
+                <FormItem>
+                  <FormLabel>Ending date</FormLabel>
+                  <FormControl>
+                    <DateTimePicker
+                      granularity={'minute'}
+                      onChange={(date) => {
+                        field.onChange(!!date ? date.toString() : null)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
       </CardHeader>
     </Card>
