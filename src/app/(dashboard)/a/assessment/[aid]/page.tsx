@@ -32,6 +32,16 @@ export default function Assessment() {
 
   const assessmentDetails = data.data.data
   const assessmentQuizzes = data.data.quizzes
+  const assessmentCandidates = data.data.candidates
+
+  const candidateRow = assessmentCandidates?.map((c) => {
+    return (
+      <TableRow key={c.id}>
+        <TableCell className='font-medium'>{c.name}</TableCell>
+        <TableCell>{c.email}</TableCell>
+      </TableRow>
+    )
+  })
 
   const quizRow = assessmentQuizzes?.map((quiz: IQuizDataProps) => {
     if (!quiz) {
@@ -100,6 +110,26 @@ export default function Assessment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>{quizRow}</TableBody>
+              </Table>
+            </Card>
+          </div>
+          <div>
+            <div className='flex justify-between items-center'>
+              <SectionHeader title='Candidates' />
+            </div>
+            <Separator className='my-6' />
+            <Card className=''>
+              <Table>
+                <TableCaption className='mb-3'>
+                  A list of your selected candidates.
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>{candidateRow}</TableBody>
               </Table>
             </Card>
           </div>
