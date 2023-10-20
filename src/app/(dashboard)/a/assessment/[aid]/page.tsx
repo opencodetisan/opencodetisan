@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/table'
 import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps} from '@/types'
+import {AssessmentQuizStatus} from '@/enums'
 
 export default function Assessment() {
   const param = useParams()
@@ -33,6 +34,28 @@ export default function Assessment() {
   const assessmentDetails = data.data.data
   const assessmentQuizzes = data.data.quizzes
   const assessmentCandidates = data.data.candidates
+  const assessmentSubmissions = data.data.submissions
+
+  const submissionRow = assessmentSubmissions?.map((s) => {
+    let status = AssessmentQuizStatus.Pending
+    let totalPoint = 0
+    let comparativeScore = 0
+    const isCompleted = s.data.every(
+      (e) => e.status === AssessmentQuizStatus.Completed,
+    )
+    if (isCompleted) {
+      status = AssessmentQuizStatus.Completed
+    }
+
+    return (
+      <TableRow key={s.id}>
+        <TableCell className='font-medium'>{s.name}</TableCell>
+        <TableCell>{status}</TableCell>
+        <TableCell>{totalPoint}</TableCell>
+        <TableCell>{comparativeScore}</TableCell>
+      </TableRow>
+    )
+  })
 
   const candidateRow = assessmentCandidates?.map((c) => {
     return (
@@ -130,6 +153,28 @@ export default function Assessment() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>{candidateRow}</TableBody>
+              </Table>
+            </Card>
+          </div>
+          <div>
+            <div className='flex justify-between items-center'>
+              <SectionHeader title='Candidate Submissions' />
+            </div>
+            <Separator className='my-6' />
+            <Card className=''>
+              <Table>
+                <TableCaption className='mb-3'>
+                  A list of candidate submissions.
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Total Point</TableHead>
+                    <TableHead>Comparative score</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>{submissionRow}</TableBody>
               </Table>
             </Card>
           </div>
