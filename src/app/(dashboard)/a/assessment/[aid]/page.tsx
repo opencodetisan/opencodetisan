@@ -8,6 +8,17 @@ import {Button} from '@/components/ui/button'
 import useSWR from 'swr'
 import {fetcher} from '@/lib/fetcher'
 import {useParams} from 'next/navigation'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
+import {IQuizDataProps} from '@/types'
 
 export default function Assessment() {
   const param = useParams()
@@ -20,6 +31,22 @@ export default function Assessment() {
   }
 
   const assessmentDetails = data.data.data
+  const assessmentQuizzes = data.data.quizzes
+
+  const quizRow = assessmentQuizzes?.map((quiz: IQuizDataProps) => {
+    if (!quiz) {
+      return <></>
+    }
+    const codeLanguage = getCodeLanguage(quiz.codeLanguageId).pretty
+    const difficultyLevel = getDifficultyLevel(quiz.difficultyLevelId).name
+    return (
+      <TableRow key={quiz.id}>
+        <TableCell className='font-medium'>{quiz.title}</TableCell>
+        <TableCell>{codeLanguage}</TableCell>
+        <TableCell>{difficultyLevel}</TableCell>
+      </TableRow>
+    )
+  })
 
   return (
     <div>
@@ -53,6 +80,27 @@ export default function Assessment() {
                 />
               </CardContent>
               <CardFooter></CardFooter>
+            </Card>
+          </div>
+          <div>
+            <div className='flex justify-between items-center'>
+              <SectionHeader title='Quizzes' />
+            </div>
+            <Separator className='my-6' />
+            <Card className=''>
+              <Table>
+                <TableCaption className='mb-3'>
+                  A list of your selected quizzes.
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Code Language</TableHead>
+                    <TableHead>Difficulty Level</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>{quizRow}</TableBody>
+              </Table>
             </Card>
           </div>
         </div>
