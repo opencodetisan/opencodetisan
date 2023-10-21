@@ -20,6 +20,17 @@ import {
 import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps} from '@/types'
 import {AssessmentQuizStatus} from '@/enums'
+import {DateTime} from 'luxon'
+
+const dateFormatter = (ISOString: string) => {
+  return DateTime.fromISO(ISOString).toLocaleString({
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 
 export default function Assessment() {
   const param = useParams()
@@ -35,6 +46,9 @@ export default function Assessment() {
   const assessmentQuizzes = data.data.quizzes
   const assessmentCandidates = data.data.candidates
   const assessmentSubmissions = data.data.submissions
+
+  const startAt = dateFormatter(assessmentDetails.startAt)
+  const endAt = dateFormatter(assessmentDetails.endAt)
 
   const submissionRow = assessmentSubmissions?.map((s) => {
     let status = AssessmentQuizStatus.Pending
@@ -111,6 +125,8 @@ export default function Assessment() {
                   name={'Description'}
                   value={assessmentDetails.description}
                 />
+                <RowData name={'Starting date'} value={startAt} />
+                <RowData name={'Ending date'} value={endAt} />
               </CardContent>
               <CardFooter></CardFooter>
             </Card>
