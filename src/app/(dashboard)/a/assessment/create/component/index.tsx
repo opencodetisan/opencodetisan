@@ -209,7 +209,7 @@ export function CreateAssessmentMain({
       </Form>
       <div>
         <div className='flex justify-between items-center'>
-          <SectionHeader title='Coding Quiz' />
+          <SectionHeader title='Coding Quizzes' />
           <QuizTableDialog
             data={data}
             rowSelection={rowSelection}
