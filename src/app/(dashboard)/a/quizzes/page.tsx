@@ -8,7 +8,7 @@ export default function Quizzes() {
     <>
       <div className='flex justify-between px-72 py-12 bg-white'>
         <PageHeader title='Quizzes' />
-        <RedirectButton title='Add' />
+        <RedirectButton title='Add' href='/quiz/create' />
       </div>
       <Separator />
       <div className='px-72 pt-6'>
