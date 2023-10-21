@@ -190,6 +190,11 @@ export const getAssessments = async ({userId}: {userId: string}) => {
     select: {
       id: true,
       title: true,
+      owner: {
+        select: {
+          name: true,
+        },
+      },
       assessmentQuizzes: {
         select: {
           quizId: true,
