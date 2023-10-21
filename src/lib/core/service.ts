@@ -373,12 +373,16 @@ export const createAssessmentService = async ({
   title,
   description,
   quizIds,
+  startAt,
+  endAt,
 }: ICreateAssessmentServiceProps) => {
   const assessment = await createAssessment({
     userId,
     title,
     description,
     quizIds,
+    startAt,
+    endAt,
   })
   return assessment
 }
