@@ -26,6 +26,8 @@ import {Input} from './input'
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  rowSelection: Record<number, boolean>
+  setRowSelection: () => void
 }
 
 export function DataTable<TData, TValue>({
@@ -44,6 +46,8 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getRowId: (originalRow: TData, index: number, parent?: Row<TData>) => {
+      // TODO
+      // @ts-ignore
       return `${originalRow.id}/${index}`
     },
 
