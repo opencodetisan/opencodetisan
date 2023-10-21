@@ -20,6 +20,7 @@ export function ManyAssessmentCard({
     return (
       <AssessmentCard
         key={assessment.id}
+        id={assessment.id}
         title={assessment.title}
         description={assessment.description}
         owner={assessment.owner.name}
