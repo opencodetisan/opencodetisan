@@ -19,6 +19,8 @@ export const createAssessment = async ({
   title,
   description,
   quizIds,
+  startAt,
+  endAt,
 }: ICreateAssessmentProps) => {
   if (!userId) {
     throw Error('missing userId')
@@ -28,12 +30,18 @@ export const createAssessment = async ({
     throw Error('missing description')
   } else if (!quizIds) {
     throw Error('missing quizIds')
+  } else if (!startAt) {
+    throw Error('missing startAt')
+  } else if (!endAt) {
+    throw Error('missing endAt')
   }
   const assessment = await prisma.assessment.create({
     data: {
       ownerId: userId,
       title,
       description,
+      startAt: new Date(startAt),
+      endAt: new Date(endAt),
       assessmentQuizzes: {
         create: quizIds.map((q) => ({quizId: q})),
       },
