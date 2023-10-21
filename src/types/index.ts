@@ -149,6 +149,8 @@ export interface ICreateAssessmentProps {
   title: string
   description: string
   quizIds: string[]
+  startAt: Date
+  endAt: Date
 }
 
 export interface ICreateAssessmentServiceProps extends ICreateAssessmentProps {}
