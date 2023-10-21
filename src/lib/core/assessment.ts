@@ -242,6 +242,7 @@ export const getAssessment = async ({
           select: {
             id: true,
             name: true,
+            email: true,
             assessmentResults: {
               where: {
                 assessmentId: assessmentId,
@@ -293,6 +294,7 @@ export const getAssessment = async ({
             id: true,
             title: true,
             instruction: true,
+            codeLanguageId: true,
             difficultyLevelId: true,
             difficultyLevel: {
               select: {
@@ -315,6 +317,8 @@ export const getAssessment = async ({
       title: true,
       description: true,
       createdAt: true,
+      startAt: true,
+      endAt: true,
       ...selections,
     },
   })
@@ -337,7 +341,7 @@ export const getAssessment = async ({
   for (let key in assessment) {
     const k = key as keyof IAssessmentDataProps
 
-    if (typeof assessment[k] === 'string' || key === 'createdAt') {
+    if (typeof assessment[k] === 'string' || key.endsWith('At')) {
       data[k] = assessment[k]
     }
   }
