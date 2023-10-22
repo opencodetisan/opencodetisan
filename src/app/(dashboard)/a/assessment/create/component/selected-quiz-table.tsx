@@ -11,14 +11,20 @@ import {
 import {cn, getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps} from '@/types'
 
+// TODO: type
+interface ISelectedQuizTableProps {
+  className: React.HTMLAttributes<HTMLElement>
+  rowSelection: Record<number, boolean>
+  setRowSelection: any
+  selectedQuizzes: any[]
+}
+
 export default function SelectedQuizTable({
   className,
-  title,
   rowSelection,
   setRowSelection,
   selectedQuizzes,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: ISelectedQuizTableProps) {
   const tableRowContent = selectedQuizzes?.map(
     (selectedQuiz: IQuizDataProps) => {
       if (!selectedQuiz) {
