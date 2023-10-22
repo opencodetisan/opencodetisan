@@ -40,10 +40,11 @@ export const sendAssessmentInvitation = async ({
   aid: string
 }) => {
   const link = `${process.env.NEXTAUTH_URL}/c/assessment/${aid}`
+  // TODO: html
   const html = `
       <p>Someone from Mars has invited you to an assessment.</p>
       <div>
-        <a href="${link}">Click here</a> to recover your password.
+        <a href="${link}">Click here</a> to view your assessment.
       </div>
   `
 
