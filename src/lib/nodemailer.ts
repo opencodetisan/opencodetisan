@@ -72,23 +72,27 @@ export const sendAssessmentInvitation = async ({
 
 export const sendUserCredential = async ({
   recipient,
-  aid,
+  password,
 }: {
   recipient: string
-  aid: string
+  password: string
 }) => {
-  const link = `${process.env.NEXTAUTH_URL}/c/assessment/${aid}`
+  const link = `${process.env.NEXTAUTH_URL}/signin`
+  // TODO: html
   const html = `
-      <p>Someone from Mars has invited you to an assessment.</p>
       <div>
-        <a href="${link}">Click here</a> to recover your password.
+        <p>Your account has been automatically created in OpenCodetisan.</p>
+        <p>Username: ${recipient}</p>
+        <p>Password: ${password}</p>
+        <a href="${link}">Click here</a> to sign-in.
+        <p>Remember to change the password.</p>
       </div>
   `
 
   const message = {
     from: process.env.NODEMAILER_USERNAME,
     to: recipient,
-    subject: 'OpenCodetisan assessment invitation',
+    subject: 'Account created in OpenCodetisan',
     text: 'message',
     html,
   }
