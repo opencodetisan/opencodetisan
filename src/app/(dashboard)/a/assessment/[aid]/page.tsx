@@ -18,9 +18,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
-import {IQuizDataProps} from '@/types'
+import {IQuizDataProps, IUserProps} from '@/types'
 import {AssessmentQuizStatus} from '@/enums'
 import {DateTime} from 'luxon'
+
+interface IAssessmentCandidateProps extends IUserProps {
+  email: string
+}
 
 const dateFormatter = (ISOString: string) => {
   return DateTime.fromISO(ISOString).toLocaleString({
@@ -71,14 +75,16 @@ export default function Assessment() {
     )
   })
 
-  const candidateRow = assessmentCandidates?.map((c) => {
-    return (
-      <TableRow key={c.id}>
-        <TableCell className='font-medium'>{c.name}</TableCell>
-        <TableCell>{c.email}</TableCell>
-      </TableRow>
-    )
-  })
+  const candidateRow = assessmentCandidates?.map(
+    (c: IAssessmentCandidateProps) => {
+      return (
+        <TableRow key={c.id}>
+          <TableCell className='font-medium'>{c.name}</TableCell>
+          <TableCell>{c.email}</TableCell>
+        </TableRow>
+      )
+    },
+  )
 
   const quizRow = assessmentQuizzes?.map((quiz: IQuizDataProps) => {
     if (!quiz) {
