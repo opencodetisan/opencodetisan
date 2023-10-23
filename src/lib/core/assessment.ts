@@ -655,12 +655,6 @@ export const updateAssessmentAcceptance = async ({
       assessmentResults: {
         create: assessmentResults,
       },
-      candidateActivityLog: {
-        create: {
-          userId: candidateId,
-          userActionId: CandidateActionId.Accept,
-        },
-      },
     },
   })
   return assessment
