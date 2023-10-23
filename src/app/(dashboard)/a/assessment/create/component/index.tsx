@@ -99,7 +99,7 @@ export const columns: ColumnDef<IQuiz>[] = [
     header: 'Code Language',
     cell: ({row}) => {
       const codeLanguageId = row.getValue('codeLangugageId')
-      const codeLanguage = getCodeLanguage(codeLanguageId).pretty
+      const codeLanguage = getCodeLanguage(codeLanguageId as number).pretty
       return <div>{codeLanguage}</div>
     },
   },
@@ -108,7 +108,9 @@ export const columns: ColumnDef<IQuiz>[] = [
     header: 'Difficulty Level',
     cell: ({row}) => {
       const difficultyLevelId = row.getValue('difficultyLevelId')
-      const difficultyLevel = getDifficultyLevel(difficultyLevelId).name
+      const difficultyLevel = getDifficultyLevel(
+        difficultyLevelId as number,
+      ).name
       return <div>{difficultyLevel}</div>
     },
   },
