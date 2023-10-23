@@ -15,6 +15,7 @@ describe('Integration test: Quiz ', () => {
     const codeLanguageId = faker.number.int({min: 1, max: 1000})
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
+    const email = faker.internet.email()
 
     let createdQuiz: any
 
@@ -90,6 +91,7 @@ describe('Integration test: Quiz ', () => {
     const codeLanguageId = faker.number.int({min: 1, max: 1000})
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
+    const email = faker.internet.email()
 
     let expectedQuiz: Record<string, any>
     let quizId: string
@@ -158,6 +160,7 @@ describe('Integration test: Quiz ', () => {
     const codeLanguageId = faker.number.int({min: 1, max: 1000})
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
+    const email = faker.internet.email()
 
     let solutionId: string
     let quizId: string
@@ -248,6 +251,7 @@ describe('Integration test: Quiz ', () => {
     const codeLanguageId = faker.number.int({min: 1, max: 1000})
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
+    const email = faker.internet.email()
 
     let solutionId: string
     let quizId: string
@@ -335,6 +339,7 @@ describe('Integration test: Quiz ', () => {
     const codeLanguageId = faker.number.int({min: 1, max: 1000})
     const difficultyLevelId = faker.number.int({min: 1, max: 1000})
     const userId = faker.string.uuid()
+    const email = faker.internet.email()
 
     let quizId: string
     let solutionId: string
