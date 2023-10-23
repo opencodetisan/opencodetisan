@@ -129,7 +129,7 @@ export function CreateAssessmentMain({
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [candidateEmails, setCandidateEmails] = useState([])
+  const [candidateEmails, setCandidateEmails] = useState<string[]>([])
   const [selectedQuizzes, setSelectedQuizzes] = useState<IQuizDataProps[] | []>(
     [],
   )
