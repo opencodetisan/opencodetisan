@@ -597,6 +597,11 @@ describe('Integration test: Assessment', () => {
             select: {
               id: true,
               title: true,
+              owner: {
+                select: {
+                  name: true,
+                },
+              },
               assessmentQuizzes: {
                 select: {
                   quizId: true,
