@@ -27,7 +27,8 @@ export async function POST(request: Request) {
 
     // TODO: use service function
     const userPromises = []
-    const existingCandidatesObj = {}
+    const existingCandidatesObj: {[key: string]: {email: string; id: string}} =
+      {}
     const existingCandidates = await prisma.user.findMany({
       where: {
         email: {
