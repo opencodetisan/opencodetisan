@@ -155,6 +155,8 @@ model Assessment {
   title String
   description String
   createdAt             DateTime        @default(now())
+  startAt             DateTime @default(now())
+  endAt             DateTime @default(now())
   assessmentQuizzes AssessmentQuiz[]
   assessmentCandidates AssessmentCandidate[]
   assessmentResults AssessmentResult[]

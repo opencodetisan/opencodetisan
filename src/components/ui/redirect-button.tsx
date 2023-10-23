@@ -7,13 +7,18 @@ import {Button} from './button'
 export function RedirectButton({
   className,
   title,
+  href,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: {
+  className?: React.HTMLAttributes<HTMLElement>
+  title: string
+  href: string
+}) {
   const pathname = usePathname()
   const userRoleURLSegment = pathname.split('/')[1]
 
   return (
-    <Link href={`/${userRoleURLSegment}/quiz/create`}>
+    <Link href={`/${userRoleURLSegment}${href}`}>
       <Button className={`${className}`} {...props}>
         {title}
       </Button>

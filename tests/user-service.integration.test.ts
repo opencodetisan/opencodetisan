@@ -35,8 +35,8 @@ describe('Integration test: User', () => {
     const word = faker.lorem.word()
     const userId_1 = faker.string.uuid()
     const userId_2 = faker.string.uuid()
-    const email_1 = 'user1@example.com'
-    const email_2 = 'user2@example.com'
+    const email_1 = faker.internet.email()
+    const email_2 = faker.internet.email()
     const plainTextPassword = 'password'
     const token_1 = 'token_1'
     const token_2 = 'token_2'
@@ -113,8 +113,8 @@ describe('Integration test: User', () => {
   describe('Integration test: initPassRecoveryService', () => {
     const word = faker.lorem.word()
     const userId_1 = faker.string.uuid()
-    const email_1 = 'user1@example.com'
-    const email_2 = 'user2@example.com'
+    const email_1 = faker.internet.email()
+    const email_2 = faker.internet.email()
 
     beforeAll(async () => {
       sendMailMock.mockClear()

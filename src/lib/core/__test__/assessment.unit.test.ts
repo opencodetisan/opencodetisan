@@ -43,6 +43,8 @@ const getAssessmentOutputMock = {
     title: text,
     description: text,
     createdAt: date,
+    startAt: date,
+    endAt: date,
   },
   candidates: [],
   submissions: [],
@@ -63,6 +65,8 @@ const mockAssessment = {
   title: text,
   description: text,
   createdAt: date,
+  startAt: date,
+  endAt: date,
   assessmentResults: [{id: uuid}],
   assessmentCandidateEmail: [],
   assessmentCandidates: [],
@@ -130,6 +134,8 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
+      startAt: date,
+      endAt: date,
     }
     prismaMock.assessment.create.mockResolvedValue(mockAssessment)
     expect(await createAssessment(param)).toEqual(mockAssessment)
@@ -141,6 +147,8 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
+      startAt: date,
+      endAt: date,
     }
     expect(async () => await createAssessment(param)).rejects.toThrow(
       /^missing userId$/,
@@ -153,6 +161,8 @@ describe('Assessment module', () => {
       // title: faker.lorem.text(),
       description: faker.lorem.text(),
       quizIds: [uuid, uuid],
+      startAt: date,
+      endAt: date,
     }
     expect(async () => await createAssessment(param)).rejects.toThrow(
       /^missing title$/,
@@ -165,6 +175,8 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       // description: faker.lorem.text(),
       quizIds: [uuid, uuid],
+      startAt: date,
+      endAt: date,
     }
     expect(async () => await createAssessment(param)).rejects.toThrow(
       /^missing description$/,
@@ -177,9 +189,39 @@ describe('Assessment module', () => {
       title: faker.lorem.text(),
       description: faker.lorem.text(),
       // quizIds: [uuid, uuid],
+      startAt: date,
+      endAt: date,
     }
     expect(async () => await createAssessment(param)).rejects.toThrow(
       /^missing quizIds$/,
+    )
+  })
+
+  test('missing startAt parameter should return a missing startAt error', async () => {
+    const param: any = {
+      userId: uuid,
+      title: faker.lorem.text(),
+      description: faker.lorem.text(),
+      quizIds: [uuid, uuid],
+      // startAt: date,
+      endAt: date,
+    }
+    expect(async () => await createAssessment(param)).rejects.toThrow(
+      /^missing startAt$/,
+    )
+  })
+
+  test('missing endAt parameter should return a missing endAt error', async () => {
+    const param: any = {
+      userId: uuid,
+      title: faker.lorem.text(),
+      description: faker.lorem.text(),
+      quizIds: [uuid, uuid],
+      startAt: date,
+      // endAt: date,
+    }
+    expect(async () => await createAssessment(param)).rejects.toThrow(
+      /^missing endAt$/,
     )
   })
 

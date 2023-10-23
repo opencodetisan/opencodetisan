@@ -19,6 +19,8 @@ export const createAssessment = async ({
   title,
   description,
   quizIds,
+  startAt,
+  endAt,
 }: ICreateAssessmentProps) => {
   if (!userId) {
     throw Error('missing userId')
@@ -28,12 +30,18 @@ export const createAssessment = async ({
     throw Error('missing description')
   } else if (!quizIds) {
     throw Error('missing quizIds')
+  } else if (!startAt) {
+    throw Error('missing startAt')
+  } else if (!endAt) {
+    throw Error('missing endAt')
   }
   const assessment = await prisma.assessment.create({
     data: {
       ownerId: userId,
       title,
       description,
+      startAt: new Date(startAt),
+      endAt: new Date(endAt),
       assessmentQuizzes: {
         create: quizIds.map((q) => ({quizId: q})),
       },
@@ -182,6 +190,11 @@ export const getAssessments = async ({userId}: {userId: string}) => {
     select: {
       id: true,
       title: true,
+      owner: {
+        select: {
+          name: true,
+        },
+      },
       assessmentQuizzes: {
         select: {
           quizId: true,
@@ -229,6 +242,7 @@ export const getAssessment = async ({
           select: {
             id: true,
             name: true,
+            email: true,
             assessmentResults: {
               where: {
                 assessmentId: assessmentId,
@@ -280,6 +294,7 @@ export const getAssessment = async ({
             id: true,
             title: true,
             instruction: true,
+            codeLanguageId: true,
             difficultyLevelId: true,
             difficultyLevel: {
               select: {
@@ -302,6 +317,8 @@ export const getAssessment = async ({
       title: true,
       description: true,
       createdAt: true,
+      startAt: true,
+      endAt: true,
       ...selections,
     },
   })
@@ -324,7 +341,7 @@ export const getAssessment = async ({
   for (let key in assessment) {
     const k = key as keyof IAssessmentDataProps
 
-    if (typeof assessment[k] === 'string' || key === 'createdAt') {
+    if (typeof assessment[k] === 'string' || key.endsWith('At')) {
       data[k] = assessment[k]
     }
   }
@@ -637,12 +654,6 @@ export const updateAssessmentAcceptance = async ({
       },
       assessmentResults: {
         create: assessmentResults,
-      },
-      candidateActivityLog: {
-        create: {
-          userId: candidateId,
-          userActionId: CandidateActionId.Accept,
-        },
       },
     },
   })

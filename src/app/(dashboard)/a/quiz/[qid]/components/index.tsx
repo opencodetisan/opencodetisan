@@ -49,7 +49,7 @@ export function SectionHeader({
   )
 }
 
-function RowData({
+export function RowData({
   name,
   value,
   className,
