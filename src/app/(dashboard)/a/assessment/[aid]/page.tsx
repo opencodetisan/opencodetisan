@@ -21,6 +21,9 @@ import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps, IQuizProps, IUserProps} from '@/types'
 import {AssessmentQuizStatus} from '@/enums'
 import {DateTime} from 'luxon'
+import DataTableRowActions from './components/data-table-row-actions'
+import {useState} from 'react'
+import {toast} from '@/components/ui/use-toast'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -38,6 +41,7 @@ const dateFormatter = (ISOString: string) => {
 
 export default function Assessment() {
   const param = useParams()
+  const [isLoading, setIsLoading] = useState(false)
   const {data, mutate} = useSWR(
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/assessment/${param.aid}`,
     fetcher,
@@ -81,10 +85,48 @@ export default function Assessment() {
 
   const candidateRow = assessmentCandidates?.map(
     (c: IAssessmentCandidateProps) => {
+      const onAssessmentCandidateDelete = async () => {
+        setIsLoading(true)
+
+        try {
+          const response = await fetch('/api/assessment-candidate', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              assessmentId: assessmentDetails.id,
+              candidateId: c.id,
+            }),
+          })
+
+          if (!response.ok) {
+            return toast({
+              title: 'Server error',
+              description: 'Failed to recover password.',
+            })
+          }
+
+          mutate()
+          setIsLoading(false)
+        } catch (error) {
+          if (error instanceof Error) {
+            console.error(`Password recovery error: ${error.message}`)
+          } else {
+            console.log('Unexpected error', error)
+          }
+        }
+      }
+
       return (
         <TableRow key={c.id}>
           <TableCell className='font-medium'>{c.name}</TableCell>
           <TableCell>{c.email}</TableCell>
+          <TableCell className='w-[100px] text-right'>
+            <DataTableRowActions
+              onAssessmentCandidateDelete={onAssessmentCandidateDelete}
+            />
+          </TableCell>
         </TableRow>
       )
     },
