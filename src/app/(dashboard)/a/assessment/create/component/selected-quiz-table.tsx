@@ -13,8 +13,8 @@ import {IQuizDataProps} from '@/types'
 
 // TODO: type
 interface ISelectedQuizTableProps {
-  className: React.HTMLAttributes<HTMLElement>
-  rowSelection: Record<number, boolean>
+  className?: React.HTMLAttributes<HTMLElement>
+  rowSelection: Record<string, boolean>
   setRowSelection: any
   selectedQuizzes: any[]
 }
