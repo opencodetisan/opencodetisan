@@ -10,6 +10,7 @@ import {PersonIcon} from '@radix-ui/react-icons'
 import {AssessmentStatus} from '@/enums'
 import {TooltipProvider} from '@radix-ui/react-tooltip'
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip'
+import {IAssessmentCandidateProps} from '@/types'
 
 export function AssessmentCard({
   className,
@@ -32,7 +33,9 @@ export function AssessmentCard({
     year: 'numeric',
   })
   const isCompleted = assessmentCandidates[0]
-    ? assessmentCandidates.every((c) => c.status === AssessmentStatus.PENDING)
+    ? assessmentCandidates.every(
+        (c: IAssessmentCandidateProps) => c.status === AssessmentStatus.PENDING,
+      )
     : false
 
   return (
