@@ -9,6 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import {cn} from '@/lib/utils'
+import {SetStateAction} from 'react'
 
 export default function CandidateEmailTable({
   className,
@@ -16,7 +17,12 @@ export default function CandidateEmailTable({
   candidateEmails,
   setCandidateEmails,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: {
+  className?: React.HTMLAttributes<HTMLElement>
+  title?: string
+  candidateEmails: string[]
+  setCandidateEmails: (value: SetStateAction<string[]>) => void
+}) {
   const tableRowContent = candidateEmails.map(
     (email: string, index: number) => {
       const onRemove = () => {
