@@ -39,19 +39,3 @@ export function ManyAssessmentCard({
     </div>
   )
 }
-
-// <div className='flex justify-end'>
-//   <Select
-//     onValueChange={(value: 'false' | 'true') => {
-//       setShowAll(value)
-//     }}
-//   >
-//     <SelectTrigger className='w-[180px]'>
-//       <SelectValue placeholder='Filter' />
-//     </SelectTrigger>
-//     <SelectContent>
-//       <SelectItem value='false'>Show my quizzes</SelectItem>
-//       <SelectItem value='true'>Show all</SelectItem>
-//     </SelectContent>
-//   </Select>
-// </div>
