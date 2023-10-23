@@ -13,6 +13,7 @@ import {
 } from '@/types'
 import prisma from '../db/client'
 import {AssessmentStatus, CandidateActionId} from '@/enums'
+import {DateTime} from 'luxon'
 
 export const createAssessment = async ({
   userId,
@@ -35,13 +36,15 @@ export const createAssessment = async ({
   } else if (!endAt) {
     throw Error('missing endAt')
   }
+  const startDt = DateTime.fromISO(startAt)
+  const endDt = DateTime.fromISO(endAt)
   const assessment = await prisma.assessment.create({
     data: {
       ownerId: userId,
       title,
       description,
-      startAt: new Date(startAt),
-      endAt: new Date(endAt),
+      startAt: startDt.toISO()!,
+      endAt: endDt.toISO()!,
       assessmentQuizzes: {
         create: quizIds.map((q) => ({quizId: q})),
       },
