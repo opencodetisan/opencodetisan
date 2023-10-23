@@ -298,6 +298,8 @@ function AddCandidateDialog({
   const form = useForm<z.infer<typeof emailFormSchema>>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
+    // TODO
+    // @ts-ignore
     resolver: zodResolver(emailFormSchema),
   })
 

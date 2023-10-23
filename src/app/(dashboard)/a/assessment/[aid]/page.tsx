@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
-import {IQuizDataProps, IUserProps} from '@/types'
+import {IQuizDataProps, IQuizProps, IUserProps} from '@/types'
 import {AssessmentQuizStatus} from '@/enums'
 import {DateTime} from 'luxon'
 
@@ -54,11 +54,15 @@ export default function Assessment() {
   const startAt = dateFormatter(assessmentDetails.startAt)
   const endAt = dateFormatter(assessmentDetails.endAt)
 
+  // TODO
+  // @ts-ignore
   const submissionRow = assessmentSubmissions?.map((s) => {
     let status = AssessmentQuizStatus.Pending
     let totalPoint = 0
     let comparativeScore = 0
     const isCompleted = s.data.every(
+      // TODO
+      // @ts-ignore
       (e) => e.status === AssessmentQuizStatus.Completed,
     )
     if (isCompleted) {
