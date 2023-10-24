@@ -15,6 +15,7 @@ import {
   deleteManyAssessmentQuiz,
   deleteManyAssessmentQuizSubmission,
   deleteManyAssessmentResult,
+  getAllAssessmentCandidate,
   getAssessment,
   getAssessmentIds,
   getAssessmentQuizSubmission,
@@ -610,6 +611,7 @@ export const addAssessmentCandidateService = async ({
   newCandidateEmails: string[]
   assessmentId: string
 }) => {
+  const currentCandidateEmails = await getAllAssessmentCandidate({assessmentId})
   const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
 
   const existingCandidates = await prisma.user.findMany({
@@ -629,7 +631,9 @@ export const addAssessmentCandidateService = async ({
   for (let i = 0; i < newCandidateEmails.length; i++) {
     const email = newCandidateEmails[i]
 
-    if (existingCandidatesObj[email]) {
+    if (currentCandidateEmails[email]) {
+      break
+    } else if (existingCandidatesObj[email]) {
       const candidateId = existingCandidatesObj[email].id
       await acceptAssessmentService({
         assessmentId: assessmentId,
