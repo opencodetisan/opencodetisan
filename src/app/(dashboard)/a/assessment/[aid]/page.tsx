@@ -19,11 +19,12 @@ import {
 } from '@/components/ui/table'
 import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps, IQuizProps, IUserProps} from '@/types'
-import {AssessmentQuizStatus} from '@/enums'
+import {AssessmentQuizStatus, StatusCode} from '@/enums'
 import {DateTime} from 'luxon'
 import DataTableRowActions from './components/data-table-row-actions'
 import {useState} from 'react'
 import {toast} from '@/components/ui/use-toast'
+import {AddCandidateDialog} from '../create/component'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -54,6 +55,7 @@ export default function Assessment() {
   const assessmentQuizzes = data.data.quizzes
   const assessmentCandidates = data.data.candidates
   const assessmentSubmissions = data.data.submissions
+  const assessmentId = assessmentDetails.id
 
   const startAt = dateFormatter(assessmentDetails.startAt)
   const endAt = dateFormatter(assessmentDetails.endAt)
@@ -146,6 +148,35 @@ export default function Assessment() {
       </TableRow>
     )
   })
+
+  const addCandidates = async (candidates: string[]) => {
+    try {
+      const response = await fetch(
+        `/api/assessment-candidate/${assessmentId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({newCandidateEmails: candidates}),
+        },
+      )
+
+      if (response.status === StatusCode.InternalServerError) {
+        return toast({
+          title: 'Internal server error',
+          description: 'Failed to add candidates.',
+          variant: 'destructive',
+        })
+      }
+
+      toast({
+        title: `You have added ${candidates.length} candidates.`,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div>
