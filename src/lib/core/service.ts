@@ -604,10 +604,10 @@ export const recoverPasswordService = async ({
 
 // TODO: test cases
 export const addAssessmentCandidateService = async ({
-  candidateEmails,
+  newCandidateEmails,
   assessmentId,
 }: {
-  candidateEmails: string[]
+  newCandidateEmails: string[]
   assessmentId: string
 }) => {
   const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
@@ -615,7 +615,7 @@ export const addAssessmentCandidateService = async ({
   const existingCandidates = await prisma.user.findMany({
     where: {
       email: {
-        in: candidateEmails,
+        in: newCandidateEmails,
       },
     },
     select: {
@@ -626,8 +626,8 @@ export const addAssessmentCandidateService = async ({
 
   existingCandidates.forEach((c) => (existingCandidatesObj[c.email] = c))
 
-  for (let i = 0; i < candidateEmails.length; i++) {
-    const email = candidateEmails[i]
+  for (let i = 0; i < newCandidateEmails.length; i++) {
+    const email = newCandidateEmails[i]
 
     if (existingCandidatesObj[email]) {
       const candidateId = existingCandidatesObj[email].id
