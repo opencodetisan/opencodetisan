@@ -836,3 +836,31 @@ export const getAssessmentForReport = async ({
   })
   return assessment
 }
+
+// TODO: test
+export const getAllAssessmentCandidate = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const emails: {[key: string]: boolean} = {}
+  const assessmentCandidate = await prisma.assessmentCandidate.findMany({
+    where: {
+      assessmentId,
+    },
+    select: {
+      candidate: {
+        select: {
+          email: true,
+        },
+      },
+    },
+  })
+  assessmentCandidate.forEach((candidate) => {
+    emails[candidate.candidate.email] = true
+  })
+  return emails
+}
