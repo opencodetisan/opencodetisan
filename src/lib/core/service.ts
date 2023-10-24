@@ -73,8 +73,13 @@ import {
 } from './user'
 import {randomBytes, randomUUID} from 'crypto'
 import {DateTime} from 'luxon'
-import {sendPassRecoveryMail} from '../nodemailer'
+import {
+  sendAssessmentInvitation,
+  sendPassRecoveryMail,
+  sendUserCredential,
+} from '../nodemailer'
 import bcrypt from 'bcrypt'
+import {faker} from '@faker-js/faker'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -595,4 +600,65 @@ export const recoverPasswordService = async ({
   const userToken = await updateUserPassword({encryptedPassword, token})
 
   return {userToken}
+}
+
+// TODO: test cases
+export const addAssessmentCandidateService = async ({
+  candidateEmails,
+  assessmentId,
+}: {
+  candidateEmails: string[]
+  assessmentId: string
+}) => {
+  const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
+
+  const existingCandidates = await prisma.user.findMany({
+    where: {
+      email: {
+        in: candidateEmails,
+      },
+    },
+    select: {
+      email: true,
+      id: true,
+    },
+  })
+
+  existingCandidates.forEach((c) => (existingCandidatesObj[c.email] = c))
+
+  for (let i = 0; i < candidateEmails.length; i++) {
+    const email = candidateEmails[i]
+
+    if (existingCandidatesObj[email]) {
+      const candidateId = existingCandidatesObj[email].id
+      await acceptAssessmentService({
+        assessmentId: assessmentId,
+        userId: candidateId,
+        token: email + faker.lorem.text(),
+      })
+      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+    } else {
+      const name = email.split('@')[0]
+      const password = faker.lorem.word({strategy: 'longest'})
+      const hashedPassword = await bcrypt.hash(password, 10)
+      const newCandidate = await prisma.user.create({
+        data: {
+          email: email,
+          name,
+          userKey: {
+            create: {
+              password: hashedPassword,
+            },
+          },
+        },
+      })
+      await acceptAssessmentService({
+        assessmentId: assessmentId,
+        userId: newCandidate.id,
+        token: email,
+      })
+      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+      await sendUserCredential({recipient: email, password})
+    }
+  }
 }
