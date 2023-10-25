@@ -170,6 +170,7 @@ export default function Assessment() {
         })
       }
 
+      mutate()
       toast({
         title: `You have added ${candidates.length} candidates.`,
       })
