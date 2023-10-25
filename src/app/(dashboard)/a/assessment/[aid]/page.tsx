@@ -238,6 +238,13 @@ export default function Assessment() {
           <div>
             <div className='flex justify-between items-center'>
               <SectionHeader title='Candidates' />
+              <AddCandidateDialog
+                candidateEmails={[]}
+                setCandidateEmails={() => {}}
+                addCandidates={addCandidates}
+              >
+                <Button variant={'outline'}>Edit</Button>
+              </AddCandidateDialog>
             </div>
             <Separator className='my-6' />
             <Card className=''>

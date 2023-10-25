@@ -1,4 +1,4 @@
-import prisma from '@/lib/db/client'
+import {deleteAssessmentCandidateService} from '@/lib/core/service'
 import {NextResponse} from 'next/server'
 
 export async function DELETE(request: Request) {
@@ -7,12 +7,8 @@ export async function DELETE(request: Request) {
     const {assessmentId, candidateId} = req
 
     // TODO
-    // use service function
-    const assessmentCandidate = await prisma.assessmentCandidate.delete({
-      where: {
-        assessmentId_candidateId: {candidateId, assessmentId},
-      },
-    })
+    // assessmentCandidateEmail not needed?
+    await deleteAssessmentCandidateService({candidateId, assessmentId})
     return NextResponse.json({})
   } catch (error) {
     console.log(error)
