@@ -53,6 +53,36 @@ export const createAssessment = async ({
   return assessment
 }
 
+export const createAssessmentCandidate = async ({
+  email,
+  name,
+  hashedPassword,
+}: {
+  email: string
+  name: string
+  hashedPassword: string
+}) => {
+  if (!email) {
+    throw Error('missing email')
+  } else if (!name) {
+    throw Error('missing name')
+  } else if (!hashedPassword) {
+    throw Error('missing hashedPassword')
+  }
+  const newCandidate = await prisma.user.create({
+    data: {
+      email,
+      name,
+      userKey: {
+        create: {
+          password: hashedPassword,
+        },
+      },
+    },
+  })
+  return newCandidate
+}
+
 export const createAssessmentCandidateEmails = async (
   candidateEmails: ICandidateEmailStatusProps[],
 ) => {
