@@ -291,7 +291,7 @@ const emailFormSchema = z.object({
     ),
 })
 
-function AddCandidateDialog({
+export function AddCandidateDialog({
   children,
   candidateEmails,
   setCandidateEmails,
