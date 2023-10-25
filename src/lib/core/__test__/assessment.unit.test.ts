@@ -28,6 +28,7 @@ import {
   updateAssessmentResult,
   getAssessmentQuizSubmission,
   deleteAssessmentCandidate,
+  getAllAssessmentCandidate,
 } from '../assessment'
 import {AssessmentStatus} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
@@ -36,6 +37,8 @@ const uuid = faker.string.uuid()
 const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
+const email_1 = faker.internet.email()
+const email_2 = faker.internet.email()
 
 const getAssessmentOutputMock = {
   data: {
@@ -109,8 +112,14 @@ const mockAssessmentCandidate = {
   candidateId: uuid,
   status: AssessmentStatus.COMPLETED,
   token: uuid,
+  candidate: {
+    email: email_1,
+  },
 }
-
+const manyAssessmentCandidateMock = [
+  {...mockAssessmentCandidate, candidate: {email: email_1}},
+  {...mockAssessmentCandidate, candidate: {email: email_2}},
+]
 const mockAssessmentQuiz = {
   assessmentId: uuid,
   quizId: uuid,
@@ -1028,6 +1037,30 @@ describe('Assessment module', () => {
     }
     expect(async () => await deleteAssessmentCandidate(param)).rejects.toThrow(
       /^missing candidateId$/,
+    )
+  })
+
+  test('getAllAssessmentCandidate fn should return many candidate emails', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentCandidate.findMany.mockResolvedValue(
+      manyAssessmentCandidateMock,
+    )
+
+    const expectedResult: {[key: string]: boolean} = {}
+    manyAssessmentCandidateMock.forEach((e) => {
+      expectedResult[e.candidate.email] = true
+    })
+    expect(await getAllAssessmentCandidate(param)).toEqual(expectedResult)
+  })
+
+  test('Missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getAllAssessmentCandidate(param)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 })

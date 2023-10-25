@@ -876,7 +876,6 @@ export const getAssessmentForReport = async ({
   return assessment
 }
 
-// TODO: test
 export const getAllAssessmentCandidate = async ({
   assessmentId,
 }: {
