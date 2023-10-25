@@ -295,6 +295,7 @@ export function AddCandidateDialog({
   children,
   candidateEmails,
   setCandidateEmails,
+  addCandidates,
 }: any) {
   const [open, setOpen] = useState(false)
   const form = useForm<z.infer<typeof emailFormSchema>>({
@@ -312,6 +313,9 @@ export function AddCandidateDialog({
   const onSubmit = (value: z.infer<typeof emailFormSchema>) => {
     setCandidateEmails(value.email)
     setOpen(false)
+    if (addCandidates) {
+      addCandidates(value.email)
+    }
   }
 
   return (
