@@ -605,7 +605,6 @@ export const recoverPasswordService = async ({
   return {userToken}
 }
 
-// TODO: test cases
 export const addAssessmentCandidateService = async ({
   newCandidateEmails,
   assessmentId,
@@ -647,16 +646,11 @@ export const addAssessmentCandidateService = async ({
       const name = email.split('@')[0]
       const password = faker.lorem.word({strategy: 'longest'})
       const hashedPassword = await bcrypt.hash(password, 10)
-      const newCandidate = await prisma.user.create({
-        data: {
-          email: email,
-          name,
-          userKey: {
-            create: {
-              password: hashedPassword,
-            },
-          },
-        },
+      // TODO: use createUser, rm createAssessmentCandidate
+      const newCandidate = await createAssessmentCandidate({
+        hashedPassword,
+        email,
+        name,
       })
       await acceptAssessmentService({
         assessmentId: assessmentId,
