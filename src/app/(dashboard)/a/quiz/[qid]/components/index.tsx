@@ -281,8 +281,8 @@ function BasicConfigurationDialog({children, handleSubmit, mutate}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/update-quiz-config', {
-        method: 'POST',
+      const response = await fetch('/api/quiz-config', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -346,8 +346,8 @@ function QuizInstructionDialog({children, defaultValue, mutate}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/update-quiz-config', {
-        method: 'POST',
+      const response = await fetch('/api/quiz-config', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
