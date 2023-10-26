@@ -587,12 +587,12 @@ function DeleteQuizDialog({children, title}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/delete-quiz', {
-        method: 'POST',
+      const response = await fetch(`/api/quiz/${param.qid}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({quizId: param.qid}),
+        body: JSON.stringify({}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
