@@ -142,19 +142,21 @@ const createFakeCandidateSubmission = async ({
 
 let assessmentPoints
 
-describe('Integration test: Assessment', () => {
-  const difficultyLevels = [
-    {id: faker.number.int({min: 1, max: 100}), name: 'easy'},
-  ]
-  const difficultyLevelIds = difficultyLevels.map((d) => d.id)
+const difficultyLevels = [
+  {id: faker.number.int({min: 1, max: 100}), name: 'easy'},
+]
 
+beforeAll(async () => {
+  await createManyFakeDifficultyLevel(difficultyLevels)
+})
+
+describe('Integration test: Assessment', () => {
   beforeAll(async () => {
     sendMailMock.mockClear()
     // TODO: fix type error
     // @ts-ignore
     nodemailer.createTransport.mockClear()
     assessmentPoints = await createFakeAssessmentPoint()
-    await createManyFakeDifficultyLevel(difficultyLevels)
     await prisma.userAction.createMany({
       data: [
         {id: 1, userAction: 'accept'},
@@ -166,9 +168,6 @@ describe('Integration test: Assessment', () => {
   afterAll(async () => {
     await prisma.candidateActivityLog.deleteMany()
     await prisma.userAction.deleteMany({where: {id: {in: [1, 2]}}})
-    await prisma.difficultyLevel.deleteMany({
-      where: {id: {in: difficultyLevelIds}},
-    })
   })
 
   describe('Integration test: createAssessmentService', () => {
@@ -186,9 +185,6 @@ describe('Integration test: Assessment', () => {
       const createQuizPromises: Promise<any>[] = []
       user = await prisma.user.create({data: {email, name: word}})
       await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
-      await prisma.difficultyLevel.create({
-        data: {id: difficultyLevelId, name: word},
-      })
       Array(2).forEach(() => {
         createQuizPromises.push(
           prisma.quiz.create({
@@ -215,8 +211,7 @@ describe('Integration test: Assessment', () => {
       })
       await Promise.all(deleteQuizPromises)
       await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
-      await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
-      await prisma.user.delete({where: {id: userId}})
+      await deleteUser({userId: user.id})
     })
 
     test('it should create a new assessment', async () => {
@@ -253,9 +248,6 @@ describe('Integration test: Assessment', () => {
       await prisma.codeLanguage.create({
         data: {id: codeLanguageId, name: text},
       })
-      await prisma.difficultyLevel.create({
-        data: {id: difficultyLevelId, name: text},
-      })
       quiz = await createQuizService({
         quizData: {
           userId: user.id,
@@ -265,7 +257,7 @@ describe('Integration test: Assessment', () => {
           defaultCode: text,
           instruction: text,
           codeLanguageId,
-          difficultyLevelId,
+          difficultyLevelId: difficultyLevels[0].id,
         },
         quizSolution: [
           {
@@ -296,8 +288,7 @@ describe('Integration test: Assessment', () => {
       await deleteAssessmentService({assessmentId: createdAssessment.id})
       await deleteQuizService({quizId: quiz.quizData.id})
       await prisma.codeLanguage.delete({where: {id: codeLanguageId}})
-      await prisma.difficultyLevel.delete({where: {id: difficultyLevelId}})
-      await prisma.user.delete({where: {id: userId}})
+      await prisma.user.delete({where: {id: user.id}})
     })
 
     test('it should create candidate submission', async () => {
