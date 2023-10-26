@@ -429,8 +429,8 @@ describe('Integration test: Assessment', () => {
     const word = faker.lorem.words()
     const text = faker.lorem.text()
     const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
-    const email_1 = 'user1@example.com'
-    const email_2 = 'user2@example.com'
+    const email_1 = faker.internet.email()
+    const email_2 = faker.internet.email()
     const codeLanguages = [
       {id: faker.number.int({min: 1, max: 100}), name: text},
     ]
