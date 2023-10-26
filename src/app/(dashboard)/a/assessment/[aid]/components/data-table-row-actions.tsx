@@ -1,5 +1,3 @@
-'use client'
-
 import {Button} from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -9,7 +7,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {DotsHorizontalIcon} from '@radix-ui/react-icons'
 
-export default function DataTableRowActions({onAssessmentCandidateDelete}) {
+export default function DataTableRowActions({
+  onAssessmentCandidateDelete,
+}: {
+  onAssessmentCandidateDelete: () => {}
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
