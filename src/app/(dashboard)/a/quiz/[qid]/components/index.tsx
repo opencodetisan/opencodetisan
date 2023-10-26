@@ -454,7 +454,7 @@ function QuizSolutionDialog({
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/update-quiz-solution', {
+      const response = await fetch(`/api/quiz-solution`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
