@@ -340,7 +340,6 @@ describe('Integration test: Assessment', () => {
           difficultyLevelId: difficultyLevels[0].id,
         })
       }
-      assessmentPoints = await createFakeAssessmentPoint()
       createdAssessment = await createAssessmentService({
         userId: users[0].id,
         title: word,
