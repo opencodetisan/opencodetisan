@@ -295,7 +295,7 @@ export function AddCandidateDialog({
   children,
   candidateEmails,
   setCandidateEmails,
-  addCandidates,
+  addCandidates, // TODO: type
 }: any) {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
