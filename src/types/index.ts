@@ -8,7 +8,7 @@ export interface IAssessmentDataProps {
 
 export interface IUserProps {
   id: string
-  name: string
+  name: string | null
 }
 
 export interface IAssessmentResultProps {
