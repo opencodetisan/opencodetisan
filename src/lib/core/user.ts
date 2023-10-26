@@ -1,3 +1,4 @@
+import {UserRole} from '@/enums'
 import prisma from '../db/client'
 
 export const getUserForAuth = async ({email}: {email: string}) => {
@@ -110,4 +111,28 @@ export const getPasswordRecoveryToken = async ({token}: {token: string}) => {
     where: {token},
   })
   return result
+}
+
+export const deleteUserKey = async ({userId}: {userId: string}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  }
+  const user = await prisma.userKey.delete({
+    where: {
+      id: userId,
+    },
+  })
+  return user
+}
+
+export const deleteUser = async ({userId}: {userId: string}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  }
+  const user = await prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  })
+  return user
 }

@@ -2,6 +2,8 @@ import {faker} from '@faker-js/faker'
 import {prismaMock} from '@/lib/db/prisma-mock-singleton'
 import {
   createUserToken,
+  deleteUser,
+  deleteUserKey,
   getPasswordRecoveryToken,
   getUserByEmail,
   getUserForAuth,
@@ -21,6 +23,12 @@ const user = {
   emailVerified: null,
   image: null,
   role: UserRole.Recruiter,
+}
+
+const userKey = {
+  id: uuid,
+  userId: uuid,
+  password: text,
 }
 
 const passwordRecoveryToken = {
@@ -162,6 +170,42 @@ describe('User module', () => {
     }
     expect(async () => await getPasswordRecoveryToken(param)).rejects.toThrow(
       /^missing token$/,
+    )
+  })
+
+  test('deleteUser function should delete and return an user', async () => {
+    const param: any = {
+      userId: uuid,
+    }
+    prismaMock.user.delete.mockResolvedValue(user)
+    const result = await deleteUser(param)
+    expect(result).toEqual(user)
+  })
+
+  test('Missing userId parameter should raise an missing userId error', async () => {
+    const param: any = {
+      // userId: uuid,
+    }
+    expect(async () => await deleteUser(param)).rejects.toThrow(
+      /^missing userId$/,
+    )
+  })
+
+  test('deleteUserKey function should delete and return an user', async () => {
+    const param: any = {
+      userId: uuid,
+    }
+    prismaMock.userKey.delete.mockResolvedValue(userKey)
+    const result = await deleteUserKey(param)
+    expect(result).toEqual(userKey)
+  })
+
+  test('Missing userId parameter should raise an missing userId error', async () => {
+    const param: any = {
+      // userId: uuid,
+    }
+    expect(async () => await deleteUserKey(param)).rejects.toThrow(
+      /^missing userId$/,
     )
   })
 })
