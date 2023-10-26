@@ -122,7 +122,7 @@ export function CreateAssessmentMain({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const {data} = useSWR(
-    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/get-many-quizzes?showAll=true`,
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz?showAll=true`,
     fetcher,
   )
   const router = useRouter()
@@ -161,7 +161,7 @@ export function CreateAssessmentMain({
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/create-assessment', {
+      const response = await fetch('/api/assessment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,10 +1,10 @@
 import {getServerSession} from 'next-auth'
-import {NextResponse} from 'next/server'
-import {authOptions} from '../auth/[...nextauth]/route'
 import {
   addAssessmentCandidateService,
   createAssessmentService,
 } from '@/lib/core/service'
+import {authOptions} from '../auth/[...nextauth]/route'
+import {NextResponse} from 'next/server'
 
 export async function POST(request: Request) {
   try {
