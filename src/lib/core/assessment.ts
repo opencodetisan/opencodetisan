@@ -12,7 +12,11 @@ import {
   IUserProps,
 } from '@/types'
 import prisma from '../db/client'
-import {AssessmentStatus, CandidateActionId} from '@/enums'
+import {
+  AssessmentQuizStatus,
+  AssessmentStatus,
+  CandidateActionId,
+} from '@/enums'
 import {DateTime} from 'luxon'
 
 export const createAssessment = async ({
@@ -451,11 +455,19 @@ export const getAssessmentQuizSubmission = async ({
 
 export const getManyAssessmentResultId = async ({
   assessmentId,
+  isStarted,
 }: {
   assessmentId: string
+  isStarted?: boolean
 }): Promise<string[]> => {
   if (!assessmentId) {
     throw Error('missing assessmentId')
+  }
+  let status = undefined
+  if (isStarted) {
+    status = {
+      not: AssessmentQuizStatus.Pending,
+    }
   }
 
   const assessment = await prisma.assessment.findUnique({
@@ -464,6 +476,9 @@ export const getManyAssessmentResultId = async ({
     },
     select: {
       assessmentResults: {
+        where: {
+          status: status,
+        },
         select: {
           id: true,
         },
