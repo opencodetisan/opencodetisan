@@ -14,7 +14,7 @@ import {
   updateAssessmentDataService,
   updateCandidateSubmissionService,
 } from '@/lib/core/service'
-import {createUser} from '@/lib/core/user'
+import {deleteUser} from '@/lib/core/user'
 import prisma from '@/lib/db/client'
 import {IUserProps} from '@/types'
 import {faker} from '@faker-js/faker'
@@ -175,7 +175,6 @@ describe('Integration test: Assessment', () => {
     const uuid = faker.string.uuid()
     const email = faker.internet.email()
     const word = faker.lorem.word()
-    const userId = faker.string.uuid()
     const codeLanguageId = faker.number.int(1000)
     const difficultyLevelId = faker.number.int(1000)
     const quizId = faker.string.uuid()
@@ -185,8 +184,7 @@ describe('Integration test: Assessment', () => {
 
     beforeAll(async () => {
       const createQuizPromises: Promise<any>[] = []
-
-      await prisma.user.create({data: {id: userId, name: word, email}})
+      user = await prisma.user.create({data: {email, name: word}})
       await prisma.codeLanguage.create({data: {id: codeLanguageId, name: word}})
       await prisma.difficultyLevel.create({
         data: {id: difficultyLevelId, name: word},
@@ -242,7 +240,6 @@ describe('Integration test: Assessment', () => {
   describe('Integration test: createCandidateSubmissionService', () => {
     const text = faker.lorem.text()
     const number = faker.number.int({min: 1, max: 3866627})
-    const userId = faker.string.uuid()
     const codeLanguageId = faker.number.int(1000)
     const email = faker.internet.email()
     let user: any
@@ -252,9 +249,7 @@ describe('Integration test: Assessment', () => {
     let assessmentQuizSubmissionId: string
 
     beforeAll(async () => {
-      user = await prisma.user.create({
-        data: {id: userId, name: faker.lorem.word(), email},
-      })
+      user = await prisma.user.create({data: {email}})
       await prisma.codeLanguage.create({
         data: {id: codeLanguageId, name: text},
       })
