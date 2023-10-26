@@ -20,7 +20,7 @@ const user = {
   email: text,
   emailVerified: null,
   image: null,
-  role: UserRole.User,
+  role: UserRole.Recruiter,
 }
 
 const passwordRecoveryToken = {
