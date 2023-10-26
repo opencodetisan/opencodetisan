@@ -8,6 +8,8 @@ import {
 } from '@/types'
 import {
   createAssessment,
+  createAssessmentCandidate,
+  deleteAssessmentCandidate,
   deleteAssessmentData,
   deleteAssessmentQuiz,
   deleteManyAssessmentCandidate,
@@ -665,4 +667,40 @@ export const addAssessmentCandidateService = async ({
       await sendUserCredential({recipient: email, password})
     }
   }
+}
+
+export const deleteAssessmentCandidateService = async ({
+  candidateId,
+  assessmentId,
+}: {
+  candidateId: string
+  assessmentId: string
+}) => {
+  const submissionDeletePromises: Promise<any>[] = []
+  const manyAssessmentResultId = await getManyAssessmentResultId({
+    assessmentId,
+    isStarted: true,
+  })
+  if (manyAssessmentResultId[0]) {
+    manyAssessmentResultId.forEach((assessmentResultId) => {
+      submissionDeletePromises.push(
+        // TODO: use unit function
+        prisma.assessmentQuizSubmission.deleteMany({
+          where: {
+            assessmentResultId,
+          },
+        }),
+      )
+    })
+    await Promise.all(submissionDeletePromises)
+  }
+  const assessment = await deleteAssessmentCandidate({
+    candidateId,
+    assessmentId,
+  })
+  const assessmentResult = await deleteManyAssessmentResult({
+    assessmentId,
+    candidateId,
+  })
+  return {assessment, assessmentResult}
 }
