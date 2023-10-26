@@ -2,15 +2,9 @@ import {getServerSession} from 'next-auth'
 import {NextResponse} from 'next/server'
 import {authOptions} from '../auth/[...nextauth]/route'
 import {
-  acceptAssessmentService,
   addAssessmentCandidateService,
   createAssessmentService,
 } from '@/lib/core/service'
-import prisma from '@/lib/db/client'
-import {sendAssessmentInvitation, sendUserCredential} from '@/lib/nodemailer'
-import {faker} from '@faker-js/faker'
-import bcrypt from 'bcrypt'
-// TODO: code cleanup
 
 export async function POST(request: Request) {
   try {
