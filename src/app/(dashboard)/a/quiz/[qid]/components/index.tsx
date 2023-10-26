@@ -281,12 +281,12 @@ function BasicConfigurationDialog({children, handleSubmit, mutate}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/quiz-config', {
+      const response = await fetch(`/api/quiz/${param.qid}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({...data, id: param.qid}),
+        body: JSON.stringify({...data}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
@@ -346,12 +346,12 @@ function QuizInstructionDialog({children, defaultValue, mutate}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/quiz-config', {
+      const response = await fetch(`/api/quiz/${param.qid}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({instruction, id: param.qid}),
+        body: JSON.stringify({instruction}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
