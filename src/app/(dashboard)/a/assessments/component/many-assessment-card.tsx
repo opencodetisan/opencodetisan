@@ -9,7 +9,7 @@ export function ManyAssessmentCard({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const {data} = useSWR(
-    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/get-many-assessments`,
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/assessment`,
     fetcher,
   )
 
