@@ -184,6 +184,7 @@ describe('Integration test: Assessment', () => {
 
   describe('Integration test: createAssessmentService', () => {
     const uuid = faker.string.uuid()
+    const email = faker.internet.email()
     const word = faker.lorem.word()
     const userId = faker.string.uuid()
     const codeLanguageId = faker.number.int(1000)
@@ -254,7 +255,7 @@ describe('Integration test: Assessment', () => {
     const number = faker.number.int({min: 1, max: 3866627})
     const userId = faker.string.uuid()
     const codeLanguageId = faker.number.int(1000)
-    const difficultyLevelId = faker.number.int(1000)
+    const email = faker.internet.email()
     let user: any
     let quiz: any
     let createdAssessment: Record<string, any>
@@ -509,6 +510,7 @@ describe('Integration test: Assessment', () => {
   })
 
   describe('Integration test: updateCandidateSubmissionService', () => {
+    const email = faker.internet.email()
     const words = faker.lorem.words()
     const text = faker.lorem.text()
     const users = [{id: faker.string.uuid()}]
@@ -591,6 +593,7 @@ describe('Integration test: Assessment', () => {
   describe('Integration test: createManyAssessmentService', () => {
     let assessments: Record<string, any> = {}
 
+    const email = faker.internet.email()
     const word = faker.lorem.word()
     const userId = faker.string.uuid()
     const assessmentId_1 = faker.string.uuid()
@@ -661,6 +664,7 @@ describe('Integration test: Assessment', () => {
   })
 
   describe('Integration test: deleteAssessmentService', () => {
+    const email = faker.internet.email()
     const word = faker.lorem.word()
     const text = faker.lorem.text()
     const users = [{id: faker.string.uuid()}]
