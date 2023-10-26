@@ -1,7 +1,9 @@
+import {UserRole} from '@/enums'
 import {getAssessment} from '@/lib/core/assessment'
 import {getCandidate} from '@/lib/core/candidate'
 import {
   acceptAssessmentService,
+  addAssessmentCandidateService,
   createAssessmentService,
   createCandidateSubmissionService,
   createQuizService,
@@ -12,11 +14,31 @@ import {
   updateAssessmentDataService,
   updateCandidateSubmissionService,
 } from '@/lib/core/service'
+import {createUser} from '@/lib/core/user'
 import prisma from '@/lib/db/client'
 import {faker} from '@faker-js/faker'
+import {DateTime} from 'luxon'
 import {inspect} from 'node:util'
 
-const email = 'user@example.com'
+jest.mock('nodemailer')
+import nodemailer from 'nodemailer'
+
+const sendMailMock = jest.fn()
+// TODO: fix type error
+// @ts-ignore
+nodemailer.createTransport.mockReturnValue({sendMail: sendMailMock})
+
+const nodemailerResponse = {
+  accepted: ['example@gmail.com'],
+  rejected: [],
+  ehlo: [],
+  envelopeTime: faker.number.int(),
+  messageTime: faker.number.int(),
+  messageSize: faker.number.int(),
+  response: faker.lorem.text(),
+  envelope: {from: 'example@gmail.com', to: ['example@gmail.com']},
+  messageId: faker.lorem.text(),
+}
 
 const inspectItem = (item: any) => {
   console.log(
@@ -128,6 +150,8 @@ const createFakeCandidateSubmission = async ({
   }
 }
 
+let assessmentPoints
+
 describe('Integration test: Assessment', () => {
   const difficultyLevels = [
     {id: faker.number.int({min: 1, max: 100}), name: 'easy'},
@@ -135,6 +159,11 @@ describe('Integration test: Assessment', () => {
   const difficultyLevelIds = difficultyLevels.map((d) => d.id)
 
   beforeAll(async () => {
+    sendMailMock.mockClear()
+    // TODO: fix type error
+    // @ts-ignore
+    nodemailer.createTransport.mockClear()
+    assessmentPoints = await createFakeAssessmentPoint()
     await createManyFakeDifficultyLevel(difficultyLevels)
     await prisma.userAction.createMany({
       data: [
@@ -680,6 +709,105 @@ describe('Integration test: Assessment', () => {
       })
 
       expect(receivedAssessment).toEqual(null)
+    })
+  })
+
+  describe('Integration test: addAssessmentCandidateService ', () => {
+    const word = faker.lorem.word()
+    const text = faker.lorem.text()
+    const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const email_1 = faker.internet.email()
+    const email_2 = faker.internet.email()
+    const codeLanguages = [
+      {id: faker.number.int({min: 1, max: 100}), name: text},
+    ]
+    const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const userIds = users.map((u) => u.id)
+    const codeLanguageIds = codeLanguages.map((l) => l.id)
+    const quizIds = quizzes.map((q) => q.id)
+    const codes = [
+      'This is the first attempt',
+      'This is the most recent attempt',
+    ]
+    let createdAssessment: any
+
+    beforeAll(async () => {
+      await prisma.user.create({
+        data: {id: users[0].id, name: text, email: email_1},
+      })
+      await prisma.user.create({
+        data: {id: users[1].id, name: text, email: email_2},
+      })
+      await createManyFakeCodeLanguage(codeLanguages)
+      for (let i = 0; i < quizzes.length; i++) {
+        await createFakeQuizzes({
+          userId: users[0].id,
+          quizId: quizzes[i].id,
+          codeLanguageId: codeLanguages[0].id,
+          difficultyLevelId: difficultyLevels[0].id,
+        })
+      }
+      createdAssessment = await createAssessmentService({
+        userId: users[0].id,
+        title: word,
+        description: word,
+        quizIds,
+        startAt: faker.date.past().toISOString(),
+        endAt: faker.date.future().toISOString(),
+      })
+      for (let i = 0; i < users.length; i++) {
+        await acceptAssessmentService({
+          assessmentId: createdAssessment.id,
+          token: faker.string.uuid(),
+          userId: users[i].id,
+        })
+      }
+      for (let i = 0; i < codes.length; i++) {
+        await createFakeCandidateSubmission({
+          userId: users[0].id,
+          quizId: quizzes[0].id,
+          assessmentId: createdAssessment.id,
+          code: codes[i],
+        })
+        await createFakeCandidateSubmission({
+          userId: users[0].id,
+          quizId: quizzes[1].id,
+          assessmentId: createdAssessment.id,
+          code: codes[i],
+        })
+      }
+    })
+
+    afterAll(async () => {
+      await deleteAssessmentService({assessmentId: createdAssessment.id})
+      await prisma.quizPointCollection.deleteMany({
+        where: {quizId: {in: quizIds}},
+      })
+      await prisma.submissionPoint.deleteMany({
+        where: {userId: {in: userIds}},
+      })
+      await prisma.submission.deleteMany({where: {quizId: {in: quizIds}}})
+      await prisma.quiz.deleteMany({where: {id: {in: quizIds}}})
+      await prisma.codeLanguage.deleteMany({where: {id: {in: codeLanguageIds}}})
+      await prisma.user.deleteMany({where: {id: {in: userIds}}})
+    })
+
+    test('it should return the assessment data', async () => {
+      sendMailMock.mockResolvedValue(nodemailerResponse)
+      await addAssessmentCandidateService({
+        newCandidateEmails: ['newguys@gmail.com'],
+        assessmentId: createdAssessment.id,
+      })
+      const receivedAssessment = await getAssessmentService({
+        assessmentId: createdAssessment.id,
+      })
+      receivedAssessment?.quizzes.forEach((q) => {
+        delete q.difficultyLevel
+      })
+
+      expect(receivedAssessment?.candidates[2].email).toBe('newguys@gmail.com')
+      expect(receivedAssessment?.submissions[2].name).toBe('newguys')
+      expect(receivedAssessment?.submissions[2].data).toHaveLength(2)
     })
   })
 })
