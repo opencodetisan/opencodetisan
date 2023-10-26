@@ -599,8 +599,8 @@ export const recoverPasswordService = async ({
   if (!diffInMinutes.minutes || diffInMinutes.minutes > 0) {
     return null
   }
-  const encryptedPassword = await bcrypt.hash(password, 10)
-  const userToken = await updateUserPassword({encryptedPassword, token})
+  const hashedPassword = await bcrypt.hash(password, 10)
+  const userToken = await updateUserPassword({hashedPassword, token})
 
   return {userToken}
 }

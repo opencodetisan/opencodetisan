@@ -124,7 +124,7 @@ describe('User module', () => {
   test('updateUserPassword function should update user password and return token data', async () => {
     const param: any = {
       token: uuid,
-      encryptedPassword: text,
+      hashedPassword: text,
     }
     prismaMock.passwordRecoveryToken.update.mockResolvedValue(
       passwordRecoveryToken,
@@ -136,7 +136,7 @@ describe('User module', () => {
   test('Missing token parameter should raise an missing token error', async () => {
     const param: any = {
       // token: uuid,
-      encryptedPassword: text,
+      hashedPassword: text,
     }
     expect(async () => await updateUserPassword(param)).rejects.toThrow(
       /^missing token$/,
@@ -149,7 +149,7 @@ describe('User module', () => {
       // password: text,
     }
     expect(async () => await updateUserPassword(param)).rejects.toThrow(
-      /^missing encryptedPassword$/,
+      /^missing hashedPassword$/,
     )
   })
 
