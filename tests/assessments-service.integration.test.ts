@@ -16,6 +16,7 @@ import {
 } from '@/lib/core/service'
 import {createUser} from '@/lib/core/user'
 import prisma from '@/lib/db/client'
+import {IUserProps} from '@/types'
 import {faker} from '@faker-js/faker'
 import {DateTime} from 'luxon'
 import {inspect} from 'node:util'
@@ -189,7 +190,7 @@ describe('Integration test: Assessment', () => {
     const difficultyLevelId = faker.number.int(1000)
     const quizId = faker.string.uuid()
     let quizzes: any[]
-
+    let user: IUserProps
     let assessmentId: string
 
     beforeAll(async () => {
@@ -206,7 +207,7 @@ describe('Integration test: Assessment', () => {
             data: {
               id: quizId,
               title: word,
-              userId,
+              userId: user.id,
               codeLanguageId,
               difficultyLevelId,
             },
@@ -233,7 +234,7 @@ describe('Integration test: Assessment', () => {
     test('it should create a new assessment', async () => {
       const quizIds = quizzes.map((q) => q.id)
       const assessment = await createAssessmentService({
-        userId,
+        userId: user.id,
         title: word,
         description: word,
         quizIds,
@@ -272,7 +273,7 @@ describe('Integration test: Assessment', () => {
       })
       quiz = await createQuizService({
         quizData: {
-          userId,
+          userId: user.id,
           title: text,
           answer: text,
           locale: text,
@@ -292,7 +293,7 @@ describe('Integration test: Assessment', () => {
         quizTestCases: [[{input: text, output: text}]],
       })
       createdAssessment = await createAssessmentService({
-        userId,
+        userId: user.id,
         title: text,
         description: text,
         quizIds: [quiz.quizData.id],
