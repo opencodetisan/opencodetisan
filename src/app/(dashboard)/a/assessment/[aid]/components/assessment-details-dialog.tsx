@@ -67,12 +67,12 @@ export default function AssessmentDetailsDialog({
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/update-assessment-details', {
+      const response = await fetch(`/api/assessment/${param.aid}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({...data, id: param.aid}),
+        body: JSON.stringify({...data}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
