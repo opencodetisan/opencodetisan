@@ -10,11 +10,12 @@ import prisma from '@/lib/db/client'
 import {sendAssessmentInvitation, sendUserCredential} from '@/lib/nodemailer'
 import {faker} from '@faker-js/faker'
 import bcrypt from 'bcrypt'
+// TODO: code cleanup
 
 export async function POST(request: Request) {
   try {
     const req = await request.json()
-    const {details, quizzes, candidates: candidateEmails} = req
+    const {details, quizzes, candidates: newCandidateEmails} = req
     const session = await getServerSession(authOptions)
     const userId: string | undefined = session?.user.id as string
     const quizIds = Object.keys(quizzes).map((q) => q.split('/')[0])
@@ -26,9 +27,8 @@ export async function POST(request: Request) {
       userId,
     })
 
-    // TODO: use service function
     const assessmentCandidate = await addAssessmentCandidateService({
-      candidateEmails,
+      newCandidateEmails,
       assessmentId: assessment.id,
     })
 
