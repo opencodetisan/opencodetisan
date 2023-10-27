@@ -23,6 +23,7 @@ import {
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
   getAssessments,
+  getManyAssessmentQuizId,
   getManyAssessmentResult,
   getManyAssessmentResultId,
   updateAssessment,
@@ -199,9 +200,25 @@ export const getQuizService = async ({quizId}: {quizId: string}) => {
   return quiz
 }
 
-export const getManyQuizService = async ({userId}: {userId?: string}) => {
+export const getManyQuizService = async ({
+  userId,
+  assessmentId,
+}: {
+  userId?: string
+  assessmentId: string | null
+}) => {
+  let id = undefined
+  if (assessmentId) {
+    const selectedQuizIds = await getManyAssessmentQuizId({assessmentId})
+    id = {
+      notIn: selectedQuizIds,
+    }
+  }
   const quizzes = await prisma.quiz.findMany({
-    where: {userId},
+    where: {
+      userId,
+      id,
+    },
     include: {user: {select: {name: true}}},
   })
   return quizzes
