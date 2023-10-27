@@ -148,7 +148,9 @@ export default function Assessment() {
     const difficultyLevel = getDifficultyLevel(quiz.difficultyLevelId).name
     return (
       <TableRow key={quiz.id}>
-        <TableCell className='font-medium'>{quiz.title}</TableCell>
+        <TableCell className='font-medium w-96 line-clamp-2'>
+          {quiz.title}
+        </TableCell>
         <TableCell>{codeLanguage}</TableCell>
         <TableCell>{difficultyLevel}</TableCell>
       </TableRow>
