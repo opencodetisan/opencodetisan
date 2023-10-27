@@ -91,48 +91,50 @@ export default function Assessment() {
     )
   })
 
-  const candidateRow = assessmentCandidates?.map(
-    (c: IAssessmentCandidateProps) => {
-      const onAssessmentCandidateDelete = async () => {
-        setIsLoading(true)
+  const onAssessmentCandidateDelete = async (id: string) => {
+    setIsLoading(true)
 
-        try {
-          const response = await fetch('/api/assessment-candidate', {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              assessmentId: assessmentDetails.id,
-              candidateId: c.id,
-            }),
-          })
+    try {
+      const response = await fetch('/api/assessment-candidate', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          assessmentId: assessmentDetails.id,
+          candidateId: id,
+        }),
+      })
 
-          if (!response.ok) {
-            return toast({
-              title: 'Server error',
-              description: 'Failed to recover password.',
-            })
-          }
-
-          mutate()
-          setIsLoading(false)
-        } catch (error) {
-          if (error instanceof Error) {
-            console.error(`Password recovery error: ${error.message}`)
-          } else {
-            console.log('Unexpected error', error)
-          }
-        }
+      if (!response.ok) {
+        return toast({
+          title: 'Server error',
+          description: 'Failed to recover password.',
+        })
       }
 
+      mutate()
+      setIsLoading(false)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Password recovery error: ${error.message}`)
+      } else {
+        console.log('Unexpected error', error)
+      }
+    }
+  }
+
+  const candidateRow = assessmentCandidates?.map(
+    (c: IAssessmentCandidateProps) => {
       return (
         <TableRow key={c.id}>
           <TableCell className='font-medium'>{c.name}</TableCell>
           <TableCell>{c.email}</TableCell>
           <TableCell className='w-[100px] text-right'>
             <DataTableRowActions
-              onAssessmentCandidateDelete={onAssessmentCandidateDelete}
+              onAssessmentCandidateDelete={() =>
+                onAssessmentCandidateDelete(c.id)
+              }
             />
           </TableCell>
         </TableRow>
