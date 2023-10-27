@@ -30,9 +30,11 @@ import {
   deleteAssessmentCandidate,
   getAllAssessmentCandidate,
   createAssessmentCandidate,
+  getManyAssessmentQuizId,
 } from '../assessment'
 import {AssessmentStatus, UserRole} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
+import {fakeQuiz} from './quiz.unit.test'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
@@ -1114,6 +1116,26 @@ describe('Assessment module', () => {
     }
     expect(async () => await createAssessmentCandidate(param)).rejects.toThrow(
       /^missing hashedPassword$/,
+    )
+  })
+
+  test('getManyAssessmentQuizId  fn should return many quiz ids', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentQuiz.findMany.mockResolvedValue([
+      mockAssessmentQuiz,
+      mockAssessmentQuiz,
+    ])
+    expect(await getManyAssessmentQuizId(param)).toEqual([uuid, uuid])
+  })
+
+  test('Missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getManyAssessmentQuizId(param)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 })
