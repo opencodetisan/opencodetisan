@@ -9,9 +9,11 @@ export async function GET(request: Request) {
   const userId: string | undefined = session?.user.id
   const params = new URL(request.url).searchParams
   const showAll = params.get('showAll') === 'true'
+  const assessmentId = params.get('aid')
 
   const quizzes = await getManyQuizService({
     userId: showAll ? undefined : userId,
+    assessmentId,
   })
 
   return NextResponse.json(quizzes)
