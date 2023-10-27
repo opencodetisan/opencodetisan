@@ -61,7 +61,7 @@ export function CreateQuizForm({
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/create-quiz', {
+      const response = await fetch('/api/quiz', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

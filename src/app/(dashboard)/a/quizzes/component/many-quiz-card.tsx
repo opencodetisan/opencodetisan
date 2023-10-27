@@ -18,7 +18,7 @@ export function ManyQuizCard({
 }: React.HTMLAttributes<HTMLElement>) {
   const [showAll, setShowAll] = useState<'false' | 'true'>('false')
   const {data} = useSWR(
-    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/get-many-quizzes?showAll=${showAll}`,
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz?showAll=${showAll}`,
     fetcher,
   )
 

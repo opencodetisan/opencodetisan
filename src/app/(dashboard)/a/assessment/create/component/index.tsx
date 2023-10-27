@@ -122,7 +122,7 @@ export function CreateAssessmentMain({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const {data} = useSWR(
-    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/get-many-quizzes?showAll=true`,
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz?showAll=true`,
     fetcher,
   )
   const router = useRouter()
@@ -161,7 +161,7 @@ export function CreateAssessmentMain({
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/create-assessment', {
+      const response = await fetch('/api/assessment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -291,12 +291,14 @@ const emailFormSchema = z.object({
     ),
 })
 
-function AddCandidateDialog({
+export function AddCandidateDialog({
   children,
   candidateEmails,
   setCandidateEmails,
+  addCandidates, // TODO: type
 }: any) {
   const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof emailFormSchema>>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
@@ -309,8 +311,13 @@ function AddCandidateDialog({
     form.reset({email: candidateEmails.join(',')})
   }, [form, candidateEmails])
 
-  const onSubmit = (value: z.infer<typeof emailFormSchema>) => {
+  const onSubmit = async (value: z.infer<typeof emailFormSchema>) => {
+    setIsLoading(true)
     setCandidateEmails(value.email)
+    if (addCandidates) {
+      await addCandidates(value.email)
+    }
+    setIsLoading(false)
     setOpen(false)
   }
 
@@ -327,6 +334,7 @@ function AddCandidateDialog({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
+              disabled={isLoading}
               control={form.control}
               name='email'
               render={({field}) => (
@@ -351,7 +359,12 @@ function AddCandidateDialog({
         </Form>
         <DialogFooter>
           <DialogClose asChild>
-            <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
+            <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
+              {isLoading && (
+                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              )}
+              Save
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

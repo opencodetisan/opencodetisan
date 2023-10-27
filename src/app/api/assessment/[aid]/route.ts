@@ -1,5 +1,24 @@
 import {NextResponse} from 'next/server'
 import {getAssessmentService} from '@/lib/core/service'
+import {updateAssessmentDataService} from '@/lib/core/service'
+
+export async function PUT(request: Request, {params}: {params: {aid: string}}) {
+  try {
+    const aid = params.aid
+    const {title, description} = await request.json()
+
+    const assessment = await updateAssessmentDataService({
+      title,
+      description,
+      assessmentId: aid,
+    })
+
+    return NextResponse.json({})
+  } catch (error) {
+    console.log('Unexpected error: ', error)
+    return NextResponse.json({})
+  }
+}
 
 export async function GET(request: Request, {params}: {params: {aid: string}}) {
   try {

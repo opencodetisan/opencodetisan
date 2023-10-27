@@ -12,7 +12,12 @@ import {
   IUserProps,
 } from '@/types'
 import prisma from '../db/client'
-import {AssessmentStatus, CandidateActionId} from '@/enums'
+import {
+  AssessmentQuizStatus,
+  AssessmentStatus,
+  CandidateActionId,
+} from '@/enums'
+import {DateTime} from 'luxon'
 
 export const createAssessment = async ({
   userId,
@@ -35,19 +40,51 @@ export const createAssessment = async ({
   } else if (!endAt) {
     throw Error('missing endAt')
   }
+  const startDt = DateTime.fromISO(startAt)
+  const endDt = DateTime.fromISO(endAt)
   const assessment = await prisma.assessment.create({
     data: {
       ownerId: userId,
       title,
       description,
-      startAt: new Date(startAt),
-      endAt: new Date(endAt),
+      startAt: startDt.toISO()!,
+      endAt: endDt.toISO()!,
       assessmentQuizzes: {
         create: quizIds.map((q) => ({quizId: q})),
       },
     },
   })
   return assessment
+}
+
+export const createAssessmentCandidate = async ({
+  email,
+  name,
+  hashedPassword,
+}: {
+  email: string
+  name: string
+  hashedPassword: string
+}) => {
+  if (!email) {
+    throw Error('missing email')
+  } else if (!name) {
+    throw Error('missing name')
+  } else if (!hashedPassword) {
+    throw Error('missing hashedPassword')
+  }
+  const newCandidate = await prisma.user.create({
+    data: {
+      email,
+      name,
+      userKey: {
+        create: {
+          password: hashedPassword,
+        },
+      },
+    },
+  })
+  return newCandidate
 }
 
 export const createAssessmentCandidateEmails = async (
@@ -418,11 +455,19 @@ export const getAssessmentQuizSubmission = async ({
 
 export const getManyAssessmentResultId = async ({
   assessmentId,
+  isStarted,
 }: {
   assessmentId: string
+  isStarted?: boolean
 }): Promise<string[]> => {
   if (!assessmentId) {
     throw Error('missing assessmentId')
+  }
+  let status = undefined
+  if (isStarted) {
+    status = {
+      not: AssessmentQuizStatus.Pending,
+    }
   }
 
   const assessment = await prisma.assessment.findUnique({
@@ -431,6 +476,9 @@ export const getManyAssessmentResultId = async ({
     },
     select: {
       assessmentResults: {
+        where: {
+          status: status,
+        },
         select: {
           id: true,
         },
@@ -483,8 +531,10 @@ export const deleteAssessmentResult = async ({
 
 export const deleteManyAssessmentResult = async ({
   assessmentId,
+  candidateId,
 }: {
   assessmentId: string
+  candidateId?: string
 }) => {
   if (!assessmentId) {
     throw Error('missing assessmentId')
@@ -492,6 +542,7 @@ export const deleteManyAssessmentResult = async ({
   const assessmentResultCount = await prisma.assessmentResult.deleteMany({
     where: {
       assessmentId,
+      candidateId,
     },
   })
   return assessmentResultCount
@@ -511,6 +562,42 @@ export const deleteManyAssessmentQuiz = async ({
     },
   })
   return assessmentQuizCount
+}
+
+export const deleteAssessmentCandidate = async ({
+  assessmentId,
+  candidateId,
+}: {
+  assessmentId: string
+  candidateId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!candidateId) {
+    throw Error('missing candidateId')
+  }
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      assessmentResults: {
+        deleteMany: {
+          assessmentId,
+          candidateId,
+        },
+      },
+      assessmentCandidates: {
+        delete: {
+          assessmentId_candidateId: {
+            assessmentId,
+            candidateId,
+          },
+        },
+      },
+    },
+  })
+  return assessment
 }
 
 export const deleteManyAssessmentCandidate = async ({
@@ -832,4 +919,31 @@ export const getAssessmentForReport = async ({
     callerSelections: selections,
   })
   return assessment
+}
+
+export const getAllAssessmentCandidate = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const emails: {[key: string]: boolean} = {}
+  const assessmentCandidate = await prisma.assessmentCandidate.findMany({
+    where: {
+      assessmentId,
+    },
+    select: {
+      candidate: {
+        select: {
+          email: true,
+        },
+      },
+    },
+  })
+  assessmentCandidate.forEach((candidate) => {
+    emails[candidate.candidate.email] = true
+  })
+  return emails
 }

@@ -281,12 +281,12 @@ function BasicConfigurationDialog({children, handleSubmit, mutate}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/update-quiz-config', {
-        method: 'POST',
+      const response = await fetch(`/api/quiz/${param.qid}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({...data, id: param.qid}),
+        body: JSON.stringify({...data}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
@@ -346,12 +346,12 @@ function QuizInstructionDialog({children, defaultValue, mutate}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/update-quiz-config', {
-        method: 'POST',
+      const response = await fetch(`/api/quiz/${param.qid}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({instruction, id: param.qid}),
+        body: JSON.stringify({instruction}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
@@ -454,7 +454,7 @@ function QuizSolutionDialog({
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/update-quiz-solution', {
+      const response = await fetch(`/api/quiz-solution`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -587,12 +587,12 @@ function DeleteQuizDialog({children, title}: any) {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/delete-quiz', {
-        method: 'POST',
+      const response = await fetch(`/api/quiz/${param.qid}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({quizId: param.qid}),
+        body: JSON.stringify({}),
       })
 
       if (response.status === StatusCode.InternalServerError) {

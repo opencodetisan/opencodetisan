@@ -8,6 +8,8 @@ import {
 } from '@/types'
 import {
   createAssessment,
+  createAssessmentCandidate,
+  deleteAssessmentCandidate,
   deleteAssessmentData,
   deleteAssessmentQuiz,
   deleteManyAssessmentCandidate,
@@ -15,6 +17,7 @@ import {
   deleteManyAssessmentQuiz,
   deleteManyAssessmentQuizSubmission,
   deleteManyAssessmentResult,
+  getAllAssessmentCandidate,
   getAssessment,
   getAssessmentIds,
   getAssessmentQuizSubmission,
@@ -73,8 +76,13 @@ import {
 } from './user'
 import {randomBytes, randomUUID} from 'crypto'
 import {DateTime} from 'luxon'
-import {sendPassRecoveryMail} from '../nodemailer'
+import {
+  sendAssessmentInvitation,
+  sendPassRecoveryMail,
+  sendUserCredential,
+} from '../nodemailer'
 import bcrypt from 'bcrypt'
+import {faker} from '@faker-js/faker'
 
 export const acceptAssessmentService = async ({
   assessmentId,
@@ -591,8 +599,102 @@ export const recoverPasswordService = async ({
   if (!diffInMinutes.minutes || diffInMinutes.minutes > 0) {
     return null
   }
-  const encryptedPassword = await bcrypt.hash(password, 10)
-  const userToken = await updateUserPassword({encryptedPassword, token})
+  const hashedPassword = await bcrypt.hash(password, 10)
+  const userToken = await updateUserPassword({hashedPassword, token})
 
   return {userToken}
+}
+
+export const addAssessmentCandidateService = async ({
+  newCandidateEmails,
+  assessmentId,
+}: {
+  newCandidateEmails: string[]
+  assessmentId: string
+}) => {
+  const currentCandidateEmails = await getAllAssessmentCandidate({assessmentId})
+  const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
+
+  const existingCandidates = await prisma.user.findMany({
+    where: {
+      email: {
+        in: newCandidateEmails,
+      },
+    },
+    select: {
+      email: true,
+      id: true,
+    },
+  })
+
+  existingCandidates.forEach((c) => (existingCandidatesObj[c.email] = c))
+
+  for (let i = 0; i < newCandidateEmails.length; i++) {
+    const email = newCandidateEmails[i]
+
+    if (currentCandidateEmails[email]) {
+      break
+    } else if (existingCandidatesObj[email]) {
+      const candidateId = existingCandidatesObj[email].id
+      await acceptAssessmentService({
+        assessmentId: assessmentId,
+        userId: candidateId,
+        token: email + faker.lorem.text(),
+      })
+      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+    } else {
+      const name = email.split('@')[0]
+      const password = faker.lorem.word({strategy: 'longest'})
+      const hashedPassword = await bcrypt.hash(password, 10)
+      // TODO: use createUser, rm createAssessmentCandidate
+      const newCandidate = await createAssessmentCandidate({
+        hashedPassword,
+        email,
+        name,
+      })
+      await acceptAssessmentService({
+        assessmentId: assessmentId,
+        userId: newCandidate.id,
+        token: email,
+      })
+      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+      await sendUserCredential({recipient: email, password})
+    }
+  }
+}
+
+export const deleteAssessmentCandidateService = async ({
+  candidateId,
+  assessmentId,
+}: {
+  candidateId: string
+  assessmentId: string
+}) => {
+  const submissionDeletePromises: Promise<any>[] = []
+  const manyAssessmentResultId = await getManyAssessmentResultId({
+    assessmentId,
+    isStarted: true,
+  })
+  if (manyAssessmentResultId[0]) {
+    manyAssessmentResultId.forEach((assessmentResultId) => {
+      submissionDeletePromises.push(
+        // TODO: use unit function
+        prisma.assessmentQuizSubmission.deleteMany({
+          where: {
+            assessmentResultId,
+          },
+        }),
+      )
+    })
+    await Promise.all(submissionDeletePromises)
+  }
+  const assessment = await deleteAssessmentCandidate({
+    candidateId,
+    assessmentId,
+  })
+  const assessmentResult = await deleteManyAssessmentResult({
+    assessmentId,
+    candidateId,
+  })
+  return {assessment, assessmentResult}
 }
