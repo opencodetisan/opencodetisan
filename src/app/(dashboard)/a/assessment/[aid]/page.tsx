@@ -24,7 +24,7 @@ import {DateTime} from 'luxon'
 import DataTableRowActions from './components/data-table-row-actions'
 import {useState} from 'react'
 import {toast} from '@/components/ui/use-toast'
-import {AddCandidateDialog} from '../create/component'
+import {AddCandidateDialog, QuizTableDialog, columns} from '../create/component'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -43,10 +43,16 @@ const dateFormatter = (ISOString: string) => {
 export default function Assessment() {
   const param = useParams()
   const [isLoading, setIsLoading] = useState(false)
+  const [rowSelection, setRowSelection] = useState({})
   const {data, mutate} = useSWR(
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/assessment/${param.aid}`,
     fetcher,
   )
+  const {data: quizTableData} = useSWR(
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz?showAll=true&aid=${param.aid}`,
+    fetcher,
+  )
+
   if (!data) {
     return <></>
   }
@@ -218,6 +224,14 @@ export default function Assessment() {
           <div>
             <div className='flex justify-between items-center'>
               <SectionHeader title='Quizzes' />
+              <QuizTableDialog
+                data={quizTableData}
+                columns={columns}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+              >
+                <Button variant={'outline'}>Edit</Button>
+              </QuizTableDialog>
             </div>
             <Separator className='my-6' />
             <Card className=''>
