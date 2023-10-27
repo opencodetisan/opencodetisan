@@ -383,7 +383,9 @@ export function QuizTableDialog({
   const isData = data && data[0]
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild disabled={!isData}>
+        {children}
+      </DialogTrigger>
       <DialogContent className='sm:max-w-[90rem]'>
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
