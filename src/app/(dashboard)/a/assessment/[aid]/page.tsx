@@ -48,7 +48,7 @@ export default function Assessment() {
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/assessment/${param.aid}`,
     fetcher,
   )
-  const {data: quizTableData} = useSWR(
+  const {data: quizTableData, mutate: mutateQuizTable} = useSWR(
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz?showAll=true&aid=${param.aid}`,
     fetcher,
   )
@@ -183,6 +183,45 @@ export default function Assessment() {
       mutate()
       toast({
         title: `You have added ${candidates.length} candidates.`,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const addAssessmentQuiz = async ({
+    rowSelection,
+  }: {
+    rowSelection: {[key: string]: boolean}
+  }) => {
+    const quizIds = Object.keys(rowSelection).map(
+      (rowId) => rowId.split('/')[0],
+    )
+    try {
+      const response = await fetch('/api/assessment-quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizIds,
+          assessmentId,
+        }),
+      })
+
+      if (response.status === StatusCode.InternalServerError) {
+        setIsLoading(false)
+        return toast({
+          title: 'Internal server error',
+          description: 'Failed to add assessment quiz.',
+          variant: 'destructive',
+        })
+      }
+
+      mutate()
+      mutateQuizTable()
+      toast({
+        title: 'You have added some quizzes.',
       })
     } catch (error) {
       console.log(error)
