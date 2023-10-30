@@ -373,7 +373,7 @@ export function AddCandidateDialog({
   )
 }
 
-export function QuizTableDialog({
+function QuizTableDialog({
   children,
   data,
   rowSelection,
