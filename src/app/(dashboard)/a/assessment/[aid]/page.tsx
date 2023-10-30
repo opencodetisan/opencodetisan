@@ -26,6 +26,7 @@ import {useState} from 'react'
 import {toast} from '@/components/ui/use-toast'
 import {AddCandidateDialog, columns} from '../create/component'
 import {QuizTableDialog} from './components/quiz-adding-dialog'
+import DeleteQuizDropdown from './components/delete-quiz-dropdown'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -180,6 +181,9 @@ export default function Assessment() {
         </TableCell>
         <TableCell>{codeLanguage}</TableCell>
         <TableCell>{difficultyLevel}</TableCell>
+        <TableCell className='w-[100px] text-right'>
+          <DeleteQuizDropdown onQuizDelete={() => onQuizDelete(quiz.id)} />
+        </TableCell>
       </TableRow>
     )
   })
