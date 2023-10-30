@@ -142,6 +142,31 @@ export default function Assessment() {
     },
   )
 
+  const onQuizDelete = async (qid: string) => {
+    try {
+      const response = await fetch(
+        `/api/assessment/${assessmentDetails.id}/quiz/${qid}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        },
+      )
+      if (!response.ok) {
+        return toast({
+          title: 'Server error',
+          description: 'Failed to recover password.',
+        })
+      }
+      mutateQuizTable()
+      mutate()
+    } catch (error) {
+      console.log('Unexpected error', error)
+    }
+  }
+
   const quizRow = assessmentQuizzes?.map((quiz: IQuizDataProps) => {
     if (!quiz) {
       return <></>
