@@ -44,7 +44,6 @@ const dateFormatter = (ISOString: string) => {
 export default function Assessment() {
   const param = useParams()
   const [isLoading, setIsLoading] = useState(false)
-  const [rowSelection, setRowSelection] = useState({})
   const {data, mutate} = useSWR(
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/assessment/${param.aid}`,
     fetcher,
@@ -232,8 +231,7 @@ export default function Assessment() {
               <QuizTableDialog
                 data={quizTableData}
                 columns={columns}
-                rowSelection={rowSelection}
-                setRowSelection={setRowSelection}
+                addAssessmentQuiz={addAssessmentQuiz}
               >
                 <Button variant={'outline'}>Edit</Button>
               </QuizTableDialog>
