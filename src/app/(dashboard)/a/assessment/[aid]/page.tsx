@@ -24,7 +24,8 @@ import {DateTime} from 'luxon'
 import DataTableRowActions from './components/data-table-row-actions'
 import {useState} from 'react'
 import {toast} from '@/components/ui/use-toast'
-import {AddCandidateDialog, QuizTableDialog, columns} from '../create/component'
+import {AddCandidateDialog, columns} from '../create/component'
+import {QuizTableDialog} from './components/quiz-adding-dialog'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
