@@ -683,9 +683,7 @@ export const addAssessmentCandidateService = async ({
 
     if (currentCandidateEmails[email]) {
       break
-    } else if (existingCandidatesObj[email]) {
-      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
-    } else {
+    } else if (!existingCandidatesObj[email]) {
       const name = email.split('@')[0]
       const password = faker.lorem.word({strategy: 'longest'})
       const hashedPassword = await bcrypt.hash(password, 10)
@@ -695,9 +693,9 @@ export const addAssessmentCandidateService = async ({
         email,
         name,
       })
-      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
       await sendUserCredential({recipient: email, password})
     }
+    await sendAssessmentInvitation({recipient: email, aid: assessmentId})
   }
 }
 
