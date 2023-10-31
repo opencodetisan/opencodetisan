@@ -96,16 +96,16 @@ export default function Assessment() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/assessment-candidate', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `/api/assessment/${assessmentDetails.id}/candidate/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
         },
-        body: JSON.stringify({
-          assessmentId: assessmentDetails.id,
-          candidateId: id,
-        }),
-      })
+      )
 
       if (!response.ok) {
         return toast({

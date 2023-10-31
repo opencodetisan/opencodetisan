@@ -1,14 +1,19 @@
 import {deleteAssessmentCandidateService} from '@/lib/core/service'
 import {NextResponse} from 'next/server'
 
-export async function DELETE(request: Request) {
+export async function DELETE(
+  request: Request,
+  {params}: {params: {aid: string; cid: string}},
+) {
   try {
-    const req = await request.json()
-    const {assessmentId, candidateId} = req
+    const {aid, cid} = params
 
     // TODO
     // assessmentCandidateEmail not needed?
-    await deleteAssessmentCandidateService({candidateId, assessmentId})
+    await deleteAssessmentCandidateService({
+      candidateId: cid,
+      assessmentId: aid,
+    })
     return NextResponse.json({})
   } catch (error) {
     console.log(error)
