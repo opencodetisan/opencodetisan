@@ -711,6 +711,7 @@ describe('Integration test: Assessment', () => {
       'This is the first attempt',
       'This is the most recent attempt',
     ]
+    const newCandidate = {email: 'newguys@gmail.com'}
     let createdAssessment: any
 
     beforeAll(async () => {
@@ -786,10 +787,12 @@ describe('Integration test: Assessment', () => {
       receivedAssessment?.quizzes.forEach((q) => {
         delete q.difficultyLevel
       })
+      const newUser = await prisma.user.findUnique({
+        where: {email: newCandidate.email},
+      })
 
-      expect(receivedAssessment?.candidates[2].email).toBe('newguys@gmail.com')
-      expect(receivedAssessment?.submissions[2].name).toBe('newguys')
-      expect(receivedAssessment?.submissions[2].data).toHaveLength(2)
+      expect(receivedAssessment?.candidates[2]).toBeUndefined()
+      expect(newUser).toBeTruthy()
     })
   })
 
