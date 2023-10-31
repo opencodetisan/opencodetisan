@@ -224,7 +224,7 @@ export default function Assessment() {
       (rowId) => rowId.split('/')[0],
     )
     try {
-      const response = await fetch('/api/assessment-quiz', {
+      const response = await fetch('/api/assessment/quiz', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
