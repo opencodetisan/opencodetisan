@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {DotsHorizontalIcon} from '@radix-ui/react-icons'
 
-export default function DataTableRowActions({
+export default function CandidateRowActions({
   onAssessmentCandidateDelete,
 }: {
   onAssessmentCandidateDelete: () => {}

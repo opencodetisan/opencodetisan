@@ -21,12 +21,12 @@ import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps, IQuizProps, IUserProps} from '@/types'
 import {AssessmentQuizStatus, StatusCode} from '@/enums'
 import {DateTime} from 'luxon'
-import DataTableRowActions from './components/data-table-row-actions'
 import {useState} from 'react'
 import {toast} from '@/components/ui/use-toast'
 import {AddCandidateDialog, columns} from '../create/component'
 import {QuizTableDialog} from './components/quiz-adding-dialog'
 import DeleteQuizDropdown from './components/delete-quiz-dropdown'
+import CandidateRowActions from './components/data-table-row-actions'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -132,7 +132,7 @@ export default function Assessment() {
           <TableCell className='font-medium'>{c.name}</TableCell>
           <TableCell>{c.email}</TableCell>
           <TableCell className='w-[100px] text-right'>
-            <DataTableRowActions
+            <CandidateRowActions
               onAssessmentCandidateDelete={() =>
                 onAssessmentCandidateDelete(c.id)
               }
