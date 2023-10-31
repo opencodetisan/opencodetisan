@@ -19,6 +19,7 @@ import {
   deleteManyAssessmentQuizSubmission,
   deleteManyAssessmentResult,
   getAllAssessmentCandidate,
+  getAllCandidate,
   getAssessment,
   getAssessmentIds,
   getAssessmentQuizSubmission,
