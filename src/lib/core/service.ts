@@ -746,3 +746,15 @@ export const deleteAssessmentCandidateService = async ({
   })
   return {assessment, assessmentResult}
 }
+
+export const deleteAssessmentQuizService = async ({
+  quizId,
+  assessmentId,
+}: {
+  quizId: string
+  assessmentId: string
+}) => {
+  const assessmentQuiz = await deleteAssessmentQuiz({quizId, assessmentId})
+
+  return {assessmentQuiz}
+}
