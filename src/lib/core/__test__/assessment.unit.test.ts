@@ -31,6 +31,7 @@ import {
   getAllAssessmentCandidate,
   createAssessmentCandidate,
   getManyAssessmentQuizId,
+  createManyAssessmentQuiz,
 } from '../assessment'
 import {AssessmentStatus, UserRole} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
@@ -1136,6 +1137,45 @@ describe('Assessment module', () => {
     }
     expect(async () => await getManyAssessmentQuizId(param)).rejects.toThrow(
       /^missing assessmentId$/,
+    )
+  })
+
+  test('createManyAssessmentQuiz fn should create assessment quizzes and return assessment', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      quizIds: [uuid, uuid],
+    }
+    prismaMock.assessment.update.mockResolvedValue(mockAssessment)
+    expect(await createManyAssessmentQuiz(param)).toEqual(mockAssessment)
+  })
+
+  test('Missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+      quizIds: [uuid, uuid],
+    }
+    expect(async () => await createManyAssessmentQuiz(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('Missing quizIds param should return a missing quizIds error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      // quizIds: [uuid, uuid],
+    }
+    expect(async () => await createManyAssessmentQuiz(param)).rejects.toThrow(
+      /^missing quizIds$/,
+    )
+  })
+
+  test('Empty quizIds param should return a missing quizIds error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      quizIds: [],
+    }
+    expect(async () => await createManyAssessmentQuiz(param)).rejects.toThrow(
+      /^missing quizIds$/,
     )
   })
 })
