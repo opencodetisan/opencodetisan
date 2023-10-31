@@ -190,16 +190,13 @@ export default function Assessment() {
 
   const addCandidates = async (candidates: string[]) => {
     try {
-      const response = await fetch(
-        `/api/assessment-candidate/${assessmentId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({newCandidateEmails: candidates}),
+      const response = await fetch(`/api/assessment/candidate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({newCandidateEmails: candidates, assessmentId}),
+      })
 
       if (response.status === StatusCode.InternalServerError) {
         return toast({
@@ -211,7 +208,7 @@ export default function Assessment() {
 
       mutate()
       toast({
-        title: `You have added ${candidates.length} candidates.`,
+        title: `You have invited ${candidates.length} candidates.`,
       })
     } catch (error) {
       console.log(error)

@@ -1,14 +1,10 @@
 import {addAssessmentCandidateService} from '@/lib/core/service'
 import {NextResponse} from 'next/server'
 
-export async function POST(
-  request: Request,
-  {params}: {params: {aid: string}},
-) {
+export async function POST(request: Request) {
   try {
-    const assessmentId = params.aid
     const req = await request.json()
-    const {newCandidateEmails} = req
+    const {newCandidateEmails, assessmentId} = req
 
     await addAssessmentCandidateService({newCandidateEmails, assessmentId})
     return NextResponse.json({})
