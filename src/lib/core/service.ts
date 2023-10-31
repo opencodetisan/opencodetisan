@@ -683,12 +683,6 @@ export const addAssessmentCandidateService = async ({
     if (currentCandidateEmails[email]) {
       break
     } else if (existingCandidatesObj[email]) {
-      const candidateId = existingCandidatesObj[email].id
-      await acceptAssessmentService({
-        assessmentId: assessmentId,
-        userId: candidateId,
-        token: email + faker.lorem.text(),
-      })
       await sendAssessmentInvitation({recipient: email, aid: assessmentId})
     } else {
       const name = email.split('@')[0]
@@ -699,11 +693,6 @@ export const addAssessmentCandidateService = async ({
         hashedPassword,
         email,
         name,
-      })
-      await acceptAssessmentService({
-        assessmentId: assessmentId,
-        userId: newCandidate.id,
-        token: email,
       })
       await sendAssessmentInvitation({recipient: email, aid: assessmentId})
       await sendUserCredential({recipient: email, password})
