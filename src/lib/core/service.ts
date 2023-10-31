@@ -9,6 +9,7 @@ import {
 import {
   createAssessment,
   createAssessmentCandidate,
+  createManyAssessmentQuiz,
   deleteAssessmentCandidate,
   deleteAssessmentData,
   deleteAssessmentQuiz,
@@ -410,6 +411,36 @@ export const createAssessmentService = async ({
     endAt,
   })
   return assessment
+}
+
+type TAssessmentResultFields = {
+  candidateId: string
+  quizId: string
+}
+
+export const createAssessmentQuizService = async ({
+  quizIds,
+  assessmentId,
+}: {
+  quizIds: string[]
+  assessmentId: string
+}) => {
+  const assessmentQuizIds = quizIds.map((qid) => ({quizId: qid}))
+  const assessmentResultFields: TAssessmentResultFields[] = []
+  const assessmentCandidate = await getAllCandidate({assessmentId})
+  assessmentCandidate.forEach((c) => {
+    quizIds.forEach((qid) => {
+      assessmentResultFields.push({
+        candidateId: c.id,
+        quizId: qid,
+      })
+    })
+  })
+  const assessmentQuiz = await createManyAssessmentQuiz({
+    assessmentId,
+    quizIds: assessmentQuizIds,
+  })
+  return assessmentQuiz
 }
 
 export const getAssessmentService = async ({
