@@ -32,6 +32,7 @@ import {
   createAssessmentCandidate,
   getManyAssessmentQuizId,
   createManyAssessmentQuiz,
+  getAllCandidate,
 } from '../assessment'
 import {AssessmentStatus, UserRole} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
@@ -1176,6 +1177,27 @@ describe('Assessment module', () => {
     }
     expect(async () => await createManyAssessmentQuiz(param)).rejects.toThrow(
       /^missing quizIds$/,
+    )
+  })
+
+  test('getAllCandidate fn should create assessment quizzes and return assessment', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessmentCandidate.findMany.mockResolvedValue([
+      mockAssessmentCandidate,
+    ])
+    expect(await getAllCandidate(param)).toEqual([
+      {email: mockAssessmentCandidate.candidate.email},
+    ])
+  })
+
+  test('Empty assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+    }
+    expect(async () => await getAllCandidate(param)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 })

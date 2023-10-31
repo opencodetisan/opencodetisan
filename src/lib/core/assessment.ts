@@ -989,3 +989,28 @@ export const getAllAssessmentCandidate = async ({
   })
   return emails
 }
+
+export const getAllCandidate = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentCandidate = await prisma.assessmentCandidate.findMany({
+    where: {
+      assessmentId,
+    },
+    select: {
+      candidate: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
+    },
+  })
+  const output = assessmentCandidate.map((c) => c.candidate)
+  return output
+}
