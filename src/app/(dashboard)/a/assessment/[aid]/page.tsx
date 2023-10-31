@@ -27,6 +27,7 @@ import {AddCandidateDialog, columns} from '../create/component'
 import {QuizTableDialog} from './components/quiz-adding-dialog'
 import DeleteQuizDropdown from './components/delete-quiz-dropdown'
 import CandidateRowActions from './components/data-table-row-actions'
+import QuizDeleteDialog from './components/quiz-delete-dialog'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -365,6 +366,25 @@ export default function Assessment() {
                 </TableHeader>
                 <TableBody>{submissionRow}</TableBody>
               </Table>
+            </Card>
+          </div>
+          <div>
+            <div className='flex justify-between items-center'>
+              <SectionHeader title='Danger zone' />
+            </div>
+            <Separator className='my-6' />
+            <Card className='border-red-500'>
+              <div className='flex justify-between items-center m-5'>
+                <div>
+                  <p>Delete this assessment</p>
+                  <p className='text-sm text-muted-foreground'>
+                    Delete this assessment
+                  </p>
+                </div>
+                <QuizDeleteDialog title={assessmentDetails.title}>
+                  <Button variant='destructive'>Delete</Button>
+                </QuizDeleteDialog>
+              </div>
             </Card>
           </div>
         </div>
