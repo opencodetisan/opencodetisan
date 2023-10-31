@@ -728,6 +728,31 @@ export const getAssessmentQuizzes = async ({
   return quiz
 }
 
+export const createManyAssessmentQuiz = async ({
+  assessmentId,
+  quizIds, // TODO: type
+}: any) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!quizIds || !quizIds[0]) {
+    throw Error('missing quizIds')
+  }
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      assessmentQuizzes: {
+        createMany: {
+          data: quizIds,
+        },
+      },
+    },
+  })
+  return assessment
+}
+
+// TODO: rename to createCandidateResult
 export const updateAssessmentAcceptance = async ({
   assessmentId,
   candidateId,
