@@ -214,6 +214,7 @@ export function CreateAssessmentMain({
           <SectionHeader title='Coding Quizzes' />
           <QuizTableDialog
             data={data}
+            columns={columns}
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}
           >
@@ -372,10 +373,19 @@ export function AddCandidateDialog({
   )
 }
 
-function QuizTableDialog({children, data, rowSelection, setRowSelection}: any) {
+function QuizTableDialog({
+  children,
+  data,
+  rowSelection,
+  setRowSelection,
+  columns,
+}: any) {
+  const isData = data && data[0]
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild disabled={!isData}>
+        {children}
+      </DialogTrigger>
       <DialogContent className='sm:max-w-[90rem]'>
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>

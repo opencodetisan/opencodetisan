@@ -155,6 +155,23 @@ export const addAssessmentQuizzes = async ({
   return quizzes
 }
 
+export const getManyAssessmentQuizId = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentQuiz = await prisma.assessmentQuiz.findMany({
+    where: {
+      assessmentId,
+    },
+  })
+  const quizIds = assessmentQuiz.map((q) => q.quizId)
+  return quizIds
+}
+
 export const getAssessmentResult = async ({
   quizId,
   assessmentId,
@@ -711,6 +728,31 @@ export const getAssessmentQuizzes = async ({
   return quiz
 }
 
+export const createManyAssessmentQuiz = async ({
+  assessmentId,
+  quizIds, // TODO: type
+}: any) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!quizIds || !quizIds[0]) {
+    throw Error('missing quizIds')
+  }
+  const assessment = await prisma.assessment.update({
+    where: {
+      id: assessmentId,
+    },
+    data: {
+      assessmentQuizzes: {
+        createMany: {
+          data: quizIds,
+        },
+      },
+    },
+  })
+  return assessment
+}
+
+// TODO: rename to createCandidateResult
 export const updateAssessmentAcceptance = async ({
   assessmentId,
   candidateId,
@@ -946,4 +988,29 @@ export const getAllAssessmentCandidate = async ({
     emails[candidate.candidate.email] = true
   })
   return emails
+}
+
+export const getAllCandidate = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessmentCandidate = await prisma.assessmentCandidate.findMany({
+    where: {
+      assessmentId,
+    },
+    select: {
+      candidate: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
+    },
+  })
+  const output = assessmentCandidate.map((c) => c.candidate)
+  return output
 }

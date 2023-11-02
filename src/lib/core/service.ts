@@ -9,6 +9,7 @@ import {
 import {
   createAssessment,
   createAssessmentCandidate,
+  createManyAssessmentQuiz,
   deleteAssessmentCandidate,
   deleteAssessmentData,
   deleteAssessmentQuiz,
@@ -18,11 +19,13 @@ import {
   deleteManyAssessmentQuizSubmission,
   deleteManyAssessmentResult,
   getAllAssessmentCandidate,
+  getAllCandidate,
   getAssessment,
   getAssessmentIds,
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
   getAssessments,
+  getManyAssessmentQuizId,
   getManyAssessmentResult,
   getManyAssessmentResultId,
   updateAssessment,
@@ -199,9 +202,25 @@ export const getQuizService = async ({quizId}: {quizId: string}) => {
   return quiz
 }
 
-export const getManyQuizService = async ({userId}: {userId?: string}) => {
+export const getManyQuizService = async ({
+  userId,
+  assessmentId,
+}: {
+  userId?: string
+  assessmentId: string | null
+}) => {
+  let id = undefined
+  if (assessmentId) {
+    const selectedQuizIds = await getManyAssessmentQuizId({assessmentId})
+    id = {
+      notIn: selectedQuizIds,
+    }
+  }
   const quizzes = await prisma.quiz.findMany({
-    where: {userId},
+    where: {
+      userId,
+      id,
+    },
     include: {user: {select: {name: true}}},
   })
   return quizzes
@@ -393,6 +412,36 @@ export const createAssessmentService = async ({
     endAt,
   })
   return assessment
+}
+
+type TAssessmentResultFields = {
+  candidateId: string
+  quizId: string
+}
+
+export const createAssessmentQuizService = async ({
+  quizIds,
+  assessmentId,
+}: {
+  quizIds: string[]
+  assessmentId: string
+}) => {
+  const assessmentQuizIds = quizIds.map((qid) => ({quizId: qid}))
+  const assessmentResultFields: TAssessmentResultFields[] = []
+  const assessmentCandidate = await getAllCandidate({assessmentId})
+  assessmentCandidate.forEach((c) => {
+    quizIds.forEach((qid) => {
+      assessmentResultFields.push({
+        candidateId: c.id,
+        quizId: qid,
+      })
+    })
+  })
+  const assessmentQuiz = await createManyAssessmentQuiz({
+    assessmentId,
+    quizIds: assessmentQuizIds,
+  })
+  return assessmentQuiz
 }
 
 export const getAssessmentService = async ({
@@ -634,15 +683,7 @@ export const addAssessmentCandidateService = async ({
 
     if (currentCandidateEmails[email]) {
       break
-    } else if (existingCandidatesObj[email]) {
-      const candidateId = existingCandidatesObj[email].id
-      await acceptAssessmentService({
-        assessmentId: assessmentId,
-        userId: candidateId,
-        token: email + faker.lorem.text(),
-      })
-      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
-    } else {
+    } else if (!existingCandidatesObj[email]) {
       const name = email.split('@')[0]
       const password = faker.lorem.word({strategy: 'longest'})
       const hashedPassword = await bcrypt.hash(password, 10)
@@ -652,14 +693,9 @@ export const addAssessmentCandidateService = async ({
         email,
         name,
       })
-      await acceptAssessmentService({
-        assessmentId: assessmentId,
-        userId: newCandidate.id,
-        token: email,
-      })
-      await sendAssessmentInvitation({recipient: email, aid: assessmentId})
       await sendUserCredential({recipient: email, password})
     }
+    await sendAssessmentInvitation({recipient: email, aid: assessmentId})
   }
 }
 
@@ -697,4 +733,16 @@ export const deleteAssessmentCandidateService = async ({
     candidateId,
   })
   return {assessment, assessmentResult}
+}
+
+export const deleteAssessmentQuizService = async ({
+  quizId,
+  assessmentId,
+}: {
+  quizId: string
+  assessmentId: string
+}) => {
+  const assessmentQuiz = await deleteAssessmentQuiz({quizId, assessmentId})
+
+  return {assessmentQuiz}
 }

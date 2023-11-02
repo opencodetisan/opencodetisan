@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server'
-import {getAssessmentService} from '@/lib/core/service'
+import {deleteAssessmentService, getAssessmentService} from '@/lib/core/service'
 import {updateAssessmentDataService} from '@/lib/core/service'
 
 export async function PUT(request: Request, {params}: {params: {aid: string}}) {
@@ -28,6 +28,22 @@ export async function GET(request: Request, {params}: {params: {aid: string}}) {
     return NextResponse.json({data: assessment})
   } catch (error) {
     console.log(error)
+    return NextResponse.json({})
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  {params}: {params: {aid: string}},
+) {
+  try {
+    const aid = params.aid
+
+    deleteAssessmentService({assessmentId: aid})
+
+    return NextResponse.json({})
+  } catch (error) {
+    console.log('Unexpected error: ', error)
     return NextResponse.json({})
   }
 }

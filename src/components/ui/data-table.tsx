@@ -20,14 +20,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import {Button} from './button'
-import {useState} from 'react'
+import {Dispatch, SetStateAction, useState} from 'react'
 import {Input} from './input'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   rowSelection: Record<number, boolean>
-  setRowSelection: () => void
+  setRowSelection: Dispatch<SetStateAction<{}>>
 }
 
 export function DataTable<TData, TValue>({

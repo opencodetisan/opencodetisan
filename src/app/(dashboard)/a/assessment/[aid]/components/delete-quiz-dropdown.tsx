@@ -7,10 +7,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {DotsHorizontalIcon} from '@radix-ui/react-icons'
 
-export default function CandidateRowActions({
-  onAssessmentCandidateDelete,
+export default function DeleteQuizDropdown({
+  onQuizDelete,
 }: {
-  onAssessmentCandidateDelete: () => {}
+  onQuizDelete: () => {}
 }) {
   return (
     <DropdownMenu>
@@ -24,9 +24,7 @@ export default function CandidateRowActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem onClick={onAssessmentCandidateDelete}>
-          Delete
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onQuizDelete}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
