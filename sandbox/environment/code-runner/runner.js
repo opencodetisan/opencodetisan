@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
-import { writeFile } from 'node:fs/promises'
-import { spawn } from 'child_process'
+import {writeFile} from 'node:fs/promises'
+import {spawn} from 'child_process'
 
 const d = []
 const stdin = process.stdin
 const stdout = process.stdout
-stdin.setEncoding('utf8');
+const stderr = process.stderr
+stdin.setEncoding('utf8')
 
-stdin.on("data", data => {
+stdin.on('data', (data) => {
   d.push(data)
 })
 
@@ -17,25 +18,25 @@ stdin.on('end', () => {
     const json = JSON.parse(d)
     if (json) {
       console.log('JSON: ', json)
-      const { language, files } = json
-      const { name, content } = files[0]
+      const {language, files} = json
+      const {name, content} = files[0]
       writeSourceFile({name, content})
-      const { buildCommand, runCommand } = formatCommand({
+      const {buildCommand, runCommand} = formatCommand({
         language,
         name,
       })
       console.log(`runCommand: ${runCommand}`)
       const result = execute({runCommand})
     }
-  } catch(e) {
+  } catch (e) {
     //stdout.write(e)
     console.log(e)
   }
 })
 
 const Language = {
-  'javascript': 'javascript',
-  'python': 'python',
+  javascript: 'javascript',
+  python: 'python',
 }
 
 const writeSourceFile = async ({name, content}) => {
@@ -43,24 +44,24 @@ const writeSourceFile = async ({name, content}) => {
   await writeFile(`./${name}`, content)
 }
 
-const formatCommand = ({language, name }) => {
+const formatCommand = ({language, name}) => {
   switch (language) {
     case Language.javascript:
       return {
         buildCommand: [],
-        runCommand: `node ${name}`
+        runCommand: `node ${name}`,
       }
-      break;
+      break
     case Language.python:
       return {
         buildCommand: [],
-        runCommand: `python3 ${name}`
+        runCommand: `python3 ${name}`,
       }
-      break;
+      break
     default:
       return {
         buildCommand: [],
-        runCommand: ''
+        runCommand: '',
       }
   }
 }
@@ -71,13 +72,12 @@ const execute = ({buildCommand, runCommand}) => {
   const rc = runCommand.split(' ')
   const c = spawn(rc[0], rc.slice(1))
   c.stdout.on('data', (data) => {
-    stdout.write(`stdout: ${data}`);
-  });
+    stdout.write(`stdout: ${data}`)
+  })
   c.stderr.on('data', (data) => {
-    stderr.write(`stderr: ${data}`);
-  });
+    stderr.write(`stderr: ${data}`)
+  })
   c.on('close', (code) => {
-    stdout.write(`child process exited with code ${code}`);
-  });
+    stdout.write(`child process exited with code ${code}`)
+  })
 }
-
