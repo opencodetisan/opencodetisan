@@ -3,7 +3,7 @@ import Docker from 'dockerode'
 
 export async function GET(request: Request) {
   const docker = new Docker({
-    socketPath: '/var/run/docker.sock',
+    socketPath: process.env.DOCKER_SOCKET_PATH,
   })
   const container = await docker.createContainer({
     OpenStdin: true,
