@@ -8,6 +8,7 @@ import {
 } from '@/types'
 import {
   createAssessment,
+  createAssessmentCandidate,
   createManyAssessmentQuiz,
   deleteAssessmentCandidate,
   deleteAssessmentData,
@@ -88,6 +89,7 @@ import {
 import bcrypt from 'bcrypt'
 import {faker} from '@faker-js/faker'
 
+// TODO: rm
 export const acceptAssessmentService = async ({
   assessmentId,
   token,
@@ -403,7 +405,15 @@ export const createAssessmentService = async ({
   quizIds,
   startAt,
   endAt,
+  candidateEmails,
 }: ICreateAssessmentServiceProps) => {
+  const allCandidateId = []
+  const existingUserObj: {[key: string]: {email: string; id: string}} = {}
+  const existingUsers = await getManyUser({emails: candidateEmails})
+  existingUsers.forEach((c) => {
+    existingUserObj[c.email] = c
+  })
+
   const assessment = await createAssessment({
     userId,
     title,
@@ -412,6 +422,42 @@ export const createAssessmentService = async ({
     startAt,
     endAt,
   })
+
+  const assignedCandidatesByEmail = await getAllAssessmentCandidate({
+    assessmentId: assessment.id,
+  })
+
+  for (let i = 0; i < candidateEmails.length; i++) {
+    const email = candidateEmails[i]
+    let candidateId = existingUserObj[email].id
+
+    // Whether or not to create an account for candidate.
+    if (assignedCandidatesByEmail[email]) {
+      // Ignore if candidate is already assigned.
+      break
+    } else if (!existingUserObj[email]) {
+      const name = email.split('@')[0]
+      const password = faker.lorem.word({strategy: 'longest'})
+      const hashedPassword = await bcrypt.hash(password, 10)
+      const newUser = await createUser({
+        hashedPassword,
+        email,
+        name,
+      })
+      await sendUserCredential({recipient: email, password})
+      candidateId = newUser.id
+    }
+    allCandidateId.push(candidateId)
+    await sendAssessmentInvitation({recipient: email, aid: assessment.id})
+  }
+
+  const assessmentCandidateData = allCandidateId.map((id) => {
+    return {candidateId: id, assessmentId: assessment.id, token: id}
+  })
+  await createAssessmentCandidate({
+    data: assessmentCandidateData,
+  })
+
   return assessment
 }
 
@@ -655,39 +701,39 @@ export const recoverPasswordService = async ({
   return {userToken}
 }
 
-export const addAssessmentCandidateService = async ({
-  newCandidateEmails,
-  assessmentId,
-}: {
-  newCandidateEmails: string[]
-  assessmentId: string
-}) => {
-  const currentCandidateEmails = await getAllAssessmentCandidate({assessmentId})
-  const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
-
-  const existingUsers = await getManyUser({emails: newCandidateEmails})
-
-  existingUsers.forEach((c) => (existingCandidatesObj[c.email] = c))
-
-  for (let i = 0; i < newCandidateEmails.length; i++) {
-    const email = newCandidateEmails[i]
-
-    if (currentCandidateEmails[email]) {
-      break
-    } else if (!existingCandidatesObj[email]) {
-      const name = email.split('@')[0]
-      const password = faker.lorem.word({strategy: 'longest'})
-      const hashedPassword = await bcrypt.hash(password, 10)
-      const newCandidate = await createUser({
-        hashedPassword,
-        email,
-        name,
-      })
-      await sendUserCredential({recipient: email, password})
-    }
-    await sendAssessmentInvitation({recipient: email, aid: assessmentId})
-  }
-}
+// export const addAssessmentCandidateService = async ({
+//   newCandidateEmails,
+//   assessmentId,
+// }: {
+//   newCandidateEmails: string[]
+//   assessmentId: string
+// }) => {
+//   const currentCandidateEmails = await getAllAssessmentCandidate({assessmentId})
+//   const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
+//
+//   // const existingUsers = await getManyUser({emails: newCandidateEmails})
+//
+//   existingUsers.forEach((c) => (existingCandidatesObj[c.email] = c))
+//
+//   for (let i = 0; i < newCandidateEmails.length; i++) {
+//     const email = newCandidateEmails[i]
+//
+//     if (currentCandidateEmails[email]) {
+//       break
+//     } else if (!existingCandidatesObj[email]) {
+//       const name = email.split('@')[0]
+//       const password = faker.lorem.word({strategy: 'longest'})
+//       const hashedPassword = await bcrypt.hash(password, 10)
+//       const newCandidate = await createUser({
+//         hashedPassword,
+//         email,
+//         name,
+//       })
+//       await sendUserCredential({recipient: email, password})
+//     }
+//     await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+//   }
+// }
 
 export const deleteAssessmentCandidateService = async ({
   candidateId,
@@ -735,4 +781,29 @@ export const deleteAssessmentQuizService = async ({
   const assessmentQuiz = await deleteAssessmentQuiz({quizId, assessmentId})
 
   return {assessmentQuiz}
+}
+
+export const getCandidateAssessmentService = async ({
+  candidateId,
+  assessmentId,
+}: {
+  candidateId: string
+  assessmentId: string
+}) => {
+  await acceptAssessmentService({
+    userId: candidateId,
+    assessmentId,
+    token: candidateId,
+  })
+  const assessmentCandidate = await prisma.assessmentCandidate.findUnique({
+    where: {
+      assessmentId_candidateId: {
+        candidateId,
+        assessmentId,
+      },
+    },
+  })
+  console.log(assessmentCandidate)
+
+  return {}
 }
