@@ -8,7 +8,6 @@ import {
 } from '@/types'
 import {
   createAssessment,
-  createAssessmentCandidate,
   createManyAssessmentQuiz,
   deleteAssessmentCandidate,
   deleteAssessmentData,
@@ -72,6 +71,7 @@ import {
   getQuizTimeLimit,
 } from '../utils'
 import {
+  createUser,
   createUserToken,
   getPasswordRecoveryToken,
   getUserByEmail,
@@ -687,8 +687,7 @@ export const addAssessmentCandidateService = async ({
       const name = email.split('@')[0]
       const password = faker.lorem.word({strategy: 'longest'})
       const hashedPassword = await bcrypt.hash(password, 10)
-      // TODO: use createUser, rm createAssessmentCandidate
-      const newCandidate = await createAssessmentCandidate({
+      const newCandidate = await createUser({
         hashedPassword,
         email,
         name,

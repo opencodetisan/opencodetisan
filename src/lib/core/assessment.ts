@@ -52,39 +52,12 @@ export const createAssessment = async ({
       assessmentQuizzes: {
         create: quizIds.map((q) => ({quizId: q})),
       },
-    },
-  })
-  return assessment
-}
-
-export const createAssessmentCandidate = async ({
-  email,
-  name,
-  hashedPassword,
-}: {
-  email: string
-  name: string
-  hashedPassword: string
-}) => {
-  if (!email) {
-    throw Error('missing email')
-  } else if (!name) {
-    throw Error('missing name')
-  } else if (!hashedPassword) {
-    throw Error('missing hashedPassword')
-  }
-  const newCandidate = await prisma.user.create({
-    data: {
-      email,
-      name,
-      userKey: {
-        create: {
-          password: hashedPassword,
-        },
+      assessmentCandidates: {
+        createMany,
       },
     },
   })
-  return newCandidate
+  return assessment
 }
 
 export const createAssessmentCandidateEmails = async (

@@ -29,7 +29,6 @@ import {
   getAssessmentQuizSubmission,
   deleteAssessmentCandidate,
   getAllAssessmentCandidate,
-  createAssessmentCandidate,
   getManyAssessmentQuizId,
   createManyAssessmentQuiz,
   getAllCandidate,
@@ -44,15 +43,6 @@ const date = faker.date.anytime()
 const number = faker.number.int()
 const email_1 = faker.internet.email()
 const email_2 = faker.internet.email()
-
-const userMock = {
-  id: uuid,
-  name: text,
-  email: text,
-  role: UserRole.Admin,
-  emailVerified: date,
-  image: text,
-}
 
 const getAssessmentOutputMock = {
   data: {
@@ -1075,49 +1065,6 @@ describe('Assessment module', () => {
     }
     expect(async () => await getAllAssessmentCandidate(param)).rejects.toThrow(
       /^missing assessmentId$/,
-    )
-  })
-
-  test('createAssessmentCandidate fn should return new candidate', async () => {
-    const param: any = {
-      email: email_1,
-      name: text,
-      hashedPassword: text,
-    }
-    prismaMock.user.create.mockResolvedValue(userMock)
-    expect(await createAssessmentCandidate(param)).toEqual(userMock)
-  })
-
-  test('Missing email param should return a missing email error', async () => {
-    const param: any = {
-      // email: email_1,
-      name: text,
-      hashedPassword: text,
-    }
-    expect(async () => await createAssessmentCandidate(param)).rejects.toThrow(
-      /^missing email$/,
-    )
-  })
-
-  test('Missing name param should return a missing name error', async () => {
-    const param: any = {
-      email: email_1,
-      // name: text,
-      hashedPassword: text,
-    }
-    expect(async () => await createAssessmentCandidate(param)).rejects.toThrow(
-      /^missing name$/,
-    )
-  })
-
-  test('Missing hashedPassword param should return a missing hashedPassword error', async () => {
-    const param: any = {
-      email: email_1,
-      name: text,
-      // hashedPassword: text,
-    }
-    expect(async () => await createAssessmentCandidate(param)).rejects.toThrow(
-      /^missing hashedPassword$/,
     )
   })
 

@@ -1,6 +1,7 @@
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '@/lib/db/prisma-mock-singleton'
 import {
+  createUser,
   createUserToken,
   deleteUser,
   deleteUserKey,
@@ -15,6 +16,7 @@ const uuid = faker.string.uuid()
 const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
+const email_1 = faker.internet.email()
 
 const user = {
   id: uuid,
@@ -206,6 +208,49 @@ describe('User module', () => {
     }
     expect(async () => await deleteUserKey(param)).rejects.toThrow(
       /^missing userId$/,
+    )
+  })
+
+  test('createUser fn should return new candidate', async () => {
+    const param: any = {
+      email: email_1,
+      name: text,
+      hashedPassword: text,
+    }
+    prismaMock.user.create.mockResolvedValue(user)
+    expect(await createUser(param)).toEqual(user)
+  })
+
+  test('Missing email param should return a missing email error', async () => {
+    const param: any = {
+      // email: email_1,
+      name: text,
+      hashedPassword: text,
+    }
+    expect(async () => await createUser(param)).rejects.toThrow(
+      /^missing email$/,
+    )
+  })
+
+  test('Missing name param should return a missing name error', async () => {
+    const param: any = {
+      email: email_1,
+      // name: text,
+      hashedPassword: text,
+    }
+    expect(async () => await createUser(param)).rejects.toThrow(
+      /^missing name$/,
+    )
+  })
+
+  test('Missing hashedPassword param should return a missing hashedPassword error', async () => {
+    const param: any = {
+      email: email_1,
+      name: text,
+      // hashedPassword: text,
+    }
+    expect(async () => await createUser(param)).rejects.toThrow(
+      /^missing hashedPassword$/,
     )
   })
 })
