@@ -73,6 +73,7 @@ import {
 import {
   createUser,
   createUserToken,
+  getManyUser,
   getPasswordRecoveryToken,
   getUserByEmail,
   updateUserPassword,
@@ -664,19 +665,9 @@ export const addAssessmentCandidateService = async ({
   const currentCandidateEmails = await getAllAssessmentCandidate({assessmentId})
   const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
 
-  const existingCandidates = await prisma.user.findMany({
-    where: {
-      email: {
-        in: newCandidateEmails,
-      },
-    },
-    select: {
-      email: true,
-      id: true,
-    },
-  })
+  const existingUsers = await getManyUser({emails: newCandidateEmails})
 
-  existingCandidates.forEach((c) => (existingCandidatesObj[c.email] = c))
+  existingUsers.forEach((c) => (existingCandidatesObj[c.email] = c))
 
   for (let i = 0; i < newCandidateEmails.length; i++) {
     const email = newCandidateEmails[i]
