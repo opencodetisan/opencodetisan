@@ -53,6 +53,76 @@ export const createNewQuizAttempt = async ({
   return assessmentResult
 }
 
+export const getCandidateAssessment = async ({
+  assessmentId,
+  candidateId,
+}: {
+  assessmentId: string
+  candidateId: string
+}) => {
+  const assessmentCandidate = await prisma.assessmentCandidate.findUnique({
+    where: {
+      assessmentId_candidateId: {
+        candidateId,
+        assessmentId,
+      },
+    },
+    include: {
+      assessment: {
+        include: {
+          owner: {
+            select: {
+              name: true,
+            },
+          },
+          assessmentResults: {
+            where: {
+              candidateId,
+            },
+            include: {
+              assessmentQuizSubmissions: {
+                where: {
+                  submissionId: {
+                    not: null,
+                  },
+                },
+                include: {
+                  submission: {
+                    select: {
+                      code: true,
+                    },
+                  },
+                },
+                orderBy: {
+                  start: 'desc',
+                },
+                take: 1,
+              },
+              quiz: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!assessmentCandidate) {
+    return null
+  }
+  const assessment = assessmentCandidate.assessment
+  const codingQuizzes = assessmentCandidate.assessment.assessmentResults
+
+  const data: Record<string, string | Date | number> = {}
+
+  for (const key in assessmentCandidate?.assessment) {
+    if (!key.startsWith('assessmentResults')) {
+      data[key] = assessment[key]
+    }
+  }
+
+  return {assessment, codingQuizzes}
+}
+
 export const getCandidateResult = async ({
   assessmentId,
   quizId,
