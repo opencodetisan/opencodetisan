@@ -1,5 +1,8 @@
 import {getServerSession} from 'next-auth'
-import {createAssessmentService} from '@/lib/core/service'
+import {
+  addAssessmentCandidateService,
+  createAssessmentService,
+} from '@/lib/core/service'
 import {authOptions} from '../auth/[...nextauth]/route'
 import {NextResponse} from 'next/server'
 import {getManyAssessmentService} from '@/lib/core/service'
@@ -24,7 +27,11 @@ export async function POST(request: Request) {
       ...details,
       quizIds,
       userId,
+    })
+
+    const assessmentCandidate = await addAssessmentCandidateService({
       candidateEmails,
+      assessmentId: assessment.id,
     })
 
     return NextResponse.json({})
