@@ -22,18 +22,20 @@ import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps, IQuizProps, IUserProps} from '@/types'
 import {AssessmentQuizStatus, StatusCode} from '@/enums'
 import {DateTime} from 'luxon'
-import {useState} from 'react'
-import {toast} from '@/components/ui/use-toast'
 import {RowData, SectionHeader} from '@/app/(dashboard)/a/quiz/[qid]/components'
-// import {AddCandidateDialog, columns} from '../create/component'
-// import {QuizTableDialog} from './components/quiz-adding-dialog'
-// import DeleteQuizDropdown from './components/delete-quiz-dropdown'
-// import CandidateRowActions from './components/data-table-row-actions'
-// import QuizDeleteDialog from './components/quiz-delete-dialog'
-
-interface IAssessmentCandidateProps extends IUserProps {
-  email: string
-}
+import {useState} from 'react'
+import {StatusCode} from '@/enums'
+import {toast} from '@/components/ui/use-toast'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {Icons} from '@/components/ui/icons'
 
 const dateFormatter = (ISOString: string) => {
   return DateTime.fromISO(ISOString).toLocaleString({
@@ -75,7 +77,9 @@ export default function CandidateAssessment() {
         <TableCell className=''>{e.status}</TableCell>
         <TableCell className=''>{e.timeTaken}</TableCell>
         <TableCell className=''>
-          <Button>Start</Button>
+          <StartQuizDialog title={quiz.title}>
+            <Button>Start</Button>
+          </StartQuizDialog>
         </TableCell>
       </TableRow>
     )
@@ -135,5 +139,65 @@ export default function CandidateAssessment() {
         </div>
       </div>
     </div>
+  )
+}
+
+function StartQuizDialog({children, title}: {children: any; title: string}) {
+  const [isLoading, setIsLoading] = useState(false)
+  const param = useParams()
+
+  // TODO: type
+  // const onSubmit = async (data: any) => {
+  //   setIsLoading(true)
+  //
+  //   try {
+  //     const response = await fetch(`/api/assessment/${param.aid}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({...data}),
+  //     })
+  //
+  //     if (response.status === StatusCode.InternalServerError) {
+  //       return toast({
+  //         title: 'Internal server error',
+  //         description: 'Failed to create coding quiz.',
+  //         variant: 'destructive',
+  //       })
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className='sm:max-w-[425px]'>
+        <DialogHeader>
+          <DialogTitle>Start coding quiz</DialogTitle>
+          <DialogDescription>
+            {`You are about to start the coding quiz assessment. Click 'Start' to proceed.`}
+          </DialogDescription>
+        </DialogHeader>
+        <Card className='p-3'>
+          <div className='flex items-center space-x-2'>
+            <p>Title:</p>
+            <p className='font-medium'>{title}</p>
+          </div>
+        </Card>
+        <DialogFooter>
+          <Button disabled={isLoading} onClick={() => {}}>
+            {isLoading && (
+              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            )}
+            Start
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
