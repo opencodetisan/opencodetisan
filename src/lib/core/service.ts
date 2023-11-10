@@ -751,11 +751,10 @@ export const getCandidateAssessmentService = async ({
   candidateId: string
   assessmentId: string
 }) => {
-  const assessmentCandidate = await getCandidateAssessment({
+  const candidateAssessment = await getCandidateAssessment({
     assessmentId,
     candidateId,
   })
-  console.log(assessmentCandidate)
 
-  return {}
+  return candidateAssessment
 }
