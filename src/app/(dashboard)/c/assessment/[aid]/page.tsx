@@ -47,215 +47,39 @@ const dateFormatter = (ISOString: string) => {
 
 export default function CandidateAssessment() {
   const param = useParams()
-  // const [isLoading, setIsLoading] = useState(false)
   const {data, mutate} = useSWR(
-    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/assessment/${param.aid}`,
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/candidate/assessment/${param.aid}`,
     fetcher,
   )
-  // const {data: quizTableData, mutate: mutateQuizTable} = useSWR(
-  //   `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz?showAll=true&aid=${param.aid}`,
-  //   fetcher,
-  // )
-  //
+
+  console.log(data)
   if (!data || !data.data) {
     return <></>
   }
 
-  const assessmentDetails = data.data.data
-  const assessmentQuizzes = data.data.quizzes
-  const assessmentCandidates = data.data.candidates
-  const assessmentSubmissions = data.data.submissions
-  const assessmentId = assessmentDetails.id
-  //
+  const assessmentDetails = data.data.assessment
+  const codingQuizzes = data.data.codingQuizzes
   const startAt = dateFormatter(assessmentDetails.startAt)
   const endAt = dateFormatter(assessmentDetails.endAt)
-  //
-  // // TODO
-  // // @ts-ignore
-  // const submissionRow = assessmentSubmissions?.map((s) => {
-  //   let status = AssessmentQuizStatus.Pending
-  //   let totalPoint = 0
-  //   let comparativeScore = 0
-  //   const isCompleted = s.data.every(
-  //     // TODO
-  //     // @ts-ignore
-  //     (e) => e.status === AssessmentQuizStatus.Completed,
-  //   )
-  //   if (isCompleted) {
-  //     status = AssessmentQuizStatus.Completed
-  //   }
-  //
-  //   return (
-  //     <TableRow key={s.id}>
-  //       <TableCell className='font-medium'>{s.name}</TableCell>
-  //       <TableCell>{status}</TableCell>
-  //       <TableCell>{totalPoint}</TableCell>
-  //       <TableCell>{comparativeScore}</TableCell>
-  //     </TableRow>
-  //   )
-  // })
-  //
-  // const onAssessmentCandidateDelete = async (id: string) => {
-  //   setIsLoading(true)
-  //
-  //   try {
-  //     const response = await fetch(
-  //       `/api/assessment/${assessmentDetails.id}/candidate/${id}`,
-  //       {
-  //         method: 'DELETE',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({}),
-  //       },
-  //     )
-  //
-  //     if (!response.ok) {
-  //       return toast({
-  //         title: 'Server error',
-  //         description: 'Failed to recover password.',
-  //       })
-  //     }
-  //
-  //     mutate()
-  //     setIsLoading(false)
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       console.error(`Password recovery error: ${error.message}`)
-  //     } else {
-  //       console.log('Unexpected error', error)
-  //     }
-  //   }
-  // }
-  //
-  // const candidateRow = assessmentCandidates?.map(
-  //   (c: IAssessmentCandidateProps) => {
-  //     return (
-  //       <TableRow key={c.id}>
-  //         <TableCell className='font-medium'>{c.name}</TableCell>
-  //         <TableCell>{c.email}</TableCell>
-  //         <TableCell className='w-[100px] text-right'>
-  //           <CandidateRowActions
-  //             onAssessmentCandidateDelete={() =>
-  //               onAssessmentCandidateDelete(c.id)
-  //             }
-  //           />
-  //         </TableCell>
-  //       </TableRow>
-  //     )
-  //   },
-  // )
-  //
-  // const onQuizDelete = async (qid: string) => {
-  //   try {
-  //     const response = await fetch(
-  //       `/api/assessment/${assessmentDetails.id}/quiz/${qid}`,
-  //       {
-  //         method: 'DELETE',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({}),
-  //       },
-  //     )
-  //     if (!response.ok) {
-  //       return toast({
-  //         title: 'Server error',
-  //         description: 'Failed to recover password.',
-  //       })
-  //     }
-  //     mutateQuizTable()
-  //     mutate()
-  //   } catch (error) {
-  //     console.log('Unexpected error', error)
-  //   }
-  // }
-  //
-  // const quizRow = assessmentQuizzes?.map((quiz: IQuizDataProps) => {
-  //   if (!quiz) {
-  //     return <></>
-  //   }
-  //   const codeLanguage = getCodeLanguage(quiz.codeLanguageId).pretty
-  //   const difficultyLevel = getDifficultyLevel(quiz.difficultyLevelId).name
-  //   return (
-  //     <TableRow key={quiz.id}>
-  //       <TableCell className='font-medium w-96 line-clamp-2'>
-  //         {quiz.title}
-  //       </TableCell>
-  //       <TableCell>{codeLanguage}</TableCell>
-  //       <TableCell>{difficultyLevel}</TableCell>
-  //       <TableCell className='w-[100px] text-right'>
-  //         <DeleteQuizDropdown onQuizDelete={() => onQuizDelete(quiz.id)} />
-  //       </TableCell>
-  //     </TableRow>
-  //   )
-  // })
-  //
-  // const addCandidates = async (candidates: string[]) => {
-  //   try {
-  //     const response = await fetch(`/api/assessment/candidate`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({newCandidateEmails: candidates, assessmentId}),
-  //     })
-  //
-  //     if (response.status === StatusCode.InternalServerError) {
-  //       return toast({
-  //         title: 'Internal server error',
-  //         description: 'Failed to add candidates.',
-  //         variant: 'destructive',
-  //       })
-  //     }
-  //
-  //     mutate()
-  //     toast({
-  //       title: `You have invited ${candidates.length} candidates.`,
-  //     })
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-  //
-  // const addAssessmentQuiz = async ({
-  //   rowSelection,
-  // }: {
-  //   rowSelection: {[key: string]: boolean}
-  // }) => {
-  //   const quizIds = Object.keys(rowSelection).map(
-  //     (rowId) => rowId.split('/')[0],
-  //   )
-  //   try {
-  //     const response = await fetch('/api/assessment/quiz', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         quizIds,
-  //         assessmentId,
-  //       }),
-  //     })
-  //
-  //     if (response.status === StatusCode.InternalServerError) {
-  //       setIsLoading(false)
-  //       return toast({
-  //         title: 'Internal server error',
-  //         description: 'Failed to add assessment quiz.',
-  //         variant: 'destructive',
-  //       })
-  //     }
-  //
-  //     mutate()
-  //     mutateQuizTable()
-  //     toast({
-  //       title: 'You have added some quizzes.',
-  //     })
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
+
+  // TODO
+  // @ts-ignore
+  const codingQuizRow = codingQuizzes?.map((e) => {
+    const quiz = e.quiz
+
+    return (
+      <TableRow key={quiz.id}>
+        <TableCell className='font-medium w-fit'>
+          <p className='w-[20rem] line-clamp-2'>{quiz.title}</p>
+        </TableCell>
+        <TableCell className=''>{e.status}</TableCell>
+        <TableCell className=''>{e.timeTaken}</TableCell>
+        <TableCell className=''>
+          <Button>Start</Button>
+        </TableCell>
+      </TableRow>
+    )
+  })
 
   return (
     <div>
@@ -284,6 +108,28 @@ export default function CandidateAssessment() {
                 <RowData name={'Ending date'} value={endAt} />
               </CardContent>
               <CardFooter></CardFooter>
+            </Card>
+          </div>
+          <div>
+            <div className='flex justify-between items-center'>
+              <SectionHeader title='Coding Quizzes' />
+            </div>
+            <Separator className='my-6' />
+            <Card className=''>
+              <Table>
+                <TableCaption className='mb-3'>
+                  A list of your assigned coding quizzes.
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Time Taken</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>{codingQuizRow}</TableBody>
+              </Table>
             </Card>
           </div>
         </div>
