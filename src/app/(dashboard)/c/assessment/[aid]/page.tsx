@@ -77,7 +77,7 @@ export default function CandidateAssessment() {
         <TableCell className=''>{e.status}</TableCell>
         <TableCell className=''>{e.timeTaken}</TableCell>
         <TableCell className=''>
-          <StartQuizDialog title={quiz.title}>
+          <StartQuizDialog title={quiz.title} assessmentResultId={e.id}>
             <Button>Start</Button>
           </StartQuizDialog>
         </TableCell>
@@ -142,36 +142,44 @@ export default function CandidateAssessment() {
   )
 }
 
-function StartQuizDialog({children, title}: {children: any; title: string}) {
+function StartQuizDialog({
+  children,
+  title,
+  assessmentResultId,
+}: {
+  children: any
+  title: string
+  assessmentResultId: string
+}) {
   const [isLoading, setIsLoading] = useState(false)
   const param = useParams()
 
   // TODO: type
-  // const onSubmit = async (data: any) => {
-  //   setIsLoading(true)
-  //
-  //   try {
-  //     const response = await fetch(`/api/assessment/${param.aid}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({...data}),
-  //     })
-  //
-  //     if (response.status === StatusCode.InternalServerError) {
-  //       return toast({
-  //         title: 'Internal server error',
-  //         description: 'Failed to create coding quiz.',
-  //         variant: 'destructive',
-  //       })
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+  const onStart = async (data: any) => {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch(`/api/candidate/assessment/result`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({assessmentResultId}),
+      })
+
+      if (response.status === StatusCode.InternalServerError) {
+        return toast({
+          title: 'Internal server error',
+          description: 'Failed to start coding quiz assessment.',
+          variant: 'destructive',
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <Dialog>
@@ -190,7 +198,7 @@ function StartQuizDialog({children, title}: {children: any; title: string}) {
           </div>
         </Card>
         <DialogFooter>
-          <Button disabled={isLoading} onClick={() => {}}>
+          <Button disabled={isLoading} onClick={onStart}>
             {isLoading && (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
             )}
