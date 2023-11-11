@@ -26,7 +26,7 @@ export const createCandidateQuizSubmission = async ({
   return submission
 }
 
-export const createNewQuizAttempt = async ({
+export const createCandidateQuizAttempt = async ({
   assessmentResultId,
 }: {
   assessmentResultId: string
