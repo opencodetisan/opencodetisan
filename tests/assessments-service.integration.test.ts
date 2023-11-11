@@ -778,7 +778,7 @@ describe('Integration test: Assessment', () => {
     test('it should return the assessment data', async () => {
       sendMailMock.mockResolvedValue(nodemailerResponse)
       await addAssessmentCandidateService({
-        newCandidateEmails: ['newguys@gmail.com'],
+        candidateEmails: ['newguys@gmail.com'],
         assessmentId: createdAssessment.id,
       })
       const receivedAssessment = await getAssessmentService({
