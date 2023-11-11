@@ -3,8 +3,6 @@
 import {Card, CardContent, CardFooter, CardHeader} from '@/components/ui/card'
 import {PageHeader} from '@/components/ui/page-header'
 import {Separator} from '@/components/ui/separator'
-// import {RowData, SectionHeader} from '../../quiz/[qid]/components'
-// import AssessmentDetailsDialog from './components/assessment-details-dialog'
 import {Button} from '@/components/ui/button'
 import useSWR from 'swr'
 import {fetcher} from '@/lib/fetcher'
@@ -18,9 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
-import {IQuizDataProps, IQuizProps, IUserProps} from '@/types'
-import {AssessmentQuizStatus, StatusCode} from '@/enums'
 import {DateTime} from 'luxon'
 import {RowData, SectionHeader} from '@/app/(dashboard)/a/quiz/[qid]/components'
 import {useState} from 'react'
