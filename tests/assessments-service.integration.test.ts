@@ -791,7 +791,10 @@ describe('Integration test: Assessment', () => {
         where: {email: newCandidate.email},
       })
 
-      expect(receivedAssessment?.candidates[2]).toBeUndefined()
+      expect(receivedAssessment?.candidates).toHaveLength(3)
+      expect(receivedAssessment?.candidates[2].name).toBe('newguys')
+      expect(receivedAssessment?.submissions).toHaveLength(3)
+      expect(receivedAssessment?.submissions[2].name).toBe('newguys')
       expect(newUser).toBeTruthy()
     })
   })
