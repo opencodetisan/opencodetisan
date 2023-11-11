@@ -8,7 +8,6 @@ import {
 } from '@/types'
 import {
   createAssessment,
-  createAssessmentCandidate,
   createManyAssessmentQuiz,
   deleteAssessmentCandidate,
   deleteAssessmentData,
@@ -34,7 +33,7 @@ import {
   updateAssessmentResult,
 } from './assessment'
 import {
-  createNewQuizAttempt,
+  createCandidateQuizAttempt,
   deleteManyActivityLog,
   getActivityLogCount,
   getActivityLogs,
@@ -290,7 +289,7 @@ export const createCandidateSubmissionService = async ({
     return null
   }
 
-  const updatedAssessmentResult = await createNewQuizAttempt({
+  const updatedAssessmentResult = await createCandidateQuizAttempt({
     assessmentResultId: assessmentResult.id,
   })
   return {assessment, updatedAssessmentResult}
