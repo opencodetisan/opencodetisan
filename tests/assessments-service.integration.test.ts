@@ -13,6 +13,7 @@ import {
   deleteAssessmentService,
   deleteQuizService,
   getAssessmentService,
+  getCandidateAssessmentService,
   getManyAssessmentService,
   updateAssessmentDataService,
   updateCandidateSubmissionService,
@@ -1062,6 +1063,86 @@ describe('Integration test: Assessment', () => {
       })
 
       expect(receivedAssessment?.quizzes).toHaveLength(4)
+    })
+  })
+
+  describe('Integration test: getCandidateAssessmentService ', () => {
+    const word = faker.lorem.word()
+    const text = faker.lorem.text()
+    const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const email_1 = faker.internet.email()
+    const email_2 = faker.internet.email()
+    const codeLanguages = [
+      {id: faker.number.int({min: 1, max: 100}), name: text},
+    ]
+    const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const newQuizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
+    const userIds = users.map((u) => u.id)
+    const codeLanguageIds = codeLanguages.map((l) => l.id)
+    const quizIds = quizzes.map((q) => q.id)
+    const newQuizIds = newQuizzes.map((q) => q.id)
+    let createdAssessment: any
+
+    beforeAll(async () => {
+      await prisma.user.create({
+        data: {id: users[0].id, name: text, email: email_1},
+      })
+      await prisma.user.create({
+        data: {id: users[1].id, name: text, email: email_2},
+      })
+      await createManyFakeCodeLanguage(codeLanguages)
+      for (let i = 0; i < quizzes.length; i++) {
+        await createFakeQuizzes({
+          userId: users[0].id,
+          quizId: quizzes[i].id,
+          codeLanguageId: codeLanguages[0].id,
+          difficultyLevelId: difficultyLevels[0].id,
+        })
+      }
+      createdAssessment = await createAssessmentService({
+        userId: users[0].id,
+        title: word,
+        description: word,
+        quizIds,
+        startAt: faker.date.past().toISOString(),
+        endAt: faker.date.future().toISOString(),
+      })
+      for (let i = 0; i < users.length; i++) {
+        await acceptAssessmentService({
+          assessmentId: createdAssessment.id,
+          token: faker.string.uuid(),
+          userId: users[i].id,
+        })
+      }
+    })
+
+    afterAll(async () => {
+      await deleteAssessmentService({assessmentId: createdAssessment.id})
+      await prisma.quizPointCollection.deleteMany({
+        where: {quizId: {in: quizIds}},
+      })
+      await prisma.submissionPoint.deleteMany({
+        where: {userId: {in: userIds}},
+      })
+      await prisma.submission.deleteMany({where: {quizId: {in: quizIds}}})
+      await prisma.quiz.deleteMany({
+        where: {id: {in: [...quizIds, ...newQuizIds]}},
+      })
+      await prisma.codeLanguage.deleteMany({where: {id: {in: codeLanguageIds}}})
+      await prisma.user.deleteMany({where: {id: {in: userIds}}})
+    })
+
+    test('it should delete assessment quiz', async () => {
+      const receivedAssessment = await getAssessmentService({
+        assessmentId: createdAssessment.id,
+      })
+      const candidateAssessment = await getCandidateAssessmentService({
+        candidateId: users[1].id,
+        assessmentId: createdAssessment.id,
+      })
+
+      expect(candidateAssessment?.assessment.assessmentResults).toBeUndefined()
+      expect(candidateAssessment?.codingQuizzes).toHaveLength(2)
     })
   })
 })
