@@ -979,7 +979,7 @@ describe('Integration test: Assessment', () => {
     })
   })
 
-  describe('Integration test: ', () => {
+  describe('Integration test: createAssessmentQuizService', () => {
     const word = faker.lorem.word()
     const text = faker.lorem.text()
     const users = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
