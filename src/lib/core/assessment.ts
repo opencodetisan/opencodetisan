@@ -52,9 +52,6 @@ export const createAssessment = async ({
       assessmentQuizzes: {
         create: quizIds.map((q) => ({quizId: q})),
       },
-      assessmentCandidates: {
-        createMany,
-      },
     },
   })
   return assessment
