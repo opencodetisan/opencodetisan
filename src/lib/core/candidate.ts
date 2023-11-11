@@ -116,7 +116,8 @@ export const getCandidateAssessment = async ({
 
   for (const key in assessmentCandidate?.assessment) {
     if (!key.startsWith('assessmentResults')) {
-      details[key] = assessment[key]
+      // TODO: type
+      details[key] = (assessment as any)[key]
     }
   }
 
