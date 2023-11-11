@@ -112,15 +112,15 @@ export const getCandidateAssessment = async ({
   const assessment = assessmentCandidate.assessment
   const codingQuizzes = assessmentCandidate.assessment.assessmentResults
 
-  const data: Record<string, string | Date | number> = {}
+  const details: Record<string, string | Date | number> = {}
 
   for (const key in assessmentCandidate?.assessment) {
     if (!key.startsWith('assessmentResults')) {
-      data[key] = assessment[key]
+      details[key] = assessment[key]
     }
   }
 
-  return {assessment, codingQuizzes}
+  return {assessment: details, codingQuizzes}
 }
 
 export const getCandidateResult = async ({
