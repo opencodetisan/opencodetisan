@@ -398,6 +398,17 @@ export const updateCandidateSubmissionService = async ({
   }
 }
 
+export const createCodingQuizAttemptService = async ({
+  assessmentResultId,
+}: {
+  assessmentResultId: string
+}) => {
+  const assessmentResult = await createAssessmentQuizSubmission({
+    assessmentResultId,
+  })
+  return {assessmentResult}
+}
+
 export const createAssessmentService = async ({
   userId,
   title,
