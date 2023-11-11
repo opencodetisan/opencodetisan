@@ -33,7 +33,7 @@ import {
   updateAssessmentResult,
 } from './assessment'
 import {
-  createCandidateQuizAttempt,
+  createAssessmentQuizSubmission,
   deleteManyActivityLog,
   getActivityLogCount,
   getActivityLogs,
@@ -289,7 +289,7 @@ export const createCandidateSubmissionService = async ({
     return null
   }
 
-  const updatedAssessmentResult = await createCandidateQuizAttempt({
+  const updatedAssessmentResult = await createAssessmentQuizSubmission({
     assessmentResultId: assessmentResult.id,
   })
   return {assessment, updatedAssessmentResult}
