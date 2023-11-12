@@ -6,7 +6,10 @@ export async function POST(request: Request) {
     const req = await request.json()
     const {newCandidateEmails, assessmentId} = req
 
-    await addAssessmentCandidateService({newCandidateEmails, assessmentId})
+    await addAssessmentCandidateService({
+      candidateEmails: newCandidateEmails,
+      assessmentId,
+    })
     return NextResponse.json({})
   } catch (error) {
     console.log(error)
