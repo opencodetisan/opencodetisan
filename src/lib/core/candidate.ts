@@ -60,6 +60,12 @@ export const getCandidateAssessment = async ({
   assessmentId: string
   candidateId: string
 }) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!candidateId) {
+    throw Error('missing candidateId')
+  }
+
   const assessmentCandidate = await prisma.assessmentCandidate.findUnique({
     where: {
       assessmentId_candidateId: {
