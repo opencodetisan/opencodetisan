@@ -5,6 +5,7 @@ import {
   createUserToken,
   deleteUser,
   deleteUserKey,
+  getManyUserByEmail,
   getPasswordRecoveryToken,
   getUserByEmail,
   getUserForAuth,
@@ -251,6 +252,30 @@ describe('User module', () => {
     }
     expect(async () => await createUser(param)).rejects.toThrow(
       /^missing hashedPassword$/,
+    )
+  })
+
+  test('getManyUser fn should return many users', async () => {
+    const param: any = {
+      emails: email_1,
+    }
+    prismaMock.user.findMany.mockResolvedValue([user])
+    expect(await getManyUserByEmail(param)).toEqual([user])
+  })
+
+  test('Empty emails param should return an empty emails error', async () => {
+    const param: any = {
+      emails: [],
+    }
+    expect(async () => await getManyUserByEmail(param)).rejects.toThrow(
+      /^empty emails$/,
+    )
+  })
+
+  test('Missing emails param should return a missing emails error', async () => {
+    const param: any = {}
+    expect(async () => await getManyUserByEmail(param)).rejects.toThrow(
+      /^missing emails$/,
     )
   })
 })
