@@ -28,14 +28,13 @@ import {
   updateAssessmentResult,
   getAssessmentQuizSubmission,
   deleteAssessmentCandidate,
-  getAllAssessmentCandidate,
   getManyAssessmentQuizId,
   createManyAssessmentQuiz,
   getAllCandidate,
+  getAllCandidateEmail,
 } from '../assessment'
 import {AssessmentStatus, UserRole} from '@/enums'
 import {deleteManyActivityLog} from '../candidate'
-import {fakeQuiz} from './quiz.unit.test'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
@@ -1056,14 +1055,14 @@ describe('Assessment module', () => {
     manyAssessmentCandidateMock.forEach((e) => {
       expectedResult[e.candidate.email] = true
     })
-    expect(await getAllAssessmentCandidate(param)).toEqual(expectedResult)
+    expect(await getAllCandidateEmail(param)).toEqual(expectedResult)
   })
 
   test('Missing assessmentId param should return a missing assessmentId error', async () => {
     const param: any = {
       // assessmentId: uuid,
     }
-    expect(async () => await getAllAssessmentCandidate(param)).rejects.toThrow(
+    expect(async () => await getAllCandidateEmail(param)).rejects.toThrow(
       /^missing assessmentId$/,
     )
   })
