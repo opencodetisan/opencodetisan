@@ -34,7 +34,7 @@ import {
   getAllCandidateEmail,
 } from '../assessment'
 import {AssessmentStatus, UserRole} from '@/enums'
-import {deleteManyActivityLog} from '../candidate'
+import {deleteManyActivityLog, getCandidateAssessment} from '../candidate'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
@@ -64,6 +64,13 @@ const getAssessmentOutputMock = {
       difficultyLevel: {name: text},
     },
   ],
+}
+
+const assessmentCandidateMock = {
+  assessmentId: 'clov4ulzi005o82zh1px4meht',
+  candidateId: 'f0b6dc54-1073-4129-a09a-e7dde74f473b',
+  status: 'PENDING',
+  token: '21a3a4eb-a532-47ba-baf6-771a2bacd37c',
 }
 
 const mockAssessment = {
@@ -1144,6 +1151,71 @@ describe('Assessment module', () => {
     }
     expect(async () => await getAllCandidate(param)).rejects.toThrow(
       /^missing assessmentId$/,
+    )
+  })
+
+  test('getAllCandidate fn should create assessment quizzes and return assessment', async () => {
+    const resolvedValue = {
+      assessmentId: uuid,
+      candidateId: uuid,
+      status: AssessmentStatus.PENDING,
+      token: uuid,
+      assessment: {
+        id: uuid,
+        ownerId: uuid,
+        title: text,
+        description: text,
+        createdAt: date,
+        startAt: date,
+        endAt: date,
+        owner: {
+          name: text,
+        },
+        assessmentResults: [],
+      },
+    }
+
+    const expectedOutput = {
+      assessment: {
+        id: uuid,
+        ownerId: uuid,
+        title: text,
+        description: text,
+        createdAt: date,
+        startAt: date,
+        endAt: date,
+        owner: {
+          name: text,
+        },
+      },
+      codingQuizzes: [],
+    }
+
+    const param: any = {
+      assessmentId: uuid,
+      candidateId: uuid,
+    }
+    prismaMock.assessmentCandidate.findUnique.mockResolvedValue(resolvedValue)
+    expect(await getCandidateAssessment(param)).toEqual(expectedOutput)
+  })
+
+  test('Missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {
+      // assessmentId: uuid,
+      candidateId: uuid,
+    }
+    expect(async () => await getCandidateAssessment(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('Missing candidateId param should return a missing candidateId error', async () => {
+    const param: any = {
+      assessmentId: uuid,
+      // candidateId: uuid,
+    }
+    expect(async () => await getCandidateAssessment(param)).rejects.toThrow(
+      /^missing candidateId$/,
     )
   })
 })
