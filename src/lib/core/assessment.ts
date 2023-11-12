@@ -933,7 +933,7 @@ export const getAssessmentForReport = async ({
   return assessment
 }
 
-export const getAllAssessmentCandidate = async ({
+export const getAllCandidateEmail = async ({
   assessmentId,
 }: {
   assessmentId: string
