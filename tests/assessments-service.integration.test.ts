@@ -1046,7 +1046,7 @@ describe('Integration test: Assessment', () => {
       await prisma.user.deleteMany({where: {id: {in: userIds}}})
     })
 
-    test('it should delete assessment quiz', async () => {
+    test('it should create assessment quiz', async () => {
       for (let i = 0; i < newQuizzes.length; i++) {
         await createFakeQuizzes({
           userId: users[0].id,
@@ -1133,7 +1133,7 @@ describe('Integration test: Assessment', () => {
       await prisma.user.deleteMany({where: {id: {in: userIds}}})
     })
 
-    test('it should delete assessment quiz', async () => {
+    test('it should get candidate assessment', async () => {
       const receivedAssessment = await getAssessmentService({
         assessmentId: createdAssessment.id,
       })
