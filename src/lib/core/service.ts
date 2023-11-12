@@ -74,7 +74,7 @@ import {
 import {
   createUser,
   createUserToken,
-  getManyUser,
+  getManyUserByEmail,
   getPasswordRecoveryToken,
   getUserByEmail,
   updateUserPassword,
@@ -677,7 +677,7 @@ export const addAssessmentCandidateService = async ({
 }) => {
   const assignedCandidatesByEmail = await getAllCandidateEmail({assessmentId})
   const existingUsersObj: {[key: string]: {email: string; id: string}} = {}
-  const existingUsers = await getManyUser({emails: candidateEmails})
+  const existingUsers = await getManyUserByEmail({emails: candidateEmails})
   existingUsers.forEach((c) => (existingUsersObj[c.email] = c))
 
   for (let i = 0; i < candidateEmails.length; i++) {

@@ -1,6 +1,26 @@
 import {UserRole} from '@/enums'
 import prisma from '../db/client'
 
+export const getManyUserByEmail = async ({emails}: {emails: string[]}) => {
+  if (!emails) {
+    throw Error('missing emails')
+  } else if (!emails[0]) {
+    throw Error('empty emails')
+  }
+  const candidates = await prisma.user.findMany({
+    where: {
+      email: {
+        in: emails,
+      },
+    },
+    select: {
+      email: true,
+      id: true,
+    },
+  })
+  return candidates
+}
+
 export const getUserForAuth = async ({email}: {email: string}) => {
   if (!email) {
     throw Error('missing email')
