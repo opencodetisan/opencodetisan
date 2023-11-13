@@ -1,5 +1,5 @@
 { pkgs ? import <nixpkgs> { }
-, pkgsLinux ? import <nixpkgs> { system = "aarch64-linux"; }
+, pkgsLinux ? import <nixpkgs> { system = "x86_64-linux"; }
 }:
 
 pkgs.dockerTools.buildImage {
@@ -19,4 +19,5 @@ pkgs.dockerTools.buildImage {
   diskSize = 8192;
   config = {
     Cmd = [ "node" "/code-runner/runner.js"];
+  };
   }
