@@ -43,6 +43,16 @@ export default function CandidateAssessment() {
   const [code, setCode] = useState('')
   const param = useParams()
   const {qid, sid} = param
+  const {data} = useSWR(
+    `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/quiz/${qid}`,
+    fetcher,
+  )
+
+  if (!data) {
+    return <></>
+  }
+
+  const {quizData, quizSolution, quizTestCase} = data.data
 
   async function onSubmit() {
     setIsLoading(true)
