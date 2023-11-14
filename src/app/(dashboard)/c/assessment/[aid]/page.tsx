@@ -6,7 +6,7 @@ import {Separator} from '@/components/ui/separator'
 import {Button} from '@/components/ui/button'
 import useSWR from 'swr'
 import {fetcher} from '@/lib/fetcher'
-import {useParams} from 'next/navigation'
+import {useParams, usePathname, useRouter} from 'next/navigation'
 import {
   Table,
   TableBody,
@@ -72,7 +72,11 @@ export default function CandidateAssessment() {
         <TableCell className=''>{e.status}</TableCell>
         <TableCell className=''>{e.timeTaken}</TableCell>
         <TableCell className=''>
-          <StartQuizDialog title={quiz.title} assessmentResultId={e.id}>
+          <StartQuizDialog
+            title={quiz.title}
+            quizId={quiz.id}
+            assessmentResultId={e.id}
+          >
             <Button>Start</Button>
           </StartQuizDialog>
         </TableCell>
@@ -140,14 +144,18 @@ export default function CandidateAssessment() {
 function StartQuizDialog({
   children,
   title,
+  quizId,
   assessmentResultId,
 }: {
   children: any
   title: string
+  quizId: string
   assessmentResultId: string
 }) {
   const [isLoading, setIsLoading] = useState(false)
-  const param = useParams()
+  const router = useRouter()
+  const pathname = usePathname()
+  const userRoleURLSegment = pathname.split('/')[1]
 
   // TODO: type
   const onStart = async (data: any) => {
@@ -169,10 +177,14 @@ function StartQuizDialog({
           variant: 'destructive',
         })
       }
+      const json = await response.json()
+      const assessmentQuizSubmissionId = json.data.assessmentQuizSubmissionId
+
+      router.push(
+        `/code/quiz/${quizId}/assessmentQuizSubmission/${assessmentQuizSubmissionId}`,
+      )
     } catch (error) {
       console.log(error)
-    } finally {
-      setIsLoading(false)
     }
   }
 
