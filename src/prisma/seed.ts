@@ -259,6 +259,30 @@ function TestRunner() {
     console.log('Done seeding Quiz...')
   }
   console.log('Done seeding User...')
+
+  // insert Assessment Points
+  console.log('Seeding Assessment Points...')
+  const assessmentPoints = [
+    {name: 'easyQuizCompletionPoint', point: 1000},
+    {name: 'speedPoint', point: 800},
+    {name: 'mediumQuizCompletionPoint', point: 2000},
+    {name: 'hardQuizCompletionPoint', point: 3000},
+  ]
+
+  for (let i = 0; i < assessmentPoints.length; i++) {
+    const assessmentPoint = await prisma.assessmentPoint.upsert({
+      where: {
+        name: assessmentPoints[i].name,
+      },
+      update: {},
+      create: {
+        name: assessmentPoints[i].name,
+        point: assessmentPoints[i].point,
+      },
+    })
+    console.log(`Added Assessment Points: ${JSON.stringify(assessmentPoint)}`)
+  }
+  console.log('Done seeding Assessment Points...')
 }
 
 main()
