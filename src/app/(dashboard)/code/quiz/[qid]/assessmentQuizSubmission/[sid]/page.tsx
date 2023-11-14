@@ -142,7 +142,12 @@ export default function CandidateAssessment() {
               height='84vh'
             />
             <div className='flex justify-end w-full'>
-              <Button onClick={onSubmit}>Submit</Button>
+              <Button onClick={onSubmit} disabled={isLoading}>
+                {isLoading && (
+                  <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+                )}
+                Submit
+              </Button>
             </div>
           </div>
         </ReflexElement>
