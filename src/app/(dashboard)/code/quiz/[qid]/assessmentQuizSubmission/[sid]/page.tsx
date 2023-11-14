@@ -135,8 +135,15 @@ export default function CandidateAssessment() {
         <ReflexSplitter />
         <ReflexElement className='right-pane'>
           <div className='pane-content'>
-            <CodeEditor value={code} onChange={setCode} />
-            <Button onClick={onSubmit}>Submit</Button>
+            <CodeEditor
+              value={code}
+              onChange={setCode}
+              codeLanguageId={quizData.codeLanguageId}
+              height='84vh'
+            />
+            <div className='flex justify-end w-full'>
+              <Button onClick={onSubmit}>Submit</Button>
+            </div>
           </div>
         </ReflexElement>
       </ReflexContainer>
