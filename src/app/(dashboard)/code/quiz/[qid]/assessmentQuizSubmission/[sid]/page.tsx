@@ -2,6 +2,8 @@
 
 import {Card, CardContent, CardFooter, CardHeader} from '@/components/ui/card'
 import {PageHeader} from '@/components/ui/page-header'
+import ReactMarkdown from 'react-markdown'
+import 'github-markdown-css/github-markdown-light.css'
 import {Separator} from '@/components/ui/separator'
 import {Button} from '@/components/ui/button'
 import useSWR from 'swr'
@@ -88,7 +90,7 @@ export default function CandidateAssessment() {
   }
 
   return (
-    <div>
+    <div className='p-2'>
       <ReflexContainer orientation='vertical'>
         <ReflexElement className='left-pane'>
           <div className='pane-content'>
@@ -98,6 +100,12 @@ export default function CandidateAssessment() {
                   <TabsList className='grid w-full grid-cols-2'>
                     <TabsTrigger value='instruction'>Instruction</TabsTrigger>
                   </TabsList>
+                  <TabsContent
+                    value='instruction'
+                    className='markdown-body p-2 h-[35vh]'
+                  >
+                    <ReactMarkdown>{quizData.instruction}</ReactMarkdown>
+                  </TabsContent>
                 </Tabs>
               </ReflexElement>
               <ReflexSplitter />
