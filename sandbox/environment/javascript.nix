@@ -19,4 +19,5 @@ pkgs.dockerTools.buildImage {
   diskSize = 8192;
   config = {
     Cmd = [ "node" "/code-runner/runner.js"];
+  };
   }
