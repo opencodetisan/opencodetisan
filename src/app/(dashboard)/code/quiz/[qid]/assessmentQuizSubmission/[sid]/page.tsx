@@ -117,6 +117,15 @@ export default function CandidateAssessment() {
     }
   }
 
+  const testCaseList = quizTestCase.map((test) => {
+    return (
+      <TableRow key={test.id}>
+        <TableCell>{test.input}</TableCell>
+        <TableCell>{test.output}</TableCell>
+      </TableRow>
+    )
+  })
+
   return (
     <div className='p-2'>
       <ReflexContainer orientation='vertical'>
@@ -144,7 +153,20 @@ export default function CandidateAssessment() {
                     <TabsTrigger value='test-case'>Test Cases</TabsTrigger>
                   </TabsList>
                   <TabsContent value='output'></TabsContent>
-                  <TabsContent value='test-case'></TabsContent>
+                  <TabsContent value='test-case' className='bg-white'>
+                    <Table>
+                      <TableCaption className='mb-3'>
+                        A list of test cases.
+                      </TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Input</TableHead>
+                          <TableHead>Output</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>{testCaseList}</TableBody>
+                    </Table>
+                  </TabsContent>
                 </Tabs>
               </ReflexElement>
             </ReflexContainer>
