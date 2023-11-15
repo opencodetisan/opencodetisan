@@ -1,10 +1,7 @@
 'use client'
 
-import {Card, CardContent, CardFooter, CardHeader} from '@/components/ui/card'
-import {PageHeader} from '@/components/ui/page-header'
 import ReactMarkdown from 'react-markdown'
 import 'github-markdown-css/github-markdown-light.css'
-import {Separator} from '@/components/ui/separator'
 import {Button} from '@/components/ui/button'
 import useSWR from 'swr'
 import {fetcher} from '@/lib/fetcher'
@@ -18,20 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {DateTime} from 'luxon'
-import {RowData, SectionHeader} from '@/app/(dashboard)/a/quiz/[qid]/components'
-import {useDeferredValue, useEffect, useState} from 'react'
-import {StatusCode} from '@/enums'
+import {useEffect, useState} from 'react'
 import {toast} from '@/components/ui/use-toast'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
 import {Icons} from '@/components/ui/icons'
 import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
@@ -70,7 +55,7 @@ export default function CandidateAssessment() {
     return <></>
   }
 
-  const {quizData, quizSolution, quizTestCase} = data.data
+  const {quizData, quizTestCase} = data.data
   quizId = quizData.id
 
   async function onSubmit() {
