@@ -393,7 +393,7 @@ export const updateCandidateSubmissionService = async ({
   return {
     submission,
     assessmentQuizSubmission,
-    assessmentResults,
+    assessmentResult,
     assessmentPoint,
   }
 }
