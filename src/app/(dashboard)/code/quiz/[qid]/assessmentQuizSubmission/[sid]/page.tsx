@@ -8,7 +8,7 @@ import {Separator} from '@/components/ui/separator'
 import {Button} from '@/components/ui/button'
 import useSWR from 'swr'
 import {fetcher} from '@/lib/fetcher'
-import {useParams} from 'next/navigation'
+import {useParams, useRouter} from 'next/navigation'
 import {
   Table,
   TableBody,
@@ -40,6 +40,7 @@ import 'react-reflex/styles.css'
 import {useDebounce} from 'use-debounce'
 
 export default function CandidateAssessment() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [code, setCode] = useState('')
   const [debouncedCode] = useDebounce(code, 1000)
@@ -100,14 +101,17 @@ export default function CandidateAssessment() {
         })
       }
 
+      const res = await response.json()
+      const assessmentId = res.assessmentId
+
       toast({
-        title: 'You have recovered your password.',
-        description: 'Redirecting to sign-in page',
+        title: 'You have submitted your solution.',
+        description: 'Redirecting...',
       })
 
-      // setTimeout(() => {
-      //   router.push('/signin')
-      // }, 2000)
+      setTimeout(() => {
+        router.push(`/c/assessment/${assessmentId}`)
+      }, 2000)
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Password recovery error: ${error.message}`)
