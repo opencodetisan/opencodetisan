@@ -23,6 +23,7 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import {CodeEditor} from '@/components/ui/code-editor'
 import 'react-reflex/styles.css'
 import {useDebounce} from 'use-debounce'
+import {IQuizTestCaseProps} from '@/types'
 
 export default function CandidateAssessment() {
   const router = useRouter()
@@ -106,7 +107,7 @@ export default function CandidateAssessment() {
     }
   }
 
-  const testCaseList = quizTestCase.map((test) => {
+  const testCaseList = quizTestCase.map((test: IQuizTestCaseProps) => {
     return (
       <TableRow key={test.id}>
         <TableCell>{test.input}</TableCell>
