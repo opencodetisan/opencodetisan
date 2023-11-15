@@ -81,6 +81,7 @@ export default function Assessment() {
     )
     if (isCompleted) {
       status = AssessmentQuizStatus.Completed
+      totalPoint = s.data[0].totalPoint
     }
 
     return (
