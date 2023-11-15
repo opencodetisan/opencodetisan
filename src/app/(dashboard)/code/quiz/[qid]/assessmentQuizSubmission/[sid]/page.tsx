@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/table'
 import {DateTime} from 'luxon'
 import {RowData, SectionHeader} from '@/app/(dashboard)/a/quiz/[qid]/components'
-import {useState} from 'react'
+import {useDeferredValue, useEffect, useState} from 'react'
 import {StatusCode} from '@/enums'
 import {toast} from '@/components/ui/use-toast'
 import {
@@ -37,10 +37,12 @@ import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import {CodeEditor} from '@/components/ui/code-editor'
 import 'react-reflex/styles.css'
+import {useDebounce} from 'use-debounce'
 
 export default function CandidateAssessment() {
   const [isLoading, setIsLoading] = useState(false)
   const [code, setCode] = useState('')
+  const [debouncedCode] = useDebounce(code, 1000)
   const param = useParams()
   const {qid, sid} = param
   const {data} = useSWR(
@@ -48,11 +50,27 @@ export default function CandidateAssessment() {
     fetcher,
   )
 
+  let quizId = ''
+
+  useEffect(() => {
+    if (debouncedCode && debouncedCode.trim() !== '') {
+      localStorage.setItem(quizId, debouncedCode)
+    }
+  }, [debouncedCode, quizId])
+
+  useEffect(() => {
+    const storedCode = localStorage.getItem(quizId)
+    if (storedCode) {
+      setCode(storedCode)
+    }
+  }, [quizId, data, setCode])
+
   if (!data) {
     return <></>
   }
 
   const {quizData, quizSolution, quizTestCase} = data.data
+  quizId = quizData.id
 
   async function onSubmit() {
     setIsLoading(true)
