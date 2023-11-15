@@ -9,14 +9,16 @@ export async function POST(request: Request) {
     const userId = session?.user.id as string
     const {quizId, code, assessmentQuizSubmissionId} = await request.json()
 
-    await updateCandidateSubmissionService({
+    const result = await updateCandidateSubmissionService({
       assessmentQuizSubmissionId,
       userId,
       code,
       quizId,
     })
 
-    return NextResponse.json({})
+    return NextResponse.json({
+      assessmentId: result.assessmentResult?.assessmentId,
+    })
   } catch (error) {
     console.log(error)
     return NextResponse.json({})
