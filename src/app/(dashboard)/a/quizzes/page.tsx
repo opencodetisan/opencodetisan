@@ -6,12 +6,12 @@ import {ManyQuizCard} from './component/many-quiz-card'
 export default function Quizzes() {
   return (
     <>
-      <div className='flex justify-between px-72 py-12 bg-white'>
+      <div className='flex justify-between px-32 2xl:px-52 py-12 bg-white'>
         <PageHeader title='Quizzes' />
         <RedirectButton title='Add' href='/quiz/create' />
       </div>
       <Separator />
-      <div className='px-72 pt-6'>
+      <div className='px-32 2xl:px-52 pt-6'>
         <ManyQuizCard />
       </div>
     </>
