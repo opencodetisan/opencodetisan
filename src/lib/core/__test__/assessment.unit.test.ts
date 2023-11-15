@@ -1154,7 +1154,7 @@ describe('Assessment module', () => {
     )
   })
 
-  test('getAllCandidate fn should create assessment quizzes and return assessment', async () => {
+  test('getCandidateAssessment fn should return candidate assessment', async () => {
     const resolvedValue = {
       assessmentId: uuid,
       candidateId: uuid,
