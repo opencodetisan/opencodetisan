@@ -31,6 +31,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import {Icons} from '@/components/ui/icons'
+import {AlertCircle} from 'lucide-react'
 
 const dateFormatter = (ISOString: string) => {
   return DateTime.fromISO(ISOString).toLocaleString({
@@ -49,7 +50,6 @@ export default function CandidateAssessment() {
     fetcher,
   )
 
-  console.log(data)
   if (!data || !data.data) {
     return <></>
   }
@@ -62,6 +62,10 @@ export default function CandidateAssessment() {
   // TODO
   // @ts-ignore
   const codingQuizRow = codingQuizzes?.map((e) => {
+    const now = DateTime.now()
+    const endAt = DateTime.fromISO(assessmentDetails.endAt)
+    const isAssessmentEnded = now > endAt
+
     const quiz = e.quiz
 
     return (
@@ -77,7 +81,7 @@ export default function CandidateAssessment() {
             quizId={quiz.id}
             assessmentResultId={e.id}
           >
-            <Button>Start</Button>
+            <Button disabled={isAssessmentEnded}>Start</Button>
           </StartQuizDialog>
         </TableCell>
       </TableRow>
@@ -101,14 +105,20 @@ export default function CandidateAssessment() {
             <Separator className='my-6' />
             <Card className=''>
               <CardHeader></CardHeader>
-              <CardContent className='space-y-2 text-sm'>
-                <RowData name={'Title'} value={assessmentDetails.title} />
-                <RowData
-                  name={'Description'}
-                  value={assessmentDetails.description}
-                />
-                <RowData name={'Starting date'} value={startAt} />
-                <RowData name={'Ending date'} value={endAt} />
+              <CardContent className='space-y-6 text-sm'>
+                <div className='font-medium flex items-center text-gray-500'>
+                  <AlertCircle className='mr-3' />
+                  <p className='text-lg'>This assessment has ended.</p>
+                </div>
+                <div className='space-y-2'>
+                  <RowData name={'Title'} value={assessmentDetails.title} />
+                  <RowData
+                    name={'Description'}
+                    value={assessmentDetails.description}
+                  />
+                  <RowData name={'Starting date'} value={startAt} />
+                  <RowData name={'Ending date'} value={endAt} />
+                </div>
               </CardContent>
               <CardFooter></CardFooter>
             </Card>
