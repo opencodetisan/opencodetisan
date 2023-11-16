@@ -435,6 +435,13 @@ export const getAssessmentQuizSubmission = async ({
       where: {
         id: assessmentQuizSubmissionId,
       },
+      include: {
+        assessmentResult: {
+          include: {
+            assessment: true,
+          },
+        },
+      },
     })
 
   return assessmentQuizSubmission
