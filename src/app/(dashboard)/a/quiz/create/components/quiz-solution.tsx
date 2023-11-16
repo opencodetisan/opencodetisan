@@ -1,6 +1,6 @@
 import {CodeEditor} from '@/components/ui/code-editor'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
-import {useContext} from 'react'
+import {useContext, useEffect, useState} from 'react'
 import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import 'react-reflex/styles.css'
 import {CodeEditorContext} from './context'
@@ -22,16 +22,32 @@ export function QuizSolution({
   setSolution,
   testRunner,
   setTestRunner,
+  hasTabChanged,
+  setHasTabChanged,
   ...props // TODO: type
 }: any) {
   const {codeLanguage} = useContext(CodeEditorContext)
   const form = useFormContext()
+  const [tabValue, setTabValue] = useState<'solution' | 'testcase'>('solution')
+  const solutionValues = form.watch(['input1', 'input2', 'output1', 'output1'])
+
+  useEffect(() => {
+    const isValidSolutions = solutionValues.some((v) => v.trim() === '')
+    if (isValidSolutions && !hasTabChanged) {
+      setTabValue('testcase')
+      setHasTabChanged(true)
+    }
+  }, [solutionValues])
 
   return (
-    <Tabs defaultValue='solution' className=''>
+    <Tabs defaultValue='solution' value={tabValue}>
       <TabsList className='grid w-full grid-cols-2'>
-        <TabsTrigger value='solution'>Solution</TabsTrigger>
-        <TabsTrigger value='testcase'>Test Cases</TabsTrigger>
+        <TabsTrigger value='solution' onClick={() => setTabValue('solution')}>
+          Solution
+        </TabsTrigger>
+        <TabsTrigger value='testcase' onClick={() => setTabValue('testcase')}>
+          Test Cases
+        </TabsTrigger>
       </TabsList>
       <TabsContent
         value='solution'
