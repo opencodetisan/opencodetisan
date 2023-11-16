@@ -26,7 +26,7 @@ export const createCandidateQuizSubmission = async ({
   return submission
 }
 
-export const createNewQuizAttempt = async ({
+export const createAssessmentQuizSubmission = async ({
   assessmentResultId,
 }: {
   assessmentResultId: string
@@ -51,6 +51,83 @@ export const createNewQuizAttempt = async ({
     },
   })
   return assessmentResult
+}
+
+export const getCandidateAssessment = async ({
+  assessmentId,
+  candidateId,
+}: {
+  assessmentId: string
+  candidateId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  } else if (!candidateId) {
+    throw Error('missing candidateId')
+  }
+
+  const assessmentCandidate = await prisma.assessmentCandidate.findUnique({
+    where: {
+      assessmentId_candidateId: {
+        candidateId,
+        assessmentId,
+      },
+    },
+    include: {
+      assessment: {
+        include: {
+          owner: {
+            select: {
+              name: true,
+            },
+          },
+          assessmentResults: {
+            where: {
+              candidateId,
+            },
+            include: {
+              assessmentQuizSubmissions: {
+                where: {
+                  submissionId: {
+                    not: null,
+                  },
+                },
+                include: {
+                  submission: {
+                    select: {
+                      code: true,
+                    },
+                  },
+                },
+                orderBy: {
+                  start: 'desc',
+                },
+                take: 1,
+              },
+              quiz: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!assessmentCandidate) {
+    return null
+  }
+  const assessment = assessmentCandidate.assessment
+  const codingQuizzes = assessmentCandidate.assessment.assessmentResults
+
+  const details: Record<string, string | Date | number> = {}
+
+  for (const key in assessmentCandidate?.assessment) {
+    if (!key.startsWith('assessmentResults')) {
+      // TODO: type
+      details[key] = (assessment as any)[key]
+    }
+  }
+
+  return {assessment: details, codingQuizzes}
 }
 
 export const getCandidateResult = async ({

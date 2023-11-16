@@ -73,7 +73,6 @@ export default function Assessment() {
   const submissionRow = assessmentSubmissions?.map((s) => {
     let status = AssessmentQuizStatus.Pending
     let totalPoint = 0
-    let comparativeScore = 0
     const isCompleted = s.data.every(
       // TODO
       // @ts-ignore
@@ -81,6 +80,7 @@ export default function Assessment() {
     )
     if (isCompleted) {
       status = AssessmentQuizStatus.Completed
+      totalPoint = s.data[0].totalPoint
     }
 
     return (
@@ -88,7 +88,6 @@ export default function Assessment() {
         <TableCell className='font-medium'>{s.name}</TableCell>
         <TableCell>{status}</TableCell>
         <TableCell>{totalPoint}</TableCell>
-        <TableCell>{comparativeScore}</TableCell>
       </TableRow>
     )
   })
@@ -361,7 +360,6 @@ export default function Assessment() {
                     <TableHead>Name</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Total Point</TableHead>
-                    <TableHead>Comparative score</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>{submissionRow}</TableBody>

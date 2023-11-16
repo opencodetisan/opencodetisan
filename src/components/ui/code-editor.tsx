@@ -33,6 +33,7 @@ export const CodeEditor = memo(
         extensions={extension}
         onChange={onChange}
         readOnly={readOnly}
+        {...props}
       />
     )
   },

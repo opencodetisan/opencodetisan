@@ -8,7 +8,6 @@ import {
 } from '@/types'
 import {
   createAssessment,
-  createAssessmentCandidate,
   createManyAssessmentQuiz,
   deleteAssessmentCandidate,
   deleteAssessmentData,
@@ -18,8 +17,8 @@ import {
   deleteManyAssessmentQuiz,
   deleteManyAssessmentQuizSubmission,
   deleteManyAssessmentResult,
-  getAllAssessmentCandidate,
   getAllCandidate,
+  getAllCandidateEmail,
   getAssessment,
   getAssessmentIds,
   getAssessmentQuizSubmission,
@@ -34,10 +33,11 @@ import {
   updateAssessmentResult,
 } from './assessment'
 import {
-  createNewQuizAttempt,
+  createAssessmentQuizSubmission,
   deleteManyActivityLog,
   getActivityLogCount,
   getActivityLogs,
+  getCandidateAssessment,
   getCandidateResult,
 } from './candidate'
 import {
@@ -72,7 +72,9 @@ import {
   getQuizTimeLimit,
 } from '../utils'
 import {
+  createUser,
   createUserToken,
+  getManyUserByEmail,
   getPasswordRecoveryToken,
   getUserByEmail,
   updateUserPassword,
@@ -87,6 +89,7 @@ import {
 import bcrypt from 'bcrypt'
 import {faker} from '@faker-js/faker'
 
+// TODO: rm
 export const acceptAssessmentService = async ({
   assessmentId,
   token,
@@ -286,7 +289,7 @@ export const createCandidateSubmissionService = async ({
     return null
   }
 
-  const updatedAssessmentResult = await createNewQuizAttempt({
+  const updatedAssessmentResult = await createAssessmentQuizSubmission({
     assessmentResultId: assessmentResult.id,
   })
   return {assessment, updatedAssessmentResult}
@@ -390,9 +393,20 @@ export const updateCandidateSubmissionService = async ({
   return {
     submission,
     assessmentQuizSubmission,
-    assessmentResults,
+    assessmentResult,
     assessmentPoint,
   }
+}
+
+export const createCodingQuizAttemptService = async ({
+  assessmentResultId,
+}: {
+  assessmentResultId: string
+}) => {
+  const assessmentResult = await createAssessmentQuizSubmission({
+    assessmentResultId,
+  })
+  return {assessmentResult}
 }
 
 export const createAssessmentService = async ({
@@ -655,47 +669,40 @@ export const recoverPasswordService = async ({
 }
 
 export const addAssessmentCandidateService = async ({
-  newCandidateEmails,
+  candidateEmails,
   assessmentId,
 }: {
-  newCandidateEmails: string[]
+  candidateEmails: string[]
   assessmentId: string
 }) => {
-  const currentCandidateEmails = await getAllAssessmentCandidate({assessmentId})
-  const existingCandidatesObj: {[key: string]: {email: string; id: string}} = {}
+  const assignedCandidatesByEmail = await getAllCandidateEmail({assessmentId})
+  const existingUsersObj: {[key: string]: {email: string; id: string}} = {}
+  const existingUsers = await getManyUserByEmail({emails: candidateEmails})
+  existingUsers.forEach((c) => (existingUsersObj[c.email] = c))
 
-  const existingCandidates = await prisma.user.findMany({
-    where: {
-      email: {
-        in: newCandidateEmails,
-      },
-    },
-    select: {
-      email: true,
-      id: true,
-    },
-  })
-
-  existingCandidates.forEach((c) => (existingCandidatesObj[c.email] = c))
-
-  for (let i = 0; i < newCandidateEmails.length; i++) {
-    const email = newCandidateEmails[i]
-
-    if (currentCandidateEmails[email]) {
+  for (let i = 0; i < candidateEmails.length; i++) {
+    const email = candidateEmails[i]
+    let candidateId: string | undefined = existingUsersObj[email]?.id
+    if (assignedCandidatesByEmail[email]) {
       break
-    } else if (!existingCandidatesObj[email]) {
+    } else if (!existingUsersObj[email]) {
       const name = email.split('@')[0]
       const password = faker.lorem.word({strategy: 'longest'})
       const hashedPassword = await bcrypt.hash(password, 10)
-      // TODO: use createUser, rm createAssessmentCandidate
-      const newCandidate = await createAssessmentCandidate({
+      const newCandidate = await createUser({
         hashedPassword,
         email,
         name,
       })
       await sendUserCredential({recipient: email, password})
+      candidateId = newCandidate.id
     }
     await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+    await acceptAssessmentService({
+      assessmentId: assessmentId,
+      userId: candidateId,
+      token: email + faker.lorem.text(),
+    })
   }
 }
 
@@ -745,4 +752,19 @@ export const deleteAssessmentQuizService = async ({
   const assessmentQuiz = await deleteAssessmentQuiz({quizId, assessmentId})
 
   return {assessmentQuiz}
+}
+
+export const getCandidateAssessmentService = async ({
+  candidateId,
+  assessmentId,
+}: {
+  candidateId: string
+  assessmentId: string
+}) => {
+  const candidateAssessment = await getCandidateAssessment({
+    assessmentId,
+    candidateId,
+  })
+
+  return candidateAssessment
 }

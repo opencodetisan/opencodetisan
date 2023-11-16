@@ -6,12 +6,12 @@ import {ManyAssessmentCard} from './component/many-assessment-card'
 export default function Assessments() {
   return (
     <>
-      <div className='flex justify-between px-72 py-12 bg-white'>
+      <div className='flex justify-between px-32 2xl:px-52 py-12 bg-white'>
         <PageHeader title='Assessments' />
         <RedirectButton title='Add assessment' href='/assessment/create' />
       </div>
       <Separator />
-      <div className='px-72 pt-6'>
+      <div className='px-32 2xl:px-52 pt-6'>
         <ManyAssessmentCard />
       </div>
     </>

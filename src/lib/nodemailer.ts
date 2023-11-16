@@ -1,5 +1,15 @@
 import nodemailer from 'nodemailer'
 
+const transporter = nodemailer.createTransport({
+  host: process.env.NODEMAILER_TRANSPORTER_HOST,
+  port: parseInt(process.env.NODEMAILER_TRANSPORTER_PORT!),
+  secure: process.env.NODEMAILER_TRANSPORTER_SECURE === 'true',
+  auth: {
+    user: process.env.NODEMAILER_USERNAME,
+    pass: process.env.NODEMAILER_PASSWORD,
+  },
+})
+
 export const sendPassRecoveryMail = async ({recipient, token}: any) => {
   const link = `${process.env.NEXTAUTH_URL}/recover-password?token=${token}`
   const html = `
@@ -18,16 +28,6 @@ export const sendPassRecoveryMail = async ({recipient, token}: any) => {
     html,
   }
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.NODEMAILER_USERNAME,
-      pass: process.env.NODEMAILER_PASSWORD,
-    },
-  })
-
   const result = await transporter.sendMail(message)
   return result
 }
@@ -42,9 +42,9 @@ export const sendAssessmentInvitation = async ({
   const link = `${process.env.NEXTAUTH_URL}/c/assessment/${aid}`
   // TODO: html
   const html = `
-      <p>Someone from Mars has invited you to an assessment.</p>
+      <p>You have received an assessment invitation.</p>
       <div>
-        <a href="${link}">Click here</a> to view your assessment.
+        Click <a href="${link}">here</a> to view your assessment.
       </div>
   `
 
@@ -55,16 +55,6 @@ export const sendAssessmentInvitation = async ({
     text: 'message',
     html,
   }
-
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.NODEMAILER_USERNAME,
-      pass: process.env.NODEMAILER_PASSWORD,
-    },
-  })
 
   const result = await transporter.sendMail(message)
   return result
@@ -96,16 +86,6 @@ export const sendUserCredential = async ({
     text: 'message',
     html,
   }
-
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.NODEMAILER_USERNAME,
-      pass: process.env.NODEMAILER_PASSWORD,
-    },
-  })
 
   const result = await transporter.sendMail(message)
   return result

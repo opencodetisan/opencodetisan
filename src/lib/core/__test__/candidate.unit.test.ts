@@ -1,8 +1,8 @@
 import {faker} from '@faker-js/faker'
 import {prismaMock} from '../../db/prisma-mock-singleton'
 import {
+  createAssessmentQuizSubmission,
   createCandidateQuizSubmission,
-  createNewQuizAttempt,
   getActivityLogCount,
   getActivityLogs,
   getCandidate,
@@ -203,14 +203,16 @@ describe('Candidate module', () => {
     prismaMock.assessmentResult.update.mockResolvedValue(
       candidateResultMock as any,
     )
-    expect(await createNewQuizAttempt(param)).toEqual(candidateResultMock)
+    expect(await createAssessmentQuizSubmission(param)).toEqual(
+      candidateResultMock,
+    )
   })
 
   test('Missing assessmentResultId should raise a missing assessmentResultId error', async () => {
     const param: any = {}
-    expect(async () => await createNewQuizAttempt(param)).rejects.toThrow(
-      /^missing assessmentResultId$/,
-    )
+    expect(
+      async () => await createAssessmentQuizSubmission(param),
+    ).rejects.toThrow(/^missing assessmentResultId$/)
   })
 
   test('getCandidate fn should return candidate data', async () => {

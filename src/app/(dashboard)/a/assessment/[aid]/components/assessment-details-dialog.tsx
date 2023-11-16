@@ -44,6 +44,7 @@ export default function AssessmentDetailsDialog({
   title,
   description,
 }: any) {
+  const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const param = useParams()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -84,6 +85,7 @@ export default function AssessmentDetailsDialog({
       }
 
       mutate()
+      setOpen(false)
       toast({
         title: 'Changes saved.',
       })
@@ -95,7 +97,7 @@ export default function AssessmentDetailsDialog({
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
