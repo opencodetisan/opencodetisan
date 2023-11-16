@@ -79,10 +79,7 @@ export function QuizSolution({
         </ReflexContainer>
       </TabsContent>
       <TabsContent value='testcase'>
-        <Card
-          className='flex justify-center items-center h-[50vh]'
-          style={{height: '50vh'}}
-        >
+        <Card className='flex justify-center items-center h-[55vh] overflow-y-auto'>
           <CardHeader className='space-y-6 w-2/3'>
             <FormField
               control={form.control}
