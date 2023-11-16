@@ -20,6 +20,7 @@ import {
   getAllCandidate,
   getAllCandidateEmail,
   getAssessment,
+  getAssessmentEndDate,
   getAssessmentIds,
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
@@ -306,10 +307,6 @@ export const updateCandidateSubmissionService = async ({
   code: string
   assessmentQuizSubmissionId: string
 }) => {
-  const submission = await createQuizSubmission({code, quizId, userId})
-
-  const difficultyLevel = submission.quiz.difficultyLevel.name
-
   const assessmentQuizSubmission = await getAssessmentQuizSubmission({
     assessmentQuizSubmissionId,
   })
@@ -317,6 +314,20 @@ export const updateCandidateSubmissionService = async ({
   if (!assessmentQuizSubmission) {
     return {}
   }
+
+  const assessment = assessmentQuizSubmission?.assessmentResult.assessment
+
+  const endAt = DateTime.fromISO(assessment.endAt.toISOString())
+  const now = DateTime.now()
+  const isAssessmentEnded = now > endAt
+
+  if (isAssessmentEnded) {
+    return {}
+  }
+
+  const submission = await createQuizSubmission({code, quizId, userId})
+
+  const difficultyLevel = submission.quiz.difficultyLevel.name
 
   const start = new Date(assessmentQuizSubmission?.start as Date).getTime()
   const end = new Date().getTime()
