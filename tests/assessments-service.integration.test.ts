@@ -944,7 +944,7 @@ describe('Integration test: Assessment', () => {
     ]
     let createdAssessment: any
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       await prisma.user.create({
         data: {id: users[0].id, name: text, email: email_1},
       })
@@ -977,7 +977,7 @@ describe('Integration test: Assessment', () => {
       }
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
       await deleteAssessmentService({assessmentId: createdAssessment.id})
       await prisma.quizPointCollection.deleteMany({
         where: {quizId: {in: quizIds}},
@@ -1002,6 +1002,26 @@ describe('Integration test: Assessment', () => {
 
       // TODO: avoid pre-populate assessmentResult table
       expect(receivedAssessment?.quizzes).toHaveLength(1)
+    })
+
+    test('it should not create assessment quiz when assessment is started', async () => {
+      await prisma.assessment.update({
+        where: {
+          id: createdAssessment.id,
+        },
+        data: {
+          startAt: faker.date.past(),
+        },
+      })
+      await deleteAssessmentQuizService({
+        assessmentId: createdAssessment.id,
+        quizId: quizIds[0],
+      })
+      const receivedAssessment = await getAssessmentService({
+        assessmentId: createdAssessment.id,
+      })
+
+      expect(receivedAssessment?.quizzes).toHaveLength(2)
     })
   })
 
