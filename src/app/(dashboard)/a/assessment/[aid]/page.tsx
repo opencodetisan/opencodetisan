@@ -439,7 +439,7 @@ export default function Assessment() {
   )
 }
 
-export function EditTooltip({children}: {children: ReactElement}) {
+function EditTooltip({children}: {children: ReactElement}) {
   return (
     <TooltipProvider>
       <Tooltip>
