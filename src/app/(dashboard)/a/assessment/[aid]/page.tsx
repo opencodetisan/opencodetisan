@@ -21,13 +21,19 @@ import {getCodeLanguage, getDifficultyLevel} from '@/lib/utils'
 import {IQuizDataProps, IQuizProps, IUserProps} from '@/types'
 import {AssessmentQuizStatus, StatusCode} from '@/enums'
 import {DateTime} from 'luxon'
-import {useState} from 'react'
+import {ReactElement, useState} from 'react'
 import {toast} from '@/components/ui/use-toast'
 import {AddCandidateDialog, columns} from '../create/component'
 import {QuizTableDialog} from './components/quiz-adding-dialog'
 import DeleteQuizDropdown from './components/delete-quiz-dropdown'
 import CandidateRowActions from './components/data-table-row-actions'
 import QuizDeleteDialog from './components/quiz-delete-dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -97,6 +103,10 @@ export default function Assessment() {
   })
 
   const onAssessmentCandidateDelete = async (id: string) => {
+    if (isAssessmentStarted) {
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -136,11 +146,13 @@ export default function Assessment() {
           <TableCell className='font-medium'>{c.name}</TableCell>
           <TableCell>{c.email}</TableCell>
           <TableCell className='w-[100px] text-right'>
-            <CandidateRowActions
-              onAssessmentCandidateDelete={() =>
-                onAssessmentCandidateDelete(c.id)
-              }
-            />
+            {!isAssessmentStarted && (
+              <CandidateRowActions
+                onAssessmentCandidateDelete={() =>
+                  onAssessmentCandidateDelete(c.id)
+                }
+              />
+            )}
           </TableCell>
         </TableRow>
       )
@@ -148,6 +160,10 @@ export default function Assessment() {
   )
 
   const onQuizDelete = async (qid: string) => {
+    if (isAssessmentStarted) {
+      return
+    }
+
     try {
       const response = await fetch(
         `/api/assessment/${assessmentDetails.id}/quiz/${qid}`,
@@ -186,13 +202,19 @@ export default function Assessment() {
         <TableCell>{codeLanguage}</TableCell>
         <TableCell>{difficultyLevel}</TableCell>
         <TableCell className='w-[100px] text-right'>
-          <DeleteQuizDropdown onQuizDelete={() => onQuizDelete(quiz.id)} />
+          {!isAssessmentStarted && (
+            <DeleteQuizDropdown onQuizDelete={() => onQuizDelete(quiz.id)} />
+          )}
         </TableCell>
       </TableRow>
     )
   })
 
   const addCandidates = async (candidates: string[]) => {
+    if (isAssessmentStarted) {
+      return
+    }
+
     try {
       const response = await fetch(`/api/assessment/candidate`, {
         method: 'POST',
@@ -224,6 +246,10 @@ export default function Assessment() {
   }: {
     rowSelection: {[key: string]: boolean}
   }) => {
+    if (isAssessmentStarted) {
+      return
+    }
+
     const quizIds = Object.keys(rowSelection).map(
       (rowId) => rowId.split('/')[0],
     )
@@ -276,7 +302,13 @@ export default function Assessment() {
                 title={assessmentDetails.title}
                 description={assessmentDetails.description}
               >
-                <Button variant={'outline'}>Edit</Button>
+                <EditTooltip>
+                  <div>
+                    <Button variant={'outline'} disabled={isAssessmentStarted}>
+                      Edit
+                    </Button>
+                  </div>
+                </EditTooltip>
               </AssessmentDetailsDialog>
             </div>
             <Separator className='my-6' />
@@ -302,7 +334,13 @@ export default function Assessment() {
                 columns={columns}
                 addAssessmentQuiz={addAssessmentQuiz}
               >
-                <Button variant={'outline'}>Edit</Button>
+                <EditTooltip>
+                  <div>
+                    <Button variant={'outline'} disabled={isAssessmentStarted}>
+                      Edit
+                    </Button>
+                  </div>
+                </EditTooltip>
               </QuizTableDialog>
             </div>
             <Separator className='my-6' />
@@ -330,7 +368,13 @@ export default function Assessment() {
                 setCandidateEmails={() => {}}
                 addCandidates={addCandidates}
               >
-                <Button variant={'outline'}>Edit</Button>
+                <EditTooltip>
+                  <div>
+                    <Button variant={'outline'} disabled={isAssessmentStarted}>
+                      Edit
+                    </Button>
+                  </div>
+                </EditTooltip>
               </AddCandidateDialog>
             </div>
             <Separator className='my-6' />
@@ -392,5 +436,19 @@ export default function Assessment() {
         </div>
       </div>
     </div>
+  )
+}
+
+export function EditTooltip({children}: {children: ReactElement}) {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent className='text-center'>
+          <p>Assessment has started.</p>
+          <p>Editing has been disabled.</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
