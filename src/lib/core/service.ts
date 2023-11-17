@@ -90,6 +90,24 @@ import {
 import bcrypt from 'bcrypt'
 import {faker} from '@faker-js/faker'
 
+export const checkIsAssessmentStarted = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  const assessmentDetails = await getAssessmentDetails({assessmentId})
+
+  if (!assessmentDetails) {
+    return null
+  }
+
+  const startAt = DateTime.fromISO(assessmentDetails?.startAt.toISOString())
+  const now = DateTime.now()
+  const isAssessmentStarted = now > startAt
+
+  return isAssessmentStarted
+}
+
 // TODO: rm
 export const acceptAssessmentService = async ({
   assessmentId,
