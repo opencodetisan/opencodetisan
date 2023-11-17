@@ -1,15 +1,5 @@
 import nodemailer from 'nodemailer'
 
-const transporter = nodemailer.createTransport({
-  host: process.env.NODEMAILER_TRANSPORTER_HOST,
-  port: parseInt(process.env.NODEMAILER_TRANSPORTER_PORT!),
-  secure: process.env.NODEMAILER_TRANSPORTER_SECURE === 'true',
-  auth: {
-    user: process.env.NODEMAILER_USERNAME,
-    pass: process.env.NODEMAILER_PASSWORD,
-  },
-})
-
 export const sendPassRecoveryMail = async ({recipient, token}: any) => {
   const link = `${process.env.NEXTAUTH_URL}/recover-password?token=${token}`
   const html = `
@@ -19,6 +9,16 @@ export const sendPassRecoveryMail = async ({recipient, token}: any) => {
       </div>
       <p>Password recovery session will be closed in 5 minutes.</p>
   `
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.NODEMAILER_TRANSPORTER_HOST,
+    port: parseInt(process.env.NODEMAILER_TRANSPORTER_PORT!),
+    secure: process.env.NODEMAILER_TRANSPORTER_SECURE === 'true',
+    auth: {
+      user: process.env.NODEMAILER_USERNAME,
+      pass: process.env.NODEMAILER_PASSWORD,
+    },
+  })
 
   const message = {
     from: process.env.NODEMAILER_USERNAME,
@@ -47,6 +47,16 @@ export const sendAssessmentInvitation = async ({
         Click <a href="${link}">here</a> to view your assessment.
       </div>
   `
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.NODEMAILER_TRANSPORTER_HOST,
+    port: parseInt(process.env.NODEMAILER_TRANSPORTER_PORT!),
+    secure: process.env.NODEMAILER_TRANSPORTER_SECURE === 'true',
+    auth: {
+      user: process.env.NODEMAILER_USERNAME,
+      pass: process.env.NODEMAILER_PASSWORD,
+    },
+  })
 
   const message = {
     from: process.env.NODEMAILER_USERNAME,
@@ -78,6 +88,16 @@ export const sendUserCredential = async ({
         <p>Remember to change the password.</p>
       </div>
   `
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.NODEMAILER_TRANSPORTER_HOST,
+    port: parseInt(process.env.NODEMAILER_TRANSPORTER_PORT!),
+    secure: process.env.NODEMAILER_TRANSPORTER_SECURE === 'true',
+    auth: {
+      user: process.env.NODEMAILER_USERNAME,
+      pass: process.env.NODEMAILER_PASSWORD,
+    },
+  })
 
   const message = {
     from: process.env.NODEMAILER_USERNAME,
