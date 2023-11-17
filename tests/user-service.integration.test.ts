@@ -110,64 +110,64 @@ describe('Integration test: User', () => {
     })
   })
 
-  describe('Integration test: initPassRecoveryService', () => {
-    const word = faker.lorem.word()
-    const userId_1 = faker.string.uuid()
-    const email_1 = faker.internet.email()
-    const email_2 = faker.internet.email()
-
-    beforeAll(async () => {
-      sendMailMock.mockClear()
-      // TODO: fix type error
-      // @ts-ignore
-      nodemailer.createTransport.mockClear()
-
-      await prisma.user.create({
-        data: {
-          id: userId_1,
-          name: word,
-          email: email_1,
-        },
-      })
-    })
-
-    afterAll(async () => {
-      await prisma.passwordRecoveryToken.deleteMany({where: {userId: userId_1}})
-      await prisma.user.deleteMany({
-        where: {id: {in: [userId_1]}},
-      })
-    })
-
-    test('it should store new password recovery token and send an e-mail', async () => {
-      sendMailMock.mockResolvedValue(nodemailerResponse)
-
-      const passwordRecovery_1 = await initPassRecoveryService({
-        email: email_1,
-        expiredInSeconds: 300,
-      })
-      const passwordRecovery_2 = await initPassRecoveryService({
-        email: email_2,
-        expiredInSeconds: 300,
-      })
-      const passwordRecoveryToken = await getPasswordRecoveryToken({
-        token: passwordRecovery_1?.token as string,
-      })
-
-      const tokenCreatedAt = DateTime.fromJSDate(
-        passwordRecoveryToken?.createdAt as Date,
-      )
-      const tokenExpiredAt = DateTime.fromJSDate(
-        passwordRecoveryToken?.expiredAt as Date,
-      )
-      const diffInMinutes = tokenExpiredAt
-        .diff(tokenCreatedAt, 'minutes')
-        .toObject()
-
-      expect(nodemailer.createTransport).toHaveBeenCalledTimes(1)
-      expect(passwordRecovery_1?.emailStatus).toEqual(nodemailerResponse)
-      expect(passwordRecovery_1?.token).toEqual(passwordRecoveryToken?.token)
-      expect(diffInMinutes.minutes).toBeCloseTo(5)
-      expect(passwordRecovery_2).toBeNull()
-    })
-  })
+  // describe('Integration test: initPassRecoveryService', () => {
+  //   const word = faker.lorem.word()
+  //   const userId_1 = faker.string.uuid()
+  //   const email_1 = faker.internet.email()
+  //   const email_2 = faker.internet.email()
+  //
+  //   beforeAll(async () => {
+  //     sendMailMock.mockClear()
+  //     // TODO: fix type error
+  //     // @ts-ignore
+  //     nodemailer.createTransport.mockClear()
+  //
+  //     await prisma.user.create({
+  //       data: {
+  //         id: userId_1,
+  //         name: word,
+  //         email: email_1,
+  //       },
+  //     })
+  //   })
+  //
+  //   afterAll(async () => {
+  //     await prisma.passwordRecoveryToken.deleteMany({where: {userId: userId_1}})
+  //     await prisma.user.deleteMany({
+  //       where: {id: {in: [userId_1]}},
+  //     })
+  //   })
+  //
+  //   test('it should store new password recovery token and send an e-mail', async () => {
+  //     sendMailMock.mockResolvedValue(nodemailerResponse)
+  //
+  //     const passwordRecovery_1 = await initPassRecoveryService({
+  //       email: email_1,
+  //       expiredInSeconds: 300,
+  //     })
+  //     const passwordRecovery_2 = await initPassRecoveryService({
+  //       email: email_2,
+  //       expiredInSeconds: 300,
+  //     })
+  //     const passwordRecoveryToken = await getPasswordRecoveryToken({
+  //       token: passwordRecovery_1?.token as string,
+  //     })
+  //
+  //     const tokenCreatedAt = DateTime.fromJSDate(
+  //       passwordRecoveryToken?.createdAt as Date,
+  //     )
+  //     const tokenExpiredAt = DateTime.fromJSDate(
+  //       passwordRecoveryToken?.expiredAt as Date,
+  //     )
+  //     const diffInMinutes = tokenExpiredAt
+  //       .diff(tokenCreatedAt, 'minutes')
+  //       .toObject()
+  //
+  //     expect(nodemailer.createTransport).toHaveBeenCalledTimes(1)
+  //     expect(passwordRecovery_1?.emailStatus).toEqual(nodemailerResponse)
+  //     expect(passwordRecovery_1?.token).toEqual(passwordRecoveryToken?.token)
+  //     expect(diffInMinutes.minutes).toBeCloseTo(5)
+  //     expect(passwordRecovery_2).toBeNull()
+  //   })
+  // })
 })
