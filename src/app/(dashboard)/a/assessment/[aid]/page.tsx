@@ -65,8 +65,12 @@ export default function Assessment() {
   const assessmentSubmissions = data.data.submissions
   const assessmentId = assessmentDetails.id
 
-  const startAt = dateFormatter(assessmentDetails.startAt)
-  const endAt = dateFormatter(assessmentDetails.endAt)
+  const startDate = dateFormatter(assessmentDetails.startAt)
+  const endDate = dateFormatter(assessmentDetails.endAt)
+
+  const startAt = DateTime.fromISO(assessmentDetails.startAt)
+  const now = DateTime.now()
+  const isAssessmentStarted = now > startAt
 
   // TODO
   // @ts-ignore
@@ -284,8 +288,8 @@ export default function Assessment() {
                   name={'Description'}
                   value={assessmentDetails.description}
                 />
-                <RowData name={'Starting date'} value={startAt} />
-                <RowData name={'Ending date'} value={endAt} />
+                <RowData name={'Starting date'} value={startDate} />
+                <RowData name={'Ending date'} value={endDate} />
               </CardContent>
               <CardFooter></CardFooter>
             </Card>
