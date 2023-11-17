@@ -772,6 +772,12 @@ export const deleteAssessmentQuizService = async ({
   quizId: string
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const assessmentQuiz = await deleteAssessmentQuiz({quizId, assessmentId})
 
   return {assessmentQuiz}
