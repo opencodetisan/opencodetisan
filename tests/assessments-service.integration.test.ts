@@ -226,7 +226,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
 
@@ -279,7 +279,7 @@ describe('Integration test: Assessment', () => {
         title: text,
         description: text,
         quizIds: [quiz.quizData.id],
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       await acceptAssessmentService({
@@ -350,7 +350,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       for (let i = 0; i < users.length; i++) {
@@ -462,7 +462,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
     })
@@ -520,7 +520,7 @@ describe('Integration test: Assessment', () => {
         title: words,
         description: words,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       await acceptAssessmentService({
@@ -674,7 +674,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
     })
@@ -841,7 +841,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       for (let i = 0; i < users.length; i++) {
@@ -940,7 +940,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       for (let i = 0; i < users.length; i++) {
@@ -1018,7 +1018,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       for (let i = 0; i < users.length; i++) {
@@ -1105,7 +1105,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       for (let i = 0; i < users.length; i++) {
@@ -1185,7 +1185,7 @@ describe('Integration test: Assessment', () => {
         title: word,
         description: word,
         quizIds,
-        startAt: faker.date.past().toISOString(),
+        startAt: faker.date.future().toISOString(),
         endAt: faker.date.future().toISOString(),
       })
       for (let i = 0; i < users.length; i++) {
