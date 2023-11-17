@@ -730,6 +730,12 @@ export const deleteAssessmentCandidateService = async ({
   candidateId: string
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const submissionDeletePromises: Promise<any>[] = []
   const manyAssessmentResultId = await getManyAssessmentResultId({
     assessmentId,
