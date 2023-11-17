@@ -20,6 +20,7 @@ import {
   getAllCandidate,
   getAllCandidateEmail,
   getAssessment,
+  getAssessmentDetails,
   getAssessmentIds,
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
@@ -450,6 +451,12 @@ export const createAssessmentQuizService = async ({
   quizIds: string[]
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const assessmentQuizIds = quizIds.map((qid) => ({quizId: qid}))
   const assessmentResultFields: TAssessmentResultFields[] = []
   const assessmentCandidate = await getAllCandidate({assessmentId})
