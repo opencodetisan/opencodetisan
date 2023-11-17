@@ -20,7 +20,6 @@ import {
   getAllCandidate,
   getAllCandidateEmail,
   getAssessment,
-  getAssessmentEndDate,
   getAssessmentIds,
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
