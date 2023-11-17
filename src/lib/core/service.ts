@@ -703,6 +703,7 @@ export const recoverPasswordService = async ({
   return {userToken}
 }
 
+// TODO: update test (startDate checker)
 export const addAssessmentCandidateService = async ({
   candidateEmails,
   assessmentId,
@@ -710,6 +711,12 @@ export const addAssessmentCandidateService = async ({
   candidateEmails: string[]
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const assignedCandidatesByEmail = await getAllCandidateEmail({assessmentId})
   const existingUsersObj: {[key: string]: {email: string; id: string}} = {}
   const existingUsers = await getManyUserByEmail({emails: candidateEmails})
