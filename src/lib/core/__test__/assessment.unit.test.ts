@@ -32,6 +32,7 @@ import {
   createManyAssessmentQuiz,
   getAllCandidate,
   getAllCandidateEmail,
+  getAssessmentDetails,
 } from '../assessment'
 import {AssessmentStatus, UserRole} from '@/enums'
 import {deleteManyActivityLog, getCandidateAssessment} from '../candidate'
@@ -1231,6 +1232,21 @@ describe('Assessment module', () => {
   test('Missing assessmentId param should return a missing assessmentId error', async () => {
     const param: any = {}
     expect(async () => await checkIsAssessmentStarted(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('getAssessmentDetails fn should return an assessment', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
+    expect(await getAssessmentDetails(param)).toEqual(mockAssessment)
+  })
+
+  test('Missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {}
+    expect(async () => await getAssessmentDetails(param)).rejects.toThrow(
       /^missing assessmentId$/,
     )
   })

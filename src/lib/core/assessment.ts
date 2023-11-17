@@ -991,3 +991,19 @@ export const getAllCandidate = async ({
   const output = assessmentCandidate.map((c) => c.candidate)
   return output
 }
+
+export const getAssessmentDetails = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  if (!assessmentId) {
+    throw Error('missing assessmentId')
+  }
+  const assessment = await prisma.assessment.findUnique({
+    where: {
+      id: assessmentId,
+    },
+  })
+  return assessment
+}
