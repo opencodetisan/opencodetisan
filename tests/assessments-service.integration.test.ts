@@ -820,7 +820,7 @@ describe('Integration test: Assessment', () => {
     ]
     let createdAssessment: any
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       await prisma.user.create({
         data: {id: users[0].id, name: text, email: email_1},
       })
@@ -867,7 +867,7 @@ describe('Integration test: Assessment', () => {
       }
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
       await deleteAssessmentService({assessmentId: createdAssessment.id})
       await prisma.quizPointCollection.deleteMany({
         where: {quizId: {in: quizIds}},
@@ -897,6 +897,31 @@ describe('Integration test: Assessment', () => {
       })
       expect(receivedAssessment?.submissions).toHaveLength(0)
       expect(receivedAssessment?.candidates).toHaveLength(0)
+    })
+
+    test('it should not delete candidates when assessment has started', async () => {
+      await prisma.assessment.update({
+        where: {
+          id: createdAssessment.id,
+        },
+        data: {
+          startAt: faker.date.past(),
+        },
+      })
+      for (let i = 0; i < users.length; i++) {
+        await deleteAssessmentCandidateService({
+          assessmentId: createdAssessment.id,
+          candidateId: users[i].id,
+        })
+      }
+      const receivedAssessment = await getAssessmentService({
+        assessmentId: createdAssessment.id,
+      })
+      receivedAssessment?.quizzes.forEach((q) => {
+        delete q.difficultyLevel
+      })
+      expect(receivedAssessment?.submissions).toHaveLength(2)
+      expect(receivedAssessment?.candidates).toHaveLength(2)
     })
   })
 
