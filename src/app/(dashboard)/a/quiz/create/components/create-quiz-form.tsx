@@ -43,6 +43,7 @@ export function CreateQuizForm({
   const [solution, setSolution] = useState('')
   const deferredSolution = useDeferredValue(solution)
   const [testRunner, setTestRunner] = useState('')
+  const [hasTabChanged, setHasTabChanged] = useState(false)
   const deferredTestRunner = useDeferredValue(testRunner)
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO: type
@@ -56,6 +57,10 @@ export function CreateQuizForm({
     },
   })
   const codeLanguage = form.watch('codeLanguageId')
+
+  function onSubmitError(errors: Object) {
+    setHasTabChanged(false)
+  }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
@@ -134,6 +139,8 @@ export function CreateQuizForm({
               testRunner={deferredTestRunner}
               setTestRunner={setTestRunner}
               codeLanguage={codeLanguage}
+              hasTabChanged={hasTabChanged}
+              setHasTabChanged={setHasTabChanged}
             />
           </Form>
         </CodeEditorContext.Provider>
@@ -142,7 +149,7 @@ export function CreateQuizForm({
         <Button
           disabled={isLoading}
           onClick={() => {
-            form.handleSubmit(onSubmit)()
+            form.handleSubmit(onSubmit, onSubmitError)()
           }}
         >
           {isLoading && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}

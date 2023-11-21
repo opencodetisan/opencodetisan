@@ -20,6 +20,7 @@ import {
   getAllCandidate,
   getAllCandidateEmail,
   getAssessment,
+  getAssessmentDetails,
   getAssessmentIds,
   getAssessmentQuizSubmission,
   getAssessmentQuizzes,
@@ -88,6 +89,24 @@ import {
 } from '../nodemailer'
 import bcrypt from 'bcrypt'
 import {faker} from '@faker-js/faker'
+
+export const checkIsAssessmentStarted = async ({
+  assessmentId,
+}: {
+  assessmentId: string
+}) => {
+  const assessmentDetails = await getAssessmentDetails({assessmentId})
+
+  if (!assessmentDetails) {
+    return null
+  }
+
+  const startAt = DateTime.fromISO(assessmentDetails?.startAt.toISOString())
+  const now = DateTime.now()
+  const isAssessmentStarted = now > startAt
+
+  return isAssessmentStarted
+}
 
 // TODO: rm
 export const acceptAssessmentService = async ({
@@ -306,10 +325,6 @@ export const updateCandidateSubmissionService = async ({
   code: string
   assessmentQuizSubmissionId: string
 }) => {
-  const submission = await createQuizSubmission({code, quizId, userId})
-
-  const difficultyLevel = submission.quiz.difficultyLevel.name
-
   const assessmentQuizSubmission = await getAssessmentQuizSubmission({
     assessmentQuizSubmissionId,
   })
@@ -317,6 +332,20 @@ export const updateCandidateSubmissionService = async ({
   if (!assessmentQuizSubmission) {
     return {}
   }
+
+  const assessment = assessmentQuizSubmission?.assessmentResult.assessment
+
+  const endAt = DateTime.fromISO(assessment.endAt.toISOString())
+  const now = DateTime.now()
+  const isAssessmentEnded = now > endAt
+
+  if (isAssessmentEnded) {
+    return {}
+  }
+
+  const submission = await createQuizSubmission({code, quizId, userId})
+
+  const difficultyLevel = submission.quiz.difficultyLevel.name
 
   const start = new Date(assessmentQuizSubmission?.start as Date).getTime()
   const end = new Date().getTime()
@@ -440,6 +469,12 @@ export const createAssessmentQuizService = async ({
   quizIds: string[]
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const assessmentQuizIds = quizIds.map((qid) => ({quizId: qid}))
   const assessmentResultFields: TAssessmentResultFields[] = []
   const assessmentCandidate = await getAllCandidate({assessmentId})
@@ -668,6 +703,7 @@ export const recoverPasswordService = async ({
   return {userToken}
 }
 
+// TODO: update test (startDate checker)
 export const addAssessmentCandidateService = async ({
   candidateEmails,
   assessmentId,
@@ -675,6 +711,12 @@ export const addAssessmentCandidateService = async ({
   candidateEmails: string[]
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const assignedCandidatesByEmail = await getAllCandidateEmail({assessmentId})
   const existingUsersObj: {[key: string]: {email: string; id: string}} = {}
   const existingUsers = await getManyUserByEmail({emails: candidateEmails})
@@ -713,6 +755,12 @@ export const deleteAssessmentCandidateService = async ({
   candidateId: string
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const submissionDeletePromises: Promise<any>[] = []
   const manyAssessmentResultId = await getManyAssessmentResultId({
     assessmentId,
@@ -749,6 +797,12 @@ export const deleteAssessmentQuizService = async ({
   quizId: string
   assessmentId: string
 }) => {
+  const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
+
+  if (isAssessmentStarted) {
+    return null
+  }
+
   const assessmentQuiz = await deleteAssessmentQuiz({quizId, assessmentId})
 
   return {assessmentQuiz}

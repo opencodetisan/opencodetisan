@@ -32,13 +32,15 @@ import {
   createManyAssessmentQuiz,
   getAllCandidate,
   getAllCandidateEmail,
+  getAssessmentDetails,
 } from '../assessment'
 import {AssessmentStatus, UserRole} from '@/enums'
 import {deleteManyActivityLog, getCandidateAssessment} from '../candidate'
+import {checkIsAssessmentStarted} from '../service'
 
 const uuid = faker.string.uuid()
 const text = faker.lorem.text()
-const date = faker.date.anytime()
+const date = faker.date.past()
 const number = faker.number.int()
 const email_1 = faker.internet.email()
 const email_2 = faker.internet.email()
@@ -1216,6 +1218,36 @@ describe('Assessment module', () => {
     }
     expect(async () => await getCandidateAssessment(param)).rejects.toThrow(
       /^missing candidateId$/,
+    )
+  })
+
+  test('checkIsAssessmentStarted fn should a boolean', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
+    expect(await checkIsAssessmentStarted(param)).toBeTruthy()
+  })
+
+  test('Missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {}
+    expect(async () => await checkIsAssessmentStarted(param)).rejects.toThrow(
+      /^missing assessmentId$/,
+    )
+  })
+
+  test('getAssessmentDetails fn should return an assessment', async () => {
+    const param: any = {
+      assessmentId: uuid,
+    }
+    prismaMock.assessment.findUnique.mockResolvedValue(mockAssessment)
+    expect(await getAssessmentDetails(param)).toEqual(mockAssessment)
+  })
+
+  test('Missing assessmentId param should return a missing assessmentId error', async () => {
+    const param: any = {}
+    expect(async () => await getAssessmentDetails(param)).rejects.toThrow(
+      /^missing assessmentId$/,
     )
   })
 })
