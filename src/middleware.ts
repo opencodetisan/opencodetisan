@@ -9,20 +9,22 @@ interface IUserProps {
   role: UserRole
 }
 
+const domain = process.env.NEXTAUTH_URL
+const AUTH_REDIRECT_PATH = '/auth-redirect'
+const AUTH_REDIRECT_URL = domain + AUTH_REDIRECT_PATH
+
 export default withAuth(
   async function middleware(req) {
     const pathname = req.nextUrl.pathname
     const user = req.nextauth.token?.user as IUserProps
     const role = user.role
     const roleURLSegment = getRoleURLSegment(role)
-    const referer = req.headers.get('referer') as string
-    const defaultUrl = new URL(roleURLSegment, process.env.NEXTAUTH_URL)
-    const callbackUrl = referer
-      ? new URL(referer).searchParams.get('callbackUrl')
-      : undefined
+    const defaultRedirect = new URL(roleURLSegment, domain)
+    const url = req.nextUrl.href
 
     if (pathname.startsWith('/auth-redirect')) {
-      return NextResponse.redirect(callbackUrl ?? defaultUrl)
+      const redirectPath = url === AUTH_REDIRECT_URL ? defaultRedirect : url
+      return NextResponse.redirect(redirectPath)
     } else if (pathname.startsWith('/a') && role === UserRole.Admin) {
       return NextResponse.next()
     } else if (pathname.startsWith('/r') && role === UserRole.Recruiter) {
@@ -30,7 +32,7 @@ export default withAuth(
     } else if (pathname.startsWith('/c') && role === UserRole.Candidate) {
       return NextResponse.next()
     } else {
-      return NextResponse.redirect(defaultUrl)
+      return NextResponse.redirect(defaultRedirect)
     }
   },
   {
