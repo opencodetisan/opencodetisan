@@ -30,6 +30,7 @@ export function SignInForm() {
   const router = useRouter()
   const isInvalidCredentials =
     searchParams.get('error') === 'CredentialsSignin' ?? false
+  const callbackUrl = searchParams.get('callbackUrl')
 
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO fix type err
@@ -44,7 +45,10 @@ export function SignInForm() {
   function onSubmit(values: z.infer<typeof formSchema>, e: any) {
     setIsLoading(true)
     e.preventDefault()
-    signIn('credentials', {callbackUrl: '/auth-redirect', ...values})
+    signIn('credentials', {
+      callbackUrl: callbackUrl ? callbackUrl : '/auth-redirect',
+      ...values,
+    })
   }
 
   return (
