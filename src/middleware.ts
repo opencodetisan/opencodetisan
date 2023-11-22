@@ -15,11 +15,8 @@ export default withAuth(
     const user = req.nextauth.token?.user as IUserProps
     const role = user.role
     const roleURLSegment = getRoleURLSegment(role)
-    const referer = req.headers.get('referer') as string
-    const defaultUrl = new URL(roleURLSegment, process.env.NEXTAUTH_URL)
-    const callbackUrl = referer
-      ? new URL(referer).searchParams.get('callbackUrl')
-      : undefined
+    const defaultRedirect = new URL(roleURLSegment, domain)
+    const url = req.nextUrl.href
 
     if (pathname.startsWith('/auth-redirect')) {
       return NextResponse.redirect(callbackUrl ?? defaultUrl)
@@ -30,7 +27,7 @@ export default withAuth(
     } else if (pathname.startsWith('/c') && role === UserRole.Candidate) {
       return NextResponse.next()
     } else {
-      return NextResponse.redirect(defaultUrl)
+      return NextResponse.redirect(defaultRedirect)
     }
   },
   {
