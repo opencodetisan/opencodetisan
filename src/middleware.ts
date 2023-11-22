@@ -9,6 +9,10 @@ interface IUserProps {
   role: UserRole
 }
 
+const domain = process.env.NEXTAUTH_URL
+const AUTH_REDIRECT_PATH = '/auth-redirect'
+const AUTH_REDIRECT_URL = domain + AUTH_REDIRECT_PATH
+
 export default withAuth(
   async function middleware(req) {
     const pathname = req.nextUrl.pathname
@@ -19,7 +23,8 @@ export default withAuth(
     const url = req.nextUrl.href
 
     if (pathname.startsWith('/auth-redirect')) {
-      return NextResponse.redirect(callbackUrl ?? defaultUrl)
+      const redirectPath = url === AUTH_REDIRECT_URL ? defaultRedirect : url
+      return NextResponse.redirect(redirectPath)
     } else if (pathname.startsWith('/a') && role === UserRole.Admin) {
       return NextResponse.next()
     } else if (pathname.startsWith('/r') && role === UserRole.Recruiter) {
