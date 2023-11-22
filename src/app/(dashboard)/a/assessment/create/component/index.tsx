@@ -98,7 +98,7 @@ export const columns: ColumnDef<IQuiz>[] = [
     accessorKey: 'codeLangugage',
     header: 'Code Language',
     cell: ({row}) => {
-      const codeLanguageId = row.getValue('codeLangugageId')
+      const codeLanguageId = row.original.codeLanguageId
       const codeLanguage = getCodeLanguage(codeLanguageId as number).pretty
       return <div>{codeLanguage}</div>
     },
