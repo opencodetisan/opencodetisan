@@ -107,7 +107,7 @@ export const columns: ColumnDef<IQuiz>[] = [
     accessorKey: 'difficultyLevel',
     header: 'Difficulty Level',
     cell: ({row}) => {
-      const difficultyLevelId = row.getValue('difficultyLevelId')
+      const difficultyLevelId = row.original.difficultyLevelId
       const difficultyLevel = getDifficultyLevel(
         difficultyLevelId as number,
       ).name
