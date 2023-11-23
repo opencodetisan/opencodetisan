@@ -301,14 +301,11 @@ export default function Assessment() {
                 mutate={mutate}
                 title={assessmentDetails.title}
                 description={assessmentDetails.description}
+                disabled={isAssessmentStarted}
               >
-                <EditTooltip>
-                  <div>
-                    <Button variant={'outline'} disabled={isAssessmentStarted}>
-                      Edit
-                    </Button>
-                  </div>
-                </EditTooltip>
+                <Button variant={'outline'} disabled={isAssessmentStarted}>
+                  Edit
+                </Button>
               </AssessmentDetailsDialog>
             </div>
             <Separator className='my-6' />
