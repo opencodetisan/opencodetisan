@@ -361,14 +361,11 @@ export default function Assessment() {
                 candidateEmails={[]}
                 setCandidateEmails={() => {}}
                 addCandidates={addCandidates}
+                disabled={isAssessmentStarted}
               >
-                <EditTooltip>
-                  <div>
-                    <Button variant={'outline'} disabled={isAssessmentStarted}>
-                      Edit
-                    </Button>
-                  </div>
-                </EditTooltip>
+                <Button variant={'outline'} disabled={isAssessmentStarted}>
+                  Edit
+                </Button>
               </AddCandidateDialog>
             </div>
             <Separator className='my-6' />
