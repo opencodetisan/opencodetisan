@@ -330,14 +330,11 @@ export default function Assessment() {
                 data={quizTableData}
                 columns={columns}
                 addAssessmentQuiz={addAssessmentQuiz}
+                disabled={isAssessmentStarted}
               >
-                <EditTooltip>
-                  <div>
-                    <Button variant={'outline'} disabled={isAssessmentStarted}>
-                      Edit
-                    </Button>
-                  </div>
-                </EditTooltip>
+                <Button variant={'outline'} disabled={isAssessmentStarted}>
+                  Edit
+                </Button>
               </QuizTableDialog>
             </div>
             <Separator className='my-6' />
