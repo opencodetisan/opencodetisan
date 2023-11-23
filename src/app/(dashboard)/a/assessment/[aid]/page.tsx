@@ -28,12 +28,6 @@ import {QuizTableDialog} from './components/quiz-adding-dialog'
 import DeleteQuizDropdown from './components/delete-quiz-dropdown'
 import CandidateRowActions from './components/data-table-row-actions'
 import QuizDeleteDialog from './components/quiz-delete-dialog'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -301,14 +295,11 @@ export default function Assessment() {
                 mutate={mutate}
                 title={assessmentDetails.title}
                 description={assessmentDetails.description}
+                disabled={isAssessmentStarted}
               >
-                <EditTooltip>
-                  <div>
-                    <Button variant={'outline'} disabled={isAssessmentStarted}>
-                      Edit
-                    </Button>
-                  </div>
-                </EditTooltip>
+                <Button variant={'outline'} disabled={isAssessmentStarted}>
+                  Edit
+                </Button>
               </AssessmentDetailsDialog>
             </div>
             <Separator className='my-6' />
@@ -333,14 +324,11 @@ export default function Assessment() {
                 data={quizTableData}
                 columns={columns}
                 addAssessmentQuiz={addAssessmentQuiz}
+                disabled={isAssessmentStarted}
               >
-                <EditTooltip>
-                  <div>
-                    <Button variant={'outline'} disabled={isAssessmentStarted}>
-                      Edit
-                    </Button>
-                  </div>
-                </EditTooltip>
+                <Button variant={'outline'} disabled={isAssessmentStarted}>
+                  Edit
+                </Button>
               </QuizTableDialog>
             </div>
             <Separator className='my-6' />
@@ -367,14 +355,11 @@ export default function Assessment() {
                 candidateEmails={[]}
                 setCandidateEmails={() => {}}
                 addCandidates={addCandidates}
+                disabled={isAssessmentStarted}
               >
-                <EditTooltip>
-                  <div>
-                    <Button variant={'outline'} disabled={isAssessmentStarted}>
-                      Edit
-                    </Button>
-                  </div>
-                </EditTooltip>
+                <Button variant={'outline'} disabled={isAssessmentStarted}>
+                  Edit
+                </Button>
               </AddCandidateDialog>
             </div>
             <Separator className='my-6' />
@@ -436,19 +421,5 @@ export default function Assessment() {
         </div>
       </div>
     </div>
-  )
-}
-
-function EditTooltip({children}: {children: ReactElement}) {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent className='text-center'>
-          <p>Assessment has started.</p>
-          <p>Editing has been disabled.</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   )
 }

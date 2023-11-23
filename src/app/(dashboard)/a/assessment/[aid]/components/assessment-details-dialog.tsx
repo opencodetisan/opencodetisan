@@ -25,9 +25,10 @@ import {toast} from '@/components/ui/use-toast'
 import {StatusCode} from '@/enums'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {useParams} from 'next/navigation'
-import {useEffect, useState} from 'react'
+import {ReactElement, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {z} from 'zod'
+import EditTooltip from './edit-tooltip'
 
 const formSchema = z.object({
   title: z
@@ -43,7 +44,14 @@ export default function AssessmentDetailsDialog({
   mutate,
   title,
   description,
-}: any) {
+  disabled,
+}: {
+  children: ReactElement
+  mutate: any
+  title: string
+  description: string
+  disabled: boolean
+}) {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const param = useParams()
@@ -94,6 +102,14 @@ export default function AssessmentDetailsDialog({
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (disabled) {
+    return (
+      <EditTooltip>
+        <div>{children}</div>
+      </EditTooltip>
+    )
   }
 
   return (

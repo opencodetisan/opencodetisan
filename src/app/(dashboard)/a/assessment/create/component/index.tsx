@@ -43,6 +43,7 @@ import {IQuizDataProps} from '@/types'
 import {Textarea} from '@/components/ui/textarea'
 import {DialogClose} from '@radix-ui/react-dialog'
 import CandidateEmailTable from './candidate-email-table'
+import EditTooltip from '../../[aid]/components/edit-tooltip'
 
 const formSchema = z.object({
   title: z
@@ -98,7 +99,7 @@ export const columns: ColumnDef<IQuiz>[] = [
     accessorKey: 'codeLangugage',
     header: 'Code Language',
     cell: ({row}) => {
-      const codeLanguageId = row.getValue('codeLangugageId')
+      const codeLanguageId = row.original.codeLanguageId
       const codeLanguage = getCodeLanguage(codeLanguageId as number).pretty
       return <div>{codeLanguage}</div>
     },
@@ -107,7 +108,7 @@ export const columns: ColumnDef<IQuiz>[] = [
     accessorKey: 'difficultyLevel',
     header: 'Difficulty Level',
     cell: ({row}) => {
-      const difficultyLevelId = row.getValue('difficultyLevelId')
+      const difficultyLevelId = row.original.difficultyLevelId
       const difficultyLevel = getDifficultyLevel(
         difficultyLevelId as number,
       ).name
@@ -297,6 +298,7 @@ export function AddCandidateDialog({
   candidateEmails,
   setCandidateEmails,
   addCandidates, // TODO: type
+  disabled,
 }: any) {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -320,6 +322,14 @@ export function AddCandidateDialog({
     }
     setIsLoading(false)
     setOpen(false)
+  }
+
+  if (disabled) {
+    return (
+      <EditTooltip>
+        <div>{children}</div>
+      </EditTooltip>
+    )
   }
 
   return (
