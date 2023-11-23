@@ -28,7 +28,7 @@ import {useParams} from 'next/navigation'
 import {ReactElement, useEffect, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {z} from 'zod'
-import {EditTooltip} from '../page'
+import EditTooltip from './edit-tooltip'
 
 const formSchema = z.object({
   title: z

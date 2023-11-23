@@ -12,7 +12,7 @@ import {
 import {Icons} from '@/components/ui/icons'
 import {DialogClose} from '@radix-ui/react-dialog'
 import {useState} from 'react'
-import {EditTooltip} from '../page'
+import EditTooltip from './edit-tooltip'
 
 export function QuizTableDialog({
   children,

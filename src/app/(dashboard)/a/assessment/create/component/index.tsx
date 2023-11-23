@@ -43,7 +43,7 @@ import {IQuizDataProps} from '@/types'
 import {Textarea} from '@/components/ui/textarea'
 import {DialogClose} from '@radix-ui/react-dialog'
 import CandidateEmailTable from './candidate-email-table'
-import {EditTooltip} from '../../[aid]/page'
+import EditTooltip from '../../[aid]/components/edit-tooltip'
 
 const formSchema = z.object({
   title: z
