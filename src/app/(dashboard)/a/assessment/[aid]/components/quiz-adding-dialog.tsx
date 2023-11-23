@@ -12,12 +12,14 @@ import {
 import {Icons} from '@/components/ui/icons'
 import {DialogClose} from '@radix-ui/react-dialog'
 import {useState} from 'react'
+import {EditTooltip} from '../page'
 
 export function QuizTableDialog({
   children,
   data,
   columns,
   addAssessmentQuiz,
+  disabled,
 }: any) {
   const [isLoading, setIsLoading] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
@@ -28,6 +30,14 @@ export function QuizTableDialog({
     await addAssessmentQuiz({rowSelection})
     setRowSelection({})
     setIsLoading(false)
+  }
+
+  if (disabled) {
+    return (
+      <EditTooltip>
+        <div>{children}</div>
+      </EditTooltip>
+    )
   }
 
   return (
