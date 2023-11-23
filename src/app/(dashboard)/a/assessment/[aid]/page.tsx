@@ -28,12 +28,6 @@ import {QuizTableDialog} from './components/quiz-adding-dialog'
 import DeleteQuizDropdown from './components/delete-quiz-dropdown'
 import CandidateRowActions from './components/data-table-row-actions'
 import QuizDeleteDialog from './components/quiz-delete-dialog'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -427,19 +421,5 @@ export default function Assessment() {
         </div>
       </div>
     </div>
-  )
-}
-
-export function EditTooltip({children}: {children: ReactElement}) {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent className='text-center'>
-          <p>Assessment has started.</p>
-          <p>Editing has been disabled.</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   )
 }
