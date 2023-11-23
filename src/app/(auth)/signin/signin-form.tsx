@@ -46,7 +46,7 @@ export function SignInForm() {
     setIsLoading(true)
     e.preventDefault()
     signIn('credentials', {
-      callbackUrl: callbackUrl ? callbackUrl : '/auth-redirect',
+      callbackUrl: callbackUrl ? callbackUrl : '/',
       ...values,
     })
   }

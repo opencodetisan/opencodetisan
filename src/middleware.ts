@@ -1,7 +1,7 @@
-import {withAuth} from 'next-auth/middleware'
 import {NextResponse} from 'next/server'
 import {UserRole} from './enums'
 import {getRoleURLSegment} from './lib/utils'
+import { getToken } from 'next-auth/jwt';
 
 interface IUserProps {
   name: string
@@ -9,41 +9,32 @@ interface IUserProps {
   role: UserRole
 }
 
-const domain = process.env.NEXTAUTH_URL
-const AUTH_REDIRECT_PATH = '/auth-redirect'
-const AUTH_REDIRECT_URL = domain + AUTH_REDIRECT_PATH
-
-export default withAuth(
-  async function middleware(req) {
-    const pathname = req.nextUrl.pathname
-    const user = req.nextauth.token?.user as IUserProps
-    const role = user.role
+//Todo: Fix type
+export async function middleware(req: any) {
+    const token = await getToken({req, secret:process.env.NEXTAUTH_SECRET})
+    const user = token?.user as IUserProps
+    const role = user?.role
     const roleURLSegment = getRoleURLSegment(role)
-    const defaultRedirect = new URL(roleURLSegment, domain)
-    const url = req.nextUrl.href
+    const defaultRedirect = new URL(roleURLSegment, process.env.NEXTAUTH_URL)
 
-    if (pathname.startsWith('/auth-redirect')) {
-      const redirectPath = url === AUTH_REDIRECT_URL ? defaultRedirect : url
-      return NextResponse.redirect(redirectPath)
-    } else if (pathname.startsWith('/a') && role === UserRole.Admin) {
-      return NextResponse.next()
-    } else if (pathname.startsWith('/r') && role === UserRole.Recruiter) {
-      return NextResponse.next()
-    } else if (pathname.startsWith('/c') && role === UserRole.Candidate) {
-      return NextResponse.next()
-    } else {
-      return NextResponse.redirect(defaultRedirect)
+    const url = req.nextUrl.clone();
+
+    if (!user && url.pathname === '/') {
+        return NextResponse.next();
     }
-  },
-  {
-    callbacks: {
-      authorized: ({token}) => {
-        return !!token
-      },
-    },
-  },
-)
+
+    if (!user && !url.pathname.startsWith('/signin')) {
+        const callbackUrl = req.nextUrl.href
+        url.pathname = '/signin';
+        url.searchParams.set('callbackUrl', callbackUrl);
+        return NextResponse.redirect(url);
+    }
+
+    if (user && (url.pathname === '/' || url.pathname === '/signin')) {
+        return NextResponse.redirect(defaultRedirect)
+    }
+}
 
 export const config = {
-  matcher: ['/auth-redirect', '/a/:path*', '/r/:path*', '/c/:path*'],
+  matcher: ['/','/signin','/a/:path*', '/r/:path*', '/c/:path*'],
 }

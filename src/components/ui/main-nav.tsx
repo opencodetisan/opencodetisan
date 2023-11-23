@@ -10,7 +10,6 @@ export function MainNav({
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname()
   const navLinks = [
-    {name: 'Dashboard', href: ''},
     {name: 'Assessments', href: '/a/assessments'},
     {name: 'Quizzes', href: '/a/quizzes'},
     {name: 'Users', href: ''},

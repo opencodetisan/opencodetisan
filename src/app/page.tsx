@@ -23,7 +23,7 @@ export default function homePage() {
                     <p className="mb-6 max-w-[600px] text-slate-200 md:text-xl mx-auto">Strip away the guessswork. Verify real skills.</p>
                 </li>
                 <li>
-                    <Button className="bg-white rounded-full text-green-400"><Link href="/signin"><p className="">Get Started</p></Link></Button>
+                    <Button className="bg-green-600 hover:bg-green-700 rounded-full text-lg" size={'lg'}><Link href="/signin"><p className="">Sign In</p></Link></Button>
                 </li>
             </ul>
         </main>
