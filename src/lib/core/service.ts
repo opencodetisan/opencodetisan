@@ -56,7 +56,11 @@ import {
   updateQuizSolution,
   updateQuizTestCase,
 } from './quiz'
-import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
+import {
+  MAX_SPEED_POINT_MULTIPLIER,
+  QUIZ_COMPLETION_POINT,
+  RUN,
+} from '../constant'
 import {
   createCandidatePoint,
   getAssessmentComparativeScore,
@@ -319,12 +323,25 @@ export const updateCandidateSubmissionService = async ({
   quizId,
   code,
   assessmentQuizSubmissionId,
+  action,
 }: {
   userId: string
   quizId: string
   code: string
   assessmentQuizSubmissionId: string
+  action: string
 }) => {
+  // dummy value for code evaluation
+  const result = {status: true}
+  // return {message: 'message'}
+  if (action === RUN) {
+    return {
+      result: result.status,
+      actual: [1, 3],
+      expected: [1, 2],
+    }
+  }
+
   const assessmentQuizSubmission = await getAssessmentQuizSubmission({
     assessmentQuizSubmissionId,
   })
