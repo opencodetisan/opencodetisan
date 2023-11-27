@@ -24,11 +24,16 @@ import {CodeEditor} from '@/components/ui/code-editor'
 import 'react-reflex/styles.css'
 import {useDebounce} from 'use-debounce'
 import {IQuizTestCaseProps} from '@/types'
+import {LOADING, RUN} from '@/lib/constant'
+import {CheckCircle2, XCircle} from 'lucide-react'
+import {Badge} from '@/components/ui/badge'
 
 export default function CandidateAssessment() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [code, setCode] = useState('')
+  // Todo: type
+  const [output, setOutput] = useState<any>()
   const [debouncedCode] = useDebounce(code, 1000)
   const param = useParams()
   const {qid, sid} = param
@@ -58,6 +63,45 @@ export default function CandidateAssessment() {
 
   const {quizData, quizTestCase} = data.data
   quizId = quizData.id
+
+  async function runCode() {
+    setIsLoading(true)
+    setOutput(LOADING)
+
+    try {
+      const response = await fetch(
+        '/api/candidate/assessment/quiz/submission/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            quizId: qid,
+            code,
+            assessmentQuizSubmissionId: sid,
+            action: RUN,
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        setIsLoading(false)
+        return toast({
+          title: 'Server error',
+          description: 'Failed to run your solution.',
+          variant: 'destructive',
+        })
+      }
+
+      const json = await response.json()
+      setOutput(json)
+      setIsLoading(false)
+      debugger
+    } catch (error) {
+      console.log('Unexpected error', error)
+    }
+  }
 
   async function onSubmit() {
     setIsLoading(true)
@@ -171,7 +215,13 @@ export default function CandidateAssessment() {
               codeLanguageId={quizData.codeLanguageId}
               height='84vh'
             />
-            <div className='flex justify-end w-full'>
+            <div className='flex justify-end w-full space-x-4'>
+              <Button onClick={runCode} disabled={isLoading}>
+                {isLoading && (
+                  <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+                )}
+                Run
+              </Button>
               <Button onClick={onSubmit} disabled={isLoading}>
                 {isLoading && (
                   <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
