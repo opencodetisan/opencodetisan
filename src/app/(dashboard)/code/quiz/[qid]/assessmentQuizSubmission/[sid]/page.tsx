@@ -160,6 +160,64 @@ export default function CandidateAssessment() {
     )
   })
 
+  let outputContent = <></>
+
+  if (output?.actual) {
+    outputContent = (
+      <>
+        <div className='flex items-center space-x-2'>
+          <p>Result:</p>
+          {output.result === true && (
+            <Badge className='bg-green-600'>Success</Badge>
+          )}
+          {output.result === false && (
+            <Badge className='bg-red-600'>Fail</Badge>
+          )}
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Test</TableHead>
+              <TableHead>Expected Output</TableHead>
+              <TableHead>Actual Output</TableHead>
+              <TableHead>Result</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>Test 1</TableCell>
+              <TableCell>{output.expected[0]}</TableCell>
+              <TableCell>{output.actual[0]}</TableCell>
+              <TableCell>
+                {output.expected[0] === output.actual[0] ? (
+                  <CheckCircle2 color='#2ec27e' />
+                ) : (
+                  <XCircle color='#c01c28' />
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Test 2</TableCell>
+              <TableCell>{output.expected[1]}</TableCell>
+              <TableCell>{output.actual[1]}</TableCell>
+              <TableCell>
+                {output.expected[1] === output.actual[1] ? (
+                  <CheckCircle2 color='#2ec27e' />
+                ) : (
+                  <XCircle color='#c01c28' />
+                )}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </>
+    )
+  } else if (output?.message) {
+    outputContent = <p className='text-red-500'>{output?.message}</p>
+  } else if (output === LOADING) {
+    outputContent = <p>Running...</p>
+  }
+
   return (
     <div className='p-2'>
       <ReflexContainer orientation='vertical'>
@@ -186,7 +244,9 @@ export default function CandidateAssessment() {
                     <TabsTrigger value='output'>Output</TabsTrigger>
                     <TabsTrigger value='test-case'>Test Cases</TabsTrigger>
                   </TabsList>
-                  <TabsContent value='output'></TabsContent>
+                  <TabsContent value='output' className='px-3'>
+                    {outputContent}
+                  </TabsContent>
                   <TabsContent value='test-case' className='bg-white'>
                     <Table>
                       <TableCaption className='mb-3'>
