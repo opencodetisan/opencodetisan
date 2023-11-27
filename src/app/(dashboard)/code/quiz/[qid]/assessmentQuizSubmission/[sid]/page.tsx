@@ -97,7 +97,6 @@ export default function CandidateAssessment() {
       const json = await response.json()
       setOutput(json)
       setIsLoading(false)
-      debugger
     } catch (error) {
       console.log('Unexpected error', error)
     }
