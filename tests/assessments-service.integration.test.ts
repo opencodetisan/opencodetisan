@@ -551,7 +551,7 @@ describe('Integration test: Assessment', () => {
       await prisma.user.deleteMany({where: {id: {in: userIds}}})
     })
 
-    test('it should only return the result of code evaluation', async () => {
+    test('it should only return the result of code evaluation when the action is RUN', async () => {
       await updateCandidateSubmissionService({
         assessmentQuizSubmissionId,
         code: words,
