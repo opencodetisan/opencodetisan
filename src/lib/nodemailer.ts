@@ -1,19 +1,58 @@
 import nodemailer from 'nodemailer'
+import { PrismaClient } from '@prisma/client';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.NODEMAILER_TRANSPORTER_HOST,
-  port: parseInt(process.env.NODEMAILER_TRANSPORTER_PORT!),
-  secure: process.env.NODEMAILER_TRANSPORTER_SECURE === 'true',
-  auth: {
-    user: process.env.NODEMAILER_USERNAME,
-    pass: process.env.NODEMAILER_PASSWORD,
-  },
-})
+const prisma = new PrismaClient();
 
-export const sendPassRecoveryMail = async ({recipient, token}: any) => {
+let smtpDetails: any;
+
+async function getSmtpDetails() {
+  try {
+    smtpDetails = await prisma.mailSetting.findFirst();
+    return smtpDetails;
+  } catch (error) {
+    console.error('Error retrieving SMTP details:', error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function generateTransporter() {
+  const smtpDetails = await getSmtpDetails();
+
+  if (smtpDetails) {
+    const transporter = nodemailer.createTransport({
+      debug: true,
+      logger: true,
+      host: smtpDetails.host,
+      port: smtpDetails.port,
+      secure: smtpDetails.secure,
+      auth: {
+        user: smtpDetails.username,
+        pass: smtpDetails.password,
+      }
+    });
+
+    // verify connection configuration
+    transporter.verify(function (error) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Server is ready to take our messages");
+      }
+    });
+
+    return transporter;
+  } else {
+    console.error('SMTP not found');
+    return null;
+  }
+}
+
+export const sendPassRecoveryMail = async ({ recipient, token }: any) => {
   const link = `${process.env.NEXTAUTH_URL}/recover-password?token=${token}`
   const html = `
-      <p>You have requasted an password reovery. Follow the link below to recover your password</p>
+      <p>You have requested ach password recovery. Follow the link below to recover your password</p>
       <div>
         <a href="${link}">Click here</a> to recover your password.
       </div>
@@ -21,15 +60,22 @@ export const sendPassRecoveryMail = async ({recipient, token}: any) => {
   `
 
   const message = {
-    from: process.env.NODEMAILER_USERNAME,
+    from: "support@notification.codetisan.com",
     to: recipient,
     subject: 'OpenCodetisan password recovery',
     text: 'message',
     html,
   }
+  const transporter = await generateTransporter(); 
 
-  const result = await transporter.sendMail(message)
-  return result
+  console.log("Transporter: ", transporter);
+
+  if (transporter) {
+    const result = await transporter.sendMail(message);
+    return result;
+  } else {
+    throw new Error('SMTP not found');
+  }
 }
 
 export const sendAssessmentInvitation = async ({
@@ -49,15 +95,23 @@ export const sendAssessmentInvitation = async ({
   `
 
   const message = {
-    from: process.env.NODEMAILER_USERNAME,
+    from: "support@notification.codetisan.com",
     to: recipient,
     subject: 'OpenCodetisan assessment invitation',
     text: 'message',
     html,
   }
 
-  const result = await transporter.sendMail(message)
-  return result
+const transporter = await generateTransporter(); 
+
+  console.log("Transporter: ", transporter);
+
+  if (transporter) {
+    const result = await transporter.sendMail(message);
+    return result;
+  } else {
+    throw new Error('SMTP not found');
+  }
 }
 
 export const sendUserCredential = async ({
@@ -80,13 +134,22 @@ export const sendUserCredential = async ({
   `
 
   const message = {
-    from: process.env.NODEMAILER_USERNAME,
+    from: "support@notification.codetisan.com",
     to: recipient,
     subject: 'Account created in OpenCodetisan',
     text: 'message',
     html,
   }
 
-  const result = await transporter.sendMail(message)
-  return result
+  const transporter = await generateTransporter(); 
+
+  console.log("Transporter: ", transporter);
+
+  if (transporter) {
+    const result = await transporter.sendMail(message);
+    return result;
+  } else {
+    throw new Error('SMTP not found');
+  }
 }
+

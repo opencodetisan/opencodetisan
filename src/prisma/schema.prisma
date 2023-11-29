@@ -263,3 +263,12 @@ model UserAction {
   userAction String @unique
   candidateActivityLog CandidateActivityLog[]
 }
+
+model MailSetting{
+  host String 
+  port Int
+  secure Boolean
+  username String @unique
+  password String
+
+}
