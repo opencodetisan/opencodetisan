@@ -1,7 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+// import prisma from '../db/client'
+// import { PrismaClient } from '@prisma/client';
 import nodemailer from 'nodemailer'
+import prisma from './db/client';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 let smtpDetails: any;
 
