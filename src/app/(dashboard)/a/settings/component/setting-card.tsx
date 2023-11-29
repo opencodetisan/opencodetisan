@@ -15,6 +15,7 @@ export default function SettingsCard() {
   const onSubmit = async (formData: any) => {
     try {
       formData.port = parseInt(formData.port, 10);
+      formData.secure = parseBoolean(formData.secure);
       const response = await fetch('/api/settings', {
         method: 'POST',
         headers: {
@@ -29,6 +30,15 @@ export default function SettingsCard() {
     } catch (error) {
       alert('Errorrrrr');
     }
+  };
+  const parseBoolean = (value: string) => {
+    if (value === 'true' || value === '1' || value === 'yes') {
+      return true;
+    } else if (value === 'false' || value === '0' || value === 'no') {
+      return false;
+    }
+    // Default to null or handle invalid inputs as needed
+    return null;
   };
 
   return (
@@ -57,9 +67,9 @@ export default function SettingsCard() {
               <Label htmlFor="port" className="ml-10 mr-11">Port</Label>
               <input className="p-2 ml-2 border border-black rounded" type="text" placeholder="587" {...register("port", { required: true })} />
             </div>
-            <div className="space-y-2 flex items-center">
-              <Label htmlFor="secure" className="ml-10 mr-6">Secure</Label>
-              <input className="p-2 ml-2 border border-black rounded" type="text" placeholder="True" {...register("secure", { required: true })} />
+            <div className="space-y-2">
+              <Label htmlFor="port" className="ml-10 mr-6">Secure</Label>
+              <input className="p-2 ml-2 border border-black rounded" type="text" placeholder="false" {...register("secure", { required: true })} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="username" className="ml-9 mr-2">Username</Label>
