@@ -37,10 +37,10 @@ export async function POST(request: any) {
         console.log(newSetting);
         const allSettings = await prisma.mailSetting.findMany();
         console.log(allSettings);
-        return Response.json({ newSetting, allSettings });
+        return ({ newSetting, allSettings });
     } catch (error) {
         console.error(error);
-        return Response.json({ error: 'Failed saving settings' });
+        return ({ error: 'Failed saving settings' });
     }
 }
 
