@@ -504,7 +504,7 @@ describe('Integration test: Assessment', () => {
     let createdAssessment: Record<string, any>
     let assessmentQuizSubmissionId: string
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       await prisma.user.create({data: {id: users[0].id, email}})
       await createManyFakeCodeLanguage(codeLanguages)
       for (let i = 0; i < quizzes.length; i++) {
@@ -537,7 +537,7 @@ describe('Integration test: Assessment', () => {
         .assessmentQuizSubmissions[0].id as string
     })
 
-    afterAll(async () => {
+    afterEach(async () => {
       await deleteAssessmentService({assessmentId: createdAssessment.id})
       await prisma.quizPointCollection.deleteMany({
         where: {quizId: {in: quizIds}},
@@ -551,12 +551,30 @@ describe('Integration test: Assessment', () => {
       await prisma.user.deleteMany({where: {id: {in: userIds}}})
     })
 
+    test('it should only return the result of code evaluation when the action is RUN', async () => {
+      await updateCandidateSubmissionService({
+        assessmentQuizSubmissionId,
+        code: words,
+        userId: users[0].id,
+        quizId: quizIds[0],
+        action: 'run',
+      })
+      const retrievedAssessment = await getAssessmentService({
+        assessmentId: createdAssessment.id,
+      })
+      const submissionData = retrievedAssessment?.submissions[0].data[0]
+      expect(submissionData.status).toBe('STARTED')
+      expect(submissionData.assessmentQuizSubmissions).toHaveLength(0)
+      expect(submissionData.totalPoint).toBe(0)
+    })
+
     test('it should update candidate submission', async () => {
       await updateCandidateSubmissionService({
         assessmentQuizSubmissionId,
         code: words,
         userId: users[0].id,
         quizId: quizIds[0],
+        action: 'submit',
       })
       const retrievedAssessment = await getAssessmentService({
         assessmentId: createdAssessment.id,
