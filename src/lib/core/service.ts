@@ -56,7 +56,12 @@ import {
   updateQuizSolution,
   updateQuizTestCase,
 } from './quiz'
-import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
+import {
+  MAX_SPEED_POINT_MULTIPLIER,
+  QUIZ_COMPLETION_POINT,
+  RUN,
+  SUBMIT,
+} from '../constant'
 import {
   createCandidatePoint,
   getAssessmentComparativeScore,
@@ -319,12 +324,36 @@ export const updateCandidateSubmissionService = async ({
   quizId,
   code,
   assessmentQuizSubmissionId,
+  action,
 }: {
   userId: string
   quizId: string
   code: string
   assessmentQuizSubmissionId: string
+  action: typeof RUN | typeof SUBMIT
 }) => {
+  // dummy value for code evaluation
+  const result = {status: true}
+  const jsonResult = {status: true}
+
+  if (!result.status) {
+    return {
+      status: 'error',
+      message: 'API internal error',
+    }
+  } else if (!jsonResult.status) {
+    return {
+      status: 'error',
+      message: 'Your code did not pass the tests.',
+    }
+  } else if (action === RUN) {
+    return {
+      result: jsonResult.status,
+      actual: [1, 3],
+      expected: [1, 2],
+    }
+  }
+
   const assessmentQuizSubmission = await getAssessmentQuizSubmission({
     assessmentQuizSubmissionId,
   })
