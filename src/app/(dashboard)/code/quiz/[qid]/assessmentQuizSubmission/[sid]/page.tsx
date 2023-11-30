@@ -24,9 +24,16 @@ import {CodeEditor} from '@/components/ui/code-editor'
 import 'react-reflex/styles.css'
 import {useDebounce} from 'use-debounce'
 import {IQuizTestCaseProps} from '@/types'
+import {record} from 'rrweb'
+import {StatusCode} from '@/enums'
 import {LOADING, RUN} from '@/lib/constant'
 import {CheckCircle2, XCircle} from 'lucide-react'
 import {Badge} from '@/components/ui/badge'
+
+// TODO: type
+let stopRrwebRecord: any
+let events: any = []
+let rrwebRecordInterval: NodeJS.Timeout
 
 export default function CandidateAssessment() {
   const router = useRouter()
@@ -44,6 +51,33 @@ export default function CandidateAssessment() {
 
   let quizId = ''
 
+  const saveSessionRecord = async () => {
+    if (events.length === 0) {
+      return
+    }
+
+    events = []
+    const result = await fetch(`/api/session-replay`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        events,
+        assessmentQuizSubId: sid,
+      }),
+    })
+    const json = await result.json()
+
+    if (json.status === StatusCode.InternalServerError) {
+      return toast({
+        title: 'Internal server error',
+        description: 'Failed to record session.',
+        variant: 'destructive',
+      })
+    }
+  }
+
   useEffect(() => {
     if (debouncedCode && debouncedCode.trim() !== '') {
       localStorage.setItem(quizId, debouncedCode)
@@ -56,6 +90,15 @@ export default function CandidateAssessment() {
       setCode(storedCode)
     }
   }, [quizId, data, setCode])
+
+  useEffect(() => {
+    stopRrwebRecord = record({
+      emit(e) {
+        events.push(e)
+      },
+    })
+    rrwebRecordInterval = setInterval(saveSessionRecord, 30000)
+  }, [])
 
   if (!data) {
     return <></>
@@ -132,6 +175,12 @@ export default function CandidateAssessment() {
 
       const res = await response.json()
       const assessmentId = res.assessmentId
+
+      if (events.length > 0 && stopRrwebRecord) {
+        stopRrwebRecord()
+        clearInterval(rrwebRecordInterval)
+        await saveSessionRecord()
+      }
 
       toast({
         title: 'You have submitted your solution.',
