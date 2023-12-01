@@ -130,7 +130,7 @@ export function CreateAssessmentMain({
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [candidateEmails, setCandidateEmails] = useState<string[]>([])
+  const [candidateInfo, setCandidateInfo] = useState<string[]>([])
   const [selectedQuizzes, setSelectedQuizzes] = useState<IQuizDataProps[] | []>(
     [],
   )
@@ -170,7 +170,7 @@ export function CreateAssessmentMain({
         body: JSON.stringify({
           details: data,
           quizzes: rowSelection,
-          candidates: candidateEmails,
+          candidates: candidateInfo,
         }),
       })
 
@@ -236,8 +236,8 @@ export function CreateAssessmentMain({
           <SectionHeader title='Candidates' />
           <AddCandidateDialog
             data={data}
-            candidateEmails={candidateEmails}
-            setCandidateEmails={setCandidateEmails}
+            candidateInfo={candidateInfo}
+            setCandidateInfo={setCandidateInfo}
           >
             <Button variant={'outline'}>Add</Button>
           </AddCandidateDialog>
@@ -245,8 +245,8 @@ export function CreateAssessmentMain({
         <Separator className='my-6' />
         <Card>
           <CandidateEmailTable
-            candidateEmails={candidateEmails}
-            setCandidateEmails={setCandidateEmails}
+            candidateInfo={candidateInfo}
+            setCandidateInfo={setCandidateInfo}
           />
         </Card>
       </div>
@@ -265,58 +265,57 @@ export function CreateAssessmentMain({
   )
 }
 
-const re =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const res = /^([^,]+),([^@]+@[^,]+\.[^,]+),([^]+)$/;
 
-const emailFormSchema = z.object({
+const candidateFormSchema = z.object({
   email: z
     .string()
     .min(1, {message: 'Text area cannot be empty.'})
-    .transform((string) => string.split(',').map((e) => e.trim()))
+    .transform((string) => string.split('\n').map((e) => e.trim()))
     .refine(
-      (emailArray) => {
-        if (!emailArray) {
+      (detailsArray) => {
+        if (!detailsArray) {
           return false
         }
-        const isValidEmail = emailArray.every((e) => re.test(e.trim()))
-        return isValidEmail
+        const isValidCandidate = detailsArray.every((e) => res.test(e.trim()))
+        return isValidCandidate
       },
-      (emailArray) => {
-        if (!emailArray) {
+      (detailsArray) => {
+        if (!detailsArray) {
           return {message: ''}
         }
-        const invalidEmail = emailArray.filter(
-          (e) => re.test(e.trim()) === false,
+        const invalidDetails = detailsArray.filter(
+          (e) => res.test(e.trim()) === false,
         )
-        return {message: `Invalid email addresses: "${invalidEmail}"`}
+        return {message: `Invalid candidate details: "${invalidDetails}"`}
       },
     ),
 })
 
 export function AddCandidateDialog({
   children,
-  candidateEmails,
-  setCandidateEmails,
+  candidateInfo,
+  setCandidateInfo,
   addCandidates, // TODO: type
   disabled,
 }: any) {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const form = useForm<z.infer<typeof emailFormSchema>>({
+  const form = useForm<z.infer<typeof candidateFormSchema>>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
     // TODO
     // @ts-ignore
-    resolver: zodResolver(emailFormSchema),
+    resolver: zodResolver(candidateFormSchema),
   })
 
   useEffect(() => {
-    form.reset({email: candidateEmails.join(',')})
-  }, [form, candidateEmails])
+    form.reset({email: (candidateInfo ?? []).join('\n')})
+  }, [form, candidateInfo])
 
-  const onSubmit = async (value: z.infer<typeof emailFormSchema>) => {
+  const onSubmit = async (value: z.infer<typeof candidateFormSchema>) => {
     setIsLoading(true)
-    setCandidateEmails(value.email)
+    setCandidateInfo(value.email)
     if (addCandidates) {
       await addCandidates(value.email)
     }
@@ -339,7 +338,7 @@ export function AddCandidateDialog({
         <DialogHeader className='mb-16'>
           <DialogTitle>Add Candidates</DialogTitle>
           <DialogDescription>
-            {`Use comma (,) to separate email addresses.`}
+            {`Each line represent one candidate. Use comma (,) to separate name, email address, remarks`}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -356,7 +355,7 @@ export function AddCandidateDialog({
                         form.clearErrors()
                       }}
                       className='min-h-[160px]'
-                      placeholder='Type email addresses here...'
+                      placeholder='Type candidate details here...'
                       {...field}
                     />
                   </FormControl>

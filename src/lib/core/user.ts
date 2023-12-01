@@ -58,10 +58,12 @@ export const createUser = async ({
   email,
   name,
   hashedPassword,
+  remarks,
 }: {
   email: string
   name: string
   hashedPassword: string
+  remarks: string
 }) => {
   if (!email) {
     throw Error('missing email')
@@ -69,11 +71,14 @@ export const createUser = async ({
     throw Error('missing name')
   } else if (!hashedPassword) {
     throw Error('missing hashedPassword')
+  }else if (!remarks) {
+    throw Error('missing remarks')
   }
   const newUser = await prisma.user.create({
     data: {
       email,
       name,
+      remarks,
       userKey: {
         create: {
           password: hashedPassword,

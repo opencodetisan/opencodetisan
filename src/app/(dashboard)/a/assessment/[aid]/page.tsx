@@ -31,6 +31,7 @@ import QuizDeleteDialog from './components/quiz-delete-dialog'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
+  remarks: string
 }
 
 const dateFormatter = (ISOString: string) => {
@@ -139,6 +140,7 @@ export default function Assessment() {
         <TableRow key={c.id}>
           <TableCell className='font-medium'>{c.name}</TableCell>
           <TableCell>{c.email}</TableCell>
+          <TableCell>{c.remarks}</TableCell>
           <TableCell className='w-[100px] text-right'>
             {!isAssessmentStarted && (
               <CandidateRowActions
@@ -215,7 +217,7 @@ export default function Assessment() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({newCandidateEmails: candidates, assessmentId}),
+        body: JSON.stringify({newCandidateInfo: candidates, assessmentId}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
@@ -352,8 +354,8 @@ export default function Assessment() {
             <div className='flex justify-between items-center'>
               <SectionHeader title='Candidates' />
               <AddCandidateDialog
-                candidateEmails={[]}
-                setCandidateEmails={() => {}}
+                candidateInfo={[]}
+                setCandidateInfo={() => {}}
                 addCandidates={addCandidates}
                 disabled={isAssessmentStarted}
               >
@@ -371,7 +373,8 @@ export default function Assessment() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
+                    <TableHead>Email address</TableHead>
+                    <TableHead>Remarks</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>{candidateRow}</TableBody>

@@ -69,6 +69,7 @@ model User {
   email String @unique
   emailVerified DateTime?
   image         String?
+  remarks       String?
   role UserRole @default(CANDIDATE)
   userKey       UserKey?
   quizzes       Quiz[]
