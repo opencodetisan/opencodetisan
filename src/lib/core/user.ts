@@ -71,7 +71,7 @@ export const createUser = async ({
     throw Error('missing name')
   } else if (!hashedPassword) {
     throw Error('missing hashedPassword')
-  }else if (!remarks) {
+  } else if (!remarks) {
     throw Error('missing remarks')
   }
   const newUser = await prisma.user.create({

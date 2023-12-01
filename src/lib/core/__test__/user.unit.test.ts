@@ -18,6 +18,7 @@ const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
 const email_1 = faker.internet.email()
+const remarks = faker.lorem.text()
 
 const user = {
   id: uuid,
@@ -25,6 +26,7 @@ const user = {
   email: text,
   emailVerified: null,
   image: null,
+  remarks: text,
   role: UserRole.Recruiter,
 }
 
@@ -217,6 +219,7 @@ describe('User module', () => {
       email: email_1,
       name: text,
       hashedPassword: text,
+      remarks: text,
     }
     prismaMock.user.create.mockResolvedValue(user)
     expect(await createUser(param)).toEqual(user)
@@ -227,6 +230,7 @@ describe('User module', () => {
       // email: email_1,
       name: text,
       hashedPassword: text,
+      remarks: text,
     }
     expect(async () => await createUser(param)).rejects.toThrow(
       /^missing email$/,
@@ -238,6 +242,7 @@ describe('User module', () => {
       email: email_1,
       // name: text,
       hashedPassword: text,
+      remarks: text,
     }
     expect(async () => await createUser(param)).rejects.toThrow(
       /^missing name$/,
@@ -249,9 +254,22 @@ describe('User module', () => {
       email: email_1,
       name: text,
       // hashedPassword: text,
+      remarks: text,
     }
     expect(async () => await createUser(param)).rejects.toThrow(
       /^missing hashedPassword$/,
+    )
+  })
+
+  test('Missing remarks param should return a missing remarks error', async () => {
+    const param: any = {
+      email: email_1,
+      name: text,
+      hashedPassword: text,
+      // remarks: text,
+    }
+    expect(async () => await createUser(param)).rejects.toThrow(
+      /^missing remarks$/,
     )
   })
 
