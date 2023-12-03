@@ -51,7 +51,6 @@ export default function CandidateAssessment() {
       return
     }
 
-    events = []
     const result = await fetch(`/api/session-replay`, {
       method: 'POST',
       headers: {
@@ -71,6 +70,7 @@ export default function CandidateAssessment() {
         variant: 'destructive',
       })
     }
+    events = []
   }
 
   useEffect(() => {
