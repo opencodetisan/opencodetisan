@@ -16,9 +16,8 @@ import 'rrweb-player/dist/style.css'
 
 export default function SessionReplayDialog({
   children,
-  assessmentSubmissions,
-} // Todo: type
-: any) {
+  assessmentSubmissions, // Todo: type
+}: any) {
   const [replayer, setReplayer] = useState<any>()
   const [replayerEvent, setReplayerEvent] = useState<any>()
   const [replayerSpot, setReplayerSpot] = useState<ReactElement | []>([])
@@ -27,6 +26,7 @@ export default function SessionReplayDialog({
     if (replayerEvent && Object.keys(replayerSpot).length !== 0) {
       replaySession()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replayerSpot])
 
   const onReplaySession = async ({

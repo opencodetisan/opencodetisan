@@ -93,6 +93,7 @@ export default function CandidateAssessment() {
       },
     })
     rrwebRecordInterval = setInterval(saveSessionRecord, 30000)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!data) {
