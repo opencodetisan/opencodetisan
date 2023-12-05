@@ -1,31 +1,26 @@
-// import prisma from '../db/client'
-// import { PrismaClient } from '@prisma/client';
 import nodemailer from 'nodemailer'
 import prisma from './db/client';
 
-// const prisma = new PrismaClient();
-
 let smtpDetails: any;
 
-async function getSmtpDetails() {
+export async function getSmtpDetails() {
   try {
     smtpDetails = await prisma.mailSetting.findFirst();
     return smtpDetails;
   } catch (error) {
     console.error('Error retrieving SMTP details:', error);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
-async function generateTransporter() {
+export async function generateTransporter(settings: any) {
   const smtpDetails = await getSmtpDetails();
 
   if (smtpDetails) {
     const transporter = nodemailer.createTransport({
       debug: true,
       logger: true,
+      from: smtpDetails.from,
       host: smtpDetails.host,
       port: smtpDetails.port,
       secure: smtpDetails.secure,
@@ -35,7 +30,6 @@ async function generateTransporter() {
       }
     });
 
-    // verify connection configuration
     transporter.verify(function (error) {
       if (error) {
         console.log(error);
@@ -46,32 +40,27 @@ async function generateTransporter() {
 
     return transporter;
   } else {
-    console.error('SMTP not found');
-    return null;
+    throw new Error('No SMTP details available. Unable to create transporter.');
   }
 }
 
 export const sendPassRecoveryMail = async ({ recipient, token }: any) => {
   const link = `${process.env.NEXTAUTH_URL}/recover-password?token=${token}`
   const html = `
-      <p>You have requested ach password recovery. Follow the link below to recover your password</p>
+      <p>You have requested a password recovery. Follow the link below to recover your password</p>
       <div>
         <a href="${link}">Click here</a> to recover your password.
       </div>
       <p>Password recovery session will be closed in 5 minutes.</p>
   `
-
   const message = {
-    from: "support@notification.codetisan.com",
+    from: smtpDetails.from,
     to: recipient,
     subject: 'OpenCodetisan password recovery',
     text: 'message',
     html,
   }
-  const transporter = await generateTransporter(); 
-
-  console.log("Transporter: ", transporter);
-
+ 
   if (transporter) {
     const result = await transporter.sendMail(message);
     return result;
@@ -88,7 +77,6 @@ export const sendAssessmentInvitation = async ({
   aid: string
 }) => {
   const link = `${process.env.NEXTAUTH_URL}/c/assessment/${aid}`
-  // TODO: html
   const html = `
       <p>You have received an assessment invitation.</p>
       <div>
@@ -97,16 +85,12 @@ export const sendAssessmentInvitation = async ({
   `
 
   const message = {
-    from: "support@notification.codetisan.com",
+    from: smtpDetails.from,
     to: recipient,
     subject: 'OpenCodetisan assessment invitation',
     text: 'message',
     html,
   }
-
-const transporter = await generateTransporter(); 
-
-  console.log("Transporter: ", transporter);
 
   if (transporter) {
     const result = await transporter.sendMail(message);
@@ -124,7 +108,6 @@ export const sendUserCredential = async ({
   password: string
 }) => {
   const link = `${process.env.NEXTAUTH_URL}/signin`
-  // TODO: html
   const html = `
       <div>
         <p>Your account has been automatically created in OpenCodetisan.</p>
@@ -134,18 +117,13 @@ export const sendUserCredential = async ({
         <p>Remember to change the password.</p>
       </div>
   `
-
   const message = {
-    from: "support@notification.codetisan.com",
+    from: smtpDetails.from,
     to: recipient,
     subject: 'Account created in OpenCodetisan',
     text: 'message',
     html,
   }
-
-  const transporter = await generateTransporter(); 
-
-  console.log("Transporter: ", transporter);
 
   if (transporter) {
     const result = await transporter.sendMail(message);

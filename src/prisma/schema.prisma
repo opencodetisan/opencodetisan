@@ -265,10 +265,10 @@ model UserAction {
 }
 
 model MailSetting{
+  from String 
   host String 
   port Int
   secure Boolean
   username String @unique
   password String
-
 }
