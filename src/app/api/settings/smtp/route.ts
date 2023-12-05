@@ -1,14 +1,15 @@
 import { PrismaClient } from '@prisma/client'
+import { NextResponse } from 'next/server'
 
 const prisma = new PrismaClient()
 
 export async function POST(request: any) {
     try {
-        
-        const {from, host, port, secure, username, password } = await request.json();
+
+        const { from, host, port, secure, username, password } = await request.json();
         const newSetting = await prisma.mailSetting.upsert({
             where: {
-                username: username,
+                id: 1,
             },
             update: {
                 from,
@@ -27,12 +28,11 @@ export async function POST(request: any) {
                 password,
             },
         })
-        
-        const allSettings = await prisma.mailSetting.findMany();
-        return ({ newSetting, allSettings });
+        return NextResponse.json(newSetting)
     } catch (error) {
         console.error(error);
-        return ({ error: 'Failed saving settings' });
+        return NextResponse.json({ error: 'Failed saving settings' })
+
     }
 }
 

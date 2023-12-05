@@ -265,6 +265,7 @@ model UserAction {
 }
 
 model MailSetting{
+  id Int @id @default(1)
   from String 
   host String 
   port Int

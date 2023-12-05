@@ -13,7 +13,7 @@ export async function getSmtpDetails() {
   }
 }
 
-export async function generateTransporter(settings: any) {
+export async function generateTransporter() {
   const smtpDetails = await getSmtpDetails();
 
   if (smtpDetails) {
@@ -60,7 +60,7 @@ export const sendPassRecoveryMail = async ({ recipient, token }: any) => {
     text: 'message',
     html,
   }
- 
+  const transporter = await generateTransporter();
   if (transporter) {
     const result = await transporter.sendMail(message);
     return result;
@@ -91,7 +91,7 @@ export const sendAssessmentInvitation = async ({
     text: 'message',
     html,
   }
-
+  const transporter = await generateTransporter();
   if (transporter) {
     const result = await transporter.sendMail(message);
     return result;
@@ -125,6 +125,7 @@ export const sendUserCredential = async ({
     html,
   }
 
+  const transporter = await generateTransporter();
   if (transporter) {
     const result = await transporter.sendMail(message);
     return result;
