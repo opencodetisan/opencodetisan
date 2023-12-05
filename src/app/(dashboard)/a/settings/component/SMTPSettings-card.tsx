@@ -1,12 +1,11 @@
 'use client'
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/use-toast"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
-import { IoSettingsSharp } from "react-icons/io5";
-
+import { IoSettingsSharp } from "react-icons/io5"
 
 export default function SettingsCard() {
   const {
@@ -16,8 +15,8 @@ export default function SettingsCard() {
 
   const onSubmit = async (formData: any) => {
     try {
-      formData.port = parseInt(formData.port, 10);
-      formData.secure = parseBoolean(formData.secure);
+      formData.port = parseInt(formData.port, 10)
+      formData.secure = parseBoolean(formData.secure)
       const response = await fetch('/api/settings/smtp', {
         method: 'POST',
         headers: {
@@ -47,15 +46,15 @@ export default function SettingsCard() {
 
   return (
     <div className="h-screen w-full flex flex-col lg:flex-row">
-   <nav className="w-full lg:w-64 text-black p-5">
-  <Link className="flex items-center gap-3 py-2 mt-2 ml-10 mr-auto  w-64" href="#">
-    <IoSettingsSharp size={32}/>
-    <span className="flex items-center">
-      <span>SMTP</span>
-      <span className="ml-1">Setting</span>
-    </span>
-  </Link>
-</nav>
+      <nav className="w-full lg:w-64 text-black p-5">
+        <Link className="flex items-center gap-3 py-2 mt-2 ml-10 mr-auto  w-64" href="#">
+          <IoSettingsSharp size={32} />
+          <span className="flex items-center">
+            <span>SMTP</span>
+            <span className="ml-1">Setting</span>
+          </span>
+        </Link>
+      </nav>
 
       <div className="flex flex-col flex-grow">
         <h1 className="text-2xl font-bold mb-4 mt-8  ml-12 lg:ml-0">SMTP Setting</h1>
