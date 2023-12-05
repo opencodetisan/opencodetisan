@@ -23,21 +23,19 @@ export default function CandidateEmailTable({
   candidateInfo: string[]
   setCandidateInfo: (value: SetStateAction<string[]>) => void
 }) {
-  console.log('AddTableeee:',candidateInfo);
   const tableRowContent = candidateInfo.map(
     (info: string, index: number) => {
-      const [name, email, remarks] = info.split(',');
-      const convertedName = name.charAt(0).toUpperCase() + name.slice(1);
-      
+      const [name, email, remarks] = info.split(',')
+
       const onRemove = () => {
         const newCandidateInfo = [...candidateInfo]
         newCandidateInfo.splice(index, 1)
         setCandidateInfo(newCandidateInfo)
-      };
+      }
       
       return (
         <TableRow key={email}>
-          <TableCell className='font-medium'>{convertedName}</TableCell>
+          <TableCell className='font-medium'>{name}</TableCell>
           <TableCell className='font-medium'>{email}</TableCell>
           <TableCell className='font-medium'>{remarks}</TableCell>
           <TableCell className='text-right'>

@@ -265,7 +265,7 @@ export function CreateAssessmentMain({
   )
 }
 
-const res = /^([^,]+),([^@]+@[^,]+\.[^,]+),([^]+)$/;
+const validCandidateFormat = /^([^,]+),([^@]+@[^,]+\.[^,]+),([^]+)$/;
 
 const candidateFormSchema = z.object({
   email: z
@@ -277,7 +277,7 @@ const candidateFormSchema = z.object({
         if (!detailsArray) {
           return false
         }
-        const isValidCandidate = detailsArray.every((e) => res.test(e.trim()))
+        const isValidCandidate = detailsArray.every((e) => validCandidateFormat.test(e.trim()))
         return isValidCandidate
       },
       (detailsArray) => {
@@ -285,7 +285,7 @@ const candidateFormSchema = z.object({
           return {message: ''}
         }
         const invalidDetails = detailsArray.filter(
-          (e) => res.test(e.trim()) === false,
+          (e) => validCandidateFormat.test(e.trim()) === false,
         )
         return {message: `Invalid candidate details: "${invalidDetails}"`}
       },
@@ -334,11 +334,14 @@ export function AddCandidateDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className='sm:max-w-[30rem]'>
-        <DialogHeader className='mb-16'>
+      <DialogContent className='sm:max-w-[30rem] h-5/6'>
+        <DialogHeader className='mb-2'>
           <DialogTitle>Add Candidates</DialogTitle>
           <DialogDescription>
-            {`Each line represent one candidate. Use comma (,) to separate name, email address, remarks`}
+            <p>
+              Each line represent one candidate. <br />Use comma (,) to separate name, email address, remarks
+              <br />*Remarks : Should not contains commas(','). Use a dash('-') if there are no remarks.
+            </p>
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -354,14 +357,11 @@ export function AddCandidateDialog({
                       onFocus={() => {
                         form.clearErrors()
                       }}
-                      className='min-h-[160px]'
+                      className='h-[55vh] max-h-[55vh]'
                       placeholder='Type candidate details here...'
                       {...field}
                     />
                   </FormControl>
-                  <div className='h-16 w-96'>
-                    <FormMessage className='line-clamp-3' />
-                  </div>
                 </FormItem>
               )}
             />

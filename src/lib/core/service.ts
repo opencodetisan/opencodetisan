@@ -750,34 +750,34 @@ export const addAssessmentCandidateService = async ({
   const existingUsersObj: {[key: string]: {email: string; id: string}} = {}
   const existingUsers = await getManyUserByEmail({
     emails: candidateInfo.map((email) => email.split(',')[1]),
-  });
-  existingUsers.forEach((c) => (existingUsersObj[c.email] = c));
+  })
+  existingUsers.forEach((c) => (existingUsersObj[c.email] = c))
 
   for (let i = 0; i < candidateInfo.length; i++) {
-    const info = candidateInfo[i];
-    const [name, email, remarks] = info.split(',');
+    const info = candidateInfo[i]
+    const [name, email, remarks] = info.split(',')
 
-    let candidateId: string | undefined = existingUsersObj[email]?.id;
+    let candidateId: string | undefined = existingUsersObj[email]?.id
     if (assignedCandidatesByEmail[email]) {
-      break;
+      break
     } else if (!existingUsersObj[email]) {
-      const password = faker.lorem.word({ strategy: 'longest' });
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const password = faker.lorem.word({ strategy: 'longest' })
+      const hashedPassword = await bcrypt.hash(password, 10)
       const newCandidate = await createUser({
         hashedPassword,
         email,
         name,
         remarks,
       })
-      //await sendUserCredential({recipient: email, password})
+      await sendUserCredential({recipient: email, password})
       candidateId = newCandidate.id
     }
-    //await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+    await sendAssessmentInvitation({recipient: email, aid: assessmentId})
     await acceptAssessmentService({
       assessmentId: assessmentId,
       userId: candidateId,
       token: email + faker.lorem.text(),
-    });
+    })
   }
 }
 
