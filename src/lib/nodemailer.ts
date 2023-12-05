@@ -39,9 +39,10 @@ export async function generateTransporter() {
     });
 
     return transporter;
-  } else {
-    throw new Error('No SMTP details available. Unable to create transporter.');
-  }
+  } 
+  // else {
+  //   throw new Error('No SMTP details available. Unable to create transporter.');
+  // }
 }
 
 export const sendPassRecoveryMail = async ({ recipient, token }: any) => {
