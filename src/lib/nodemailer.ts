@@ -5,43 +5,37 @@ let smtpDetails: any;
 
 export async function getSmtpDetails() {
   try {
-    smtpDetails = await prisma.mailSetting.findFirst();
-    return smtpDetails;
+    smtpDetails = await prisma.mailSetting.findFirst()
+    return smtpDetails
   } catch (error) {
-    console.error('Error retrieving SMTP details:', error);
-    throw error;
+    console.error('Error retrieving SMTP details:', error)
+    throw error
   }
 }
 
-export async function generateTransporter() {
-  const smtpDetails = await getSmtpDetails();
+export async function getDbSmtpDetails(){
+    const dbSmtpDetails = await getSmtpDetails()
+    return dbSmtpDetails
+}
 
-  if (smtpDetails) {
+export function generateTransporter(dbSmtpDetails: any) {
+  if (dbSmtpDetails) {
     const transporter = nodemailer.createTransport({
       debug: true,
       logger: true,
-      from: smtpDetails.from,
-      host: smtpDetails.host,
-      port: smtpDetails.port,
-      secure: smtpDetails.secure,
+      from: dbSmtpDetails.from,
+      host: dbSmtpDetails.host,
+      port: dbSmtpDetails.port,
+      secure: dbSmtpDetails.secure,
       auth: {
-        user: smtpDetails.username,
-        pass: smtpDetails.password,
+        user: dbSmtpDetails.username,
+        pass: dbSmtpDetails.password,
       }
-    });
-
-    transporter.verify(function (error) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Server is ready to take our messages");
-      }
-    });
-
-    return transporter;
+    })
+    return transporter
   } 
   else {
-    throw new Error('No SMTP details available. Unable to create transporter.');
+    throw new Error('No SMTP details available. Unable to create transporter.')
   }
 }
 
@@ -61,12 +55,13 @@ export const sendPassRecoveryMail = async ({ recipient, token }: any) => {
     text: 'message',
     html,
   }
-  const transporter = await generateTransporter();
+  const details = await getDbSmtpDetails()
+  const transporter = generateTransporter(details)
   if (transporter) {
     const result = await transporter.sendMail(message);
     return result;
   } else {
-    throw new Error('SMTP not found');
+    throw new Error('SMTP not found')
   }
 }
 
@@ -84,7 +79,6 @@ export const sendAssessmentInvitation = async ({
         Click <a href="${link}">here</a> to view your assessment.
       </div>
   `
-
   const message = {
     from: smtpDetails.from,
     to: recipient,
@@ -92,12 +86,13 @@ export const sendAssessmentInvitation = async ({
     text: 'message',
     html,
   }
-  const transporter = await generateTransporter();
+  const details = await getDbSmtpDetails()
+  const transporter = generateTransporter(details)
   if (transporter) {
     const result = await transporter.sendMail(message);
     return result;
   } else {
-    throw new Error('SMTP not found');
+    throw new Error('SMTP not found')
   }
 }
 
@@ -126,12 +121,12 @@ export const sendUserCredential = async ({
     html,
   }
 
-  const transporter = await generateTransporter();
+  const details = await getDbSmtpDetails()
+  const transporter = generateTransporter(details)
   if (transporter) {
     const result = await transporter.sendMail(message);
     return result;
   } else {
-    throw new Error('SMTP not found');
+    throw new Error('SMTP not found')
   }
 }
-

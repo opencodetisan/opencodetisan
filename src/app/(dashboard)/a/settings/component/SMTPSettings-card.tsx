@@ -16,7 +16,6 @@ export default function SettingsCard() {
   const onSubmit = async (formData: any) => {
     try {
       formData.port = parseInt(formData.port, 10)
-      formData.secure = parseBoolean(formData.secure)
       const response = await fetch('/api/settings/smtp', {
         method: 'POST',
         headers: {
@@ -27,22 +26,17 @@ export default function SettingsCard() {
 
       if (response.ok) {
         toast({
-          title: 'Sending data to backend',
-          description: 'Redirecting...',
+          title: 'Success!',
+          description: 'Done saving the details',
         })
       }
     } catch (error) {
-      alert('Error');
+      toast({
+        title: 'Oops!',
+        description: 'Error in saving the details',
+      })
     }
-  };
-  const parseBoolean = (value: string) => {
-    if (value === 'true' || value === '1' || value === 'yes') {
-      return true;
-    } else if (value === 'false' || value === '0' || value === 'no') {
-      return false;
-    }
-    return null;
-  };
+  }
 
   return (
     <div className="h-screen w-full flex flex-col lg:flex-row">
@@ -55,7 +49,6 @@ export default function SettingsCard() {
           </span>
         </Link>
       </nav>
-
       <div className="flex flex-col flex-grow">
         <h1 className="text-2xl font-bold mb-4 mt-8  ml-12 lg:ml-0">SMTP Setting</h1>
         <Card className="w-screen h-screen">
@@ -98,7 +91,3 @@ export default function SettingsCard() {
     </div>
   )
 }
-
-
-
-

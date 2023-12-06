@@ -1,7 +1,5 @@
-// import { PageHeader } from '@/components/ui/page-header'
-// import {RedirectButton} from '@/components/ui/redirect-button'
 import { Separator } from '@/components/ui/separator'
-import SettingsCard from './component/SMTPSettings-card'
+import SMTPSettingsCard from './component/SMTPSettings-card'
 import { PageHeader } from '@/components/ui/page-header'
 
 export default function Settings() {
@@ -12,7 +10,7 @@ export default function Settings() {
            </div>
            <Separator />
            <div className='pt-6'>
-           <SettingsCard />
+           <SMTPSettingsCard />
            </div>
          </>
     )
