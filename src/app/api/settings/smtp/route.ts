@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import Cryptr from 'cryptr';
+import prisma from '@/lib/db/client';
 
-const prisma = new PrismaClient()
 
 export async function POST(request: any) {
     try {
