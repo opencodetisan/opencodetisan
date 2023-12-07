@@ -340,7 +340,7 @@ export function AddCandidateDialog({
           <DialogDescription>
             <p>
               Each line represent one candidate. <br />Use comma (,) to separate name, email address, remarks
-              <br />*Remarks : Should not contains commas(','). Use a dash('-') if there are no remarks.
+              <br />*Remarks : Should not contains commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there are no remarks.
             </p>
           </DialogDescription>
         </DialogHeader>
