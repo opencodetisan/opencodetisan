@@ -64,6 +64,7 @@
     "react-reflex": "^4.1.0",
     "react-stately": "^3.27.1",
     "rrweb": "^2.0.0-alpha.4",
+    "rrweb-player": "^1.0.0-alpha.4",
     "swr": "^2.2.2",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",

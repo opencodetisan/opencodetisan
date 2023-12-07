@@ -28,6 +28,7 @@ import {QuizTableDialog} from './components/quiz-adding-dialog'
 import DeleteQuizDropdown from './components/delete-quiz-dropdown'
 import CandidateRowActions from './components/data-table-row-actions'
 import QuizDeleteDialog from './components/quiz-delete-dialog'
+import SessionReplayDialog from './components/session-replay-dialog'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
@@ -93,6 +94,11 @@ export default function Assessment() {
         <TableCell className='font-medium'>{s.name}</TableCell>
         <TableCell>{status}</TableCell>
         <TableCell>{totalPoint}</TableCell>
+        <TableCell className='text-right'>
+          <SessionReplayDialog assessmentSubmissions={s}>
+            <Button>View</Button>
+          </SessionReplayDialog>
+        </TableCell>
       </TableRow>
     )
   })
@@ -396,6 +402,7 @@ export default function Assessment() {
                     <TableHead>Name</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Total Point</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>{submissionRow}</TableBody>

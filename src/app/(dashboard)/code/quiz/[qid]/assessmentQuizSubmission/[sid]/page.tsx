@@ -56,7 +56,6 @@ export default function CandidateAssessment() {
       return
     }
 
-    events = []
     const result = await fetch(`/api/session-replay`, {
       method: 'POST',
       headers: {
@@ -76,6 +75,7 @@ export default function CandidateAssessment() {
         variant: 'destructive',
       })
     }
+    events = []
   }
 
   useEffect(() => {
@@ -98,6 +98,7 @@ export default function CandidateAssessment() {
       },
     })
     rrwebRecordInterval = setInterval(saveSessionRecord, 30000)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!data) {
