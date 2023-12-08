@@ -267,6 +267,7 @@ export const getAssessment = async ({
             id: true,
             name: true,
             email: true,
+            remarks:true,
             assessmentResults: {
               where: {
                 assessmentId: assessmentId,

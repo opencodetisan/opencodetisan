@@ -14,25 +14,30 @@ import {SetStateAction} from 'react'
 export default function CandidateEmailTable({
   className,
   title,
-  candidateEmails,
-  setCandidateEmails,
+  candidateInfo,
+  setCandidateInfo,
   ...props
 }: {
   className?: React.HTMLAttributes<HTMLElement>
   title?: string
-  candidateEmails: string[]
-  setCandidateEmails: (value: SetStateAction<string[]>) => void
+  candidateInfo: string[]
+  setCandidateInfo: (value: SetStateAction<string[]>) => void
 }) {
-  const tableRowContent = candidateEmails.map(
-    (email: string, index: number) => {
+  const tableRowContent = candidateInfo.map(
+    (info: string, index: number) => {
+      const [name, email, remarks] = info.split(',')
+
       const onRemove = () => {
-        const newCandidateEmails = [...candidateEmails]
-        newCandidateEmails.splice(index, 1)
-        setCandidateEmails(newCandidateEmails)
+        const newCandidateInfo = [...candidateInfo]
+        newCandidateInfo.splice(index, 1)
+        setCandidateInfo(newCandidateInfo)
       }
+      
       return (
         <TableRow key={email}>
+          <TableCell className='font-medium'>{name}</TableCell>
           <TableCell className='font-medium'>{email}</TableCell>
+          <TableCell className='font-medium'>{remarks}</TableCell>
           <TableCell className='text-right'>
             <Button variant={'destructive'} className='h-8' onClick={onRemove}>
               Remove
@@ -46,17 +51,19 @@ export default function CandidateEmailTable({
   return (
     <div className={cn(className)}>
       <Table>
-        {candidateEmails[0] && (
+        {candidateInfo[0] && (
           <TableCaption className='mb-3'>
-            A list of your candidate email addresses.
+            A list of your candidate details.
           </TableCaption>
         )}
-        {!candidateEmails[0] && (
+        {!candidateInfo[0] && (
           <TableCaption className='mb-3'>{`Click 'Add' button to insert candidate email addresses.`}</TableCaption>
         )}
         <TableHeader>
           <TableRow>
+            <TableHead>Name</TableHead>
             <TableHead>Email address</TableHead>
+            <TableHead>Remarks</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>{tableRowContent}</TableBody>
