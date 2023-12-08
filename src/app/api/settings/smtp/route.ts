@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import Cryptr from 'cryptr';
-import prisma from '@/lib/db/client';
+import Cryptr from 'cryptr'
+import prisma from '@/lib/db/client'
 
 export async function POST(request: any) {
     try {
@@ -28,7 +28,7 @@ export async function POST(request: any) {
                 password: encryptedPassword,
             },
         })
-        return NextResponse.json(newSetting) 
+        return NextResponse.json(newSetting)
     } catch (error) {
         console.error(error)
         return NextResponse.json({ error: 'Failed saving settings' })
@@ -38,10 +38,10 @@ export async function POST(request: any) {
 let smtpDetails: any
 export async function GET() {
     try {
-      smtpDetails = await prisma.mailSetting.findFirst()
-      return NextResponse.json(smtpDetails)
+        smtpDetails = await prisma.mailSetting.findFirst()
+        return NextResponse.json(smtpDetails)
     } catch (error) {
-      console.error('Error retrieving SMTP details:', error)
-      return NextResponse.json({ error: 'Failed reading settings' })
+        console.error('Error retrieving SMTP details:', error)
+        return NextResponse.json({ error: 'Failed reading settings' })
     }
 }
