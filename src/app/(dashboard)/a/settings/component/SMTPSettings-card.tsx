@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -10,20 +11,21 @@ import { IoSettingsSharp } from "react-icons/io5"
 export default function SettingsCard() {
   const {
     register,
-    handleSubmit
+    handleSubmit,
+    setValue,
   } = useForm({})
 
   const onSubmit = async (formData: any) => {
     try {
       formData.port = parseInt(formData.port, 10)
+      formData.secure = parseBoolean(formData.secure)
       const response = await fetch('/api/settings/smtp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-      });
-
+      })
       if (response.ok) {
         toast({
           title: 'Success!',
@@ -37,6 +39,33 @@ export default function SettingsCard() {
       })
     }
   }
+  const parseBoolean = (value: string) => {
+    if (value === 'true') {
+      return true
+    } else if (value === 'false') {
+      return false
+    }
+    return null
+  }
+
+  useEffect(() => {
+    const fetchSMTPDetails = async () => {
+      try {
+        const response = await fetch('/api/settings/smtp')
+        if (response.ok) {
+          const data = await response.json()
+          Object.keys(data).forEach((key) => {
+            setValue(key, data[key])
+          })
+        } else {
+          throw new Error('Failed to fetch SMTP details')
+        }
+      } catch (error) {
+        console.error('Error fetching SMTP details:', error)
+      }
+    }
+    fetchSMTPDetails()
+  }, [setValue])
 
   return (
     <div className="h-screen w-full flex flex-col lg:flex-row">
