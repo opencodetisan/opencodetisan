@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
-import prisma from './db/client';
+import prisma from './db/client'
 
-let smtpDetails: any;
+let smtpDetails: any
 
 export async function getSmtpDetails() {
   try {
@@ -59,7 +59,7 @@ export const sendPassRecoveryMail = async ({ recipient, token }: any) => {
   const transporter = generateTransporter(details)
   if (transporter) {
     const result = await transporter.sendMail(message);
-    return result;
+    return result
   } else {
     throw new Error('SMTP not found')
   }
@@ -90,7 +90,7 @@ export const sendAssessmentInvitation = async ({
   const transporter = generateTransporter(details)
   if (transporter) {
     const result = await transporter.sendMail(message);
-    return result;
+    return result
   } else {
     throw new Error('SMTP not found')
   }
@@ -125,7 +125,7 @@ export const sendUserCredential = async ({
   const transporter = generateTransporter(details)
   if (transporter) {
     const result = await transporter.sendMail(message);
-    return result;
+    return result
   } else {
     throw new Error('SMTP not found')
   }
