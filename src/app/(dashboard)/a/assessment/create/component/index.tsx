@@ -340,7 +340,7 @@ export function AddCandidateDialog({
           <DialogDescription>
             <p>
               Each line represent one candidate. <br />Use comma (,) to separate name, email address, remarks
-              <br />*Remarks : Should not contains commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there are no remarks. <br />Example: <br />Name1,email1@gmail.com,- <br />Name2,email2@gmail.com,111
+              <br /><br />Example: <br />Name1,email1@gmail.com,- <br />Name2,email2@gmail.com,111
             </p>
           </DialogDescription>
         </DialogHeader>
@@ -372,6 +372,7 @@ export function AddCandidateDialog({
             />
           </form>
         </Form>
+        <DialogDescription>*Remarks : Should not contains commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there are no remarks.</DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
             <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
