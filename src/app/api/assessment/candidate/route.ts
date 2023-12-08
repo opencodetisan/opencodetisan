@@ -4,10 +4,10 @@ import {NextResponse} from 'next/server'
 export async function POST(request: Request) {
   try {
     const req = await request.json()
-    const {newCandidateEmails, assessmentId} = req
+    const {newCandidateInfo, assessmentId} = req
 
     await addAssessmentCandidateService({
-      candidateEmails: newCandidateEmails,
+      candidateInfo: newCandidateInfo,
       assessmentId,
     })
     return NextResponse.json({})

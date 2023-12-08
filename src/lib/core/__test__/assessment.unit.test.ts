@@ -55,8 +55,21 @@ const getAssessmentOutputMock = {
     startAt: date,
     endAt: date,
   },
-  candidates: [],
-  submissions: [],
+  candidates: [
+    {
+      id: uuid,
+      name: text,
+      email: email_1,
+      remarks: text,
+    },
+  ],
+  submissions: [
+    {
+      data:[],
+      id:uuid,
+      name:text,
+    }
+  ],
   quizzes: [
     {
       id: uuid,
@@ -85,7 +98,18 @@ const mockAssessment = {
   endAt: date,
   assessmentResults: [{id: uuid}],
   assessmentCandidateEmail: [],
-  assessmentCandidates: [],
+  assessmentCandidates: [
+    {
+      status: true,
+      candidate: {
+        id: uuid,
+        name:text,
+        email:email_1,
+        remarks:text,
+        assessmentResults: [],
+      },
+    },
+  ],
   assessmentQuizzes: [
     {
       quiz: {

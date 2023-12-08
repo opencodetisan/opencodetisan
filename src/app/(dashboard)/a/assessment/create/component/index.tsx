@@ -130,7 +130,7 @@ export function CreateAssessmentMain({
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [candidateEmails, setCandidateEmails] = useState<string[]>([])
+  const [candidateInfo, setCandidateInfo] = useState<string[]>([])
   const [selectedQuizzes, setSelectedQuizzes] = useState<IQuizDataProps[] | []>(
     [],
   )
@@ -170,7 +170,7 @@ export function CreateAssessmentMain({
         body: JSON.stringify({
           details: data,
           quizzes: rowSelection,
-          candidates: candidateEmails,
+          candidates: candidateInfo,
         }),
       })
 
@@ -236,8 +236,8 @@ export function CreateAssessmentMain({
           <SectionHeader title='Candidates' />
           <AddCandidateDialog
             data={data}
-            candidateEmails={candidateEmails}
-            setCandidateEmails={setCandidateEmails}
+            candidateInfo={candidateInfo}
+            setCandidateInfo={setCandidateInfo}
           >
             <Button variant={'outline'}>Add</Button>
           </AddCandidateDialog>
@@ -245,8 +245,8 @@ export function CreateAssessmentMain({
         <Separator className='my-6' />
         <Card>
           <CandidateEmailTable
-            candidateEmails={candidateEmails}
-            setCandidateEmails={setCandidateEmails}
+            candidateInfo={candidateInfo}
+            setCandidateInfo={setCandidateInfo}
           />
         </Card>
       </div>
@@ -265,58 +265,57 @@ export function CreateAssessmentMain({
   )
 }
 
-const re =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const validCandidateFormat = /^([^,]+),([^@]+@[^,]+\.[^,]+),([^]+)$/;
 
-const emailFormSchema = z.object({
+const candidateFormSchema = z.object({
   email: z
     .string()
     .min(1, {message: 'Text area cannot be empty.'})
-    .transform((string) => string.split(',').map((e) => e.trim()))
+    .transform((string) => string.split('\n').map((e) => e.trim()))
     .refine(
-      (emailArray) => {
-        if (!emailArray) {
+      (detailsArray) => {
+        if (!detailsArray) {
           return false
         }
-        const isValidEmail = emailArray.every((e) => re.test(e.trim()))
-        return isValidEmail
+        const isValidCandidate = detailsArray.every((e) => validCandidateFormat.test(e.trim()))
+        return isValidCandidate
       },
-      (emailArray) => {
-        if (!emailArray) {
+      (detailsArray) => {
+        if (!detailsArray) {
           return {message: ''}
         }
-        const invalidEmail = emailArray.filter(
-          (e) => re.test(e.trim()) === false,
+        const invalidDetails = detailsArray.filter(
+          (e) => validCandidateFormat.test(e.trim()) === false,
         )
-        return {message: `Invalid email addresses: "${invalidEmail}"`}
+        return {message: `Invalid candidate details: "${invalidDetails}"`}
       },
     ),
 })
 
 export function AddCandidateDialog({
   children,
-  candidateEmails,
-  setCandidateEmails,
+  candidateInfo,
+  setCandidateInfo,
   addCandidates, // TODO: type
   disabled,
 }: any) {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const form = useForm<z.infer<typeof emailFormSchema>>({
+  const form = useForm<z.infer<typeof candidateFormSchema>>({
     reValidateMode: 'onSubmit',
     shouldFocusError: false,
     // TODO
     // @ts-ignore
-    resolver: zodResolver(emailFormSchema),
+    resolver: zodResolver(candidateFormSchema),
   })
 
   useEffect(() => {
-    form.reset({email: candidateEmails.join(',')})
-  }, [form, candidateEmails])
+    form.reset({email: (candidateInfo ?? []).join('\n')})
+  }, [form, candidateInfo])
 
-  const onSubmit = async (value: z.infer<typeof emailFormSchema>) => {
+  const onSubmit = async (value: z.infer<typeof candidateFormSchema>) => {
     setIsLoading(true)
-    setCandidateEmails(value.email)
+    setCandidateInfo(value.email)
     if (addCandidates) {
       await addCandidates(value.email)
     }
@@ -335,11 +334,14 @@ export function AddCandidateDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className='sm:max-w-[30rem]'>
-        <DialogHeader className='mb-16'>
+      <DialogContent className='sm:max-w-[35rem] h-full'>
+        <DialogHeader className='mb-2'>
           <DialogTitle>Add Candidates</DialogTitle>
           <DialogDescription>
-            {`Use comma (,) to separate email addresses.`}
+            <p>
+              Each line represent one candidate. <br />Use comma (,) to separate name, email address, remarks
+              <br /><br />Example: <br />Name1,email1@gmail.com,- <br />Name2,email2@gmail.com,111
+            </p>
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -355,19 +357,22 @@ export function AddCandidateDialog({
                       onFocus={() => {
                         form.clearErrors()
                       }}
-                      className='min-h-[160px]'
-                      placeholder='Type email addresses here...'
+                      className='h-[45vh] max-h-[45vh]'
+                      placeholder='Type candidate details here...'
                       {...field}
                     />
                   </FormControl>
-                  <div className='h-16 w-96'>
-                    <FormMessage className='line-clamp-3' />
-                  </div>
+                  {form.formState.errors.email && (
+                    <div className='text-red-500'>
+                      {form.formState.errors.email.message}
+                    </div>
+                  )}
                 </FormItem>
               )}
             />
           </form>
         </Form>
+        <DialogDescription>*Reminder: Name, email address, and remarks should not contain commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there is no remarks.</DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
             <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
@@ -390,6 +395,11 @@ function QuizTableDialog({
   setRowSelection,
   columns,
 }: any) {
+  const [isLoading, setIsLoading] = useState(false)
+  const onSubmit = async () => {
+    setIsLoading(false)
+  }
+
   const isData = data && data[0]
   return (
     <Dialog>
@@ -398,9 +408,9 @@ function QuizTableDialog({
       </DialogTrigger>
       <DialogContent className='sm:max-w-[90rem]'>
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Edit quizzes</DialogTitle>
           <DialogDescription>
-            {`Make changes to your profile here. Click save when you're done.`}
+            {`Make changes to your quizzes here. Click save when you're done.`}
           </DialogDescription>
         </DialogHeader>
         <DataTable
@@ -409,7 +419,16 @@ function QuizTableDialog({
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
         />
-        <DialogFooter></DialogFooter>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button disabled={isLoading} onClick={onSubmit}>
+              {isLoading && (
+                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              )}
+              Save
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

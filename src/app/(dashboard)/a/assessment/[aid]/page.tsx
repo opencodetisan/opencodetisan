@@ -28,9 +28,11 @@ import {QuizTableDialog} from './components/quiz-adding-dialog'
 import DeleteQuizDropdown from './components/delete-quiz-dropdown'
 import CandidateRowActions from './components/data-table-row-actions'
 import QuizDeleteDialog from './components/quiz-delete-dialog'
+import SessionReplayDialog from './components/session-replay-dialog'
 
 interface IAssessmentCandidateProps extends IUserProps {
   email: string
+  remarks: string
 }
 
 const dateFormatter = (ISOString: string) => {
@@ -92,6 +94,11 @@ export default function Assessment() {
         <TableCell className='font-medium'>{s.name}</TableCell>
         <TableCell>{status}</TableCell>
         <TableCell>{totalPoint}</TableCell>
+        <TableCell className='text-right'>
+          <SessionReplayDialog assessmentSubmissions={s}>
+            <Button>View</Button>
+          </SessionReplayDialog>
+        </TableCell>
       </TableRow>
     )
   })
@@ -139,6 +146,7 @@ export default function Assessment() {
         <TableRow key={c.id}>
           <TableCell className='font-medium'>{c.name}</TableCell>
           <TableCell>{c.email}</TableCell>
+          <TableCell>{c.remarks}</TableCell>
           <TableCell className='w-[100px] text-right'>
             {!isAssessmentStarted && (
               <CandidateRowActions
@@ -215,7 +223,7 @@ export default function Assessment() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({newCandidateEmails: candidates, assessmentId}),
+        body: JSON.stringify({newCandidateInfo: candidates, assessmentId}),
       })
 
       if (response.status === StatusCode.InternalServerError) {
@@ -352,8 +360,8 @@ export default function Assessment() {
             <div className='flex justify-between items-center'>
               <SectionHeader title='Candidates' />
               <AddCandidateDialog
-                candidateEmails={[]}
-                setCandidateEmails={() => {}}
+                candidateInfo={[]}
+                setCandidateInfo={() => {}}
                 addCandidates={addCandidates}
                 disabled={isAssessmentStarted}
               >
@@ -371,7 +379,8 @@ export default function Assessment() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
+                    <TableHead>Email address</TableHead>
+                    <TableHead>Remarks</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>{candidateRow}</TableBody>
@@ -393,6 +402,7 @@ export default function Assessment() {
                     <TableHead>Name</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Total Point</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>{submissionRow}</TableBody>

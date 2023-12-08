@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const req = await request.json()
-    const {details, quizzes, candidates: candidateEmails} = req
+    const {details, quizzes, candidates: candidateInfo} = req
     const session = await getServerSession(authOptions)
     const userId: string | undefined = session?.user.id as string
     const quizIds = Object.keys(quizzes).map((q) => q.split('/')[0])
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     })
 
     const assessmentCandidate = await addAssessmentCandidateService({
-      candidateEmails,
+      candidateInfo,
       assessmentId: assessment.id,
     })
 

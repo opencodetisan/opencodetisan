@@ -56,7 +56,12 @@ import {
   updateQuizSolution,
   updateQuizTestCase,
 } from './quiz'
-import {MAX_SPEED_POINT_MULTIPLIER, QUIZ_COMPLETION_POINT} from '../constant'
+import {
+  MAX_SPEED_POINT_MULTIPLIER,
+  QUIZ_COMPLETION_POINT,
+  RUN,
+  SUBMIT,
+} from '../constant'
 import {
   createCandidatePoint,
   getAssessmentComparativeScore,
@@ -319,12 +324,36 @@ export const updateCandidateSubmissionService = async ({
   quizId,
   code,
   assessmentQuizSubmissionId,
+  action,
 }: {
   userId: string
   quizId: string
   code: string
   assessmentQuizSubmissionId: string
+  action: typeof RUN | typeof SUBMIT
 }) => {
+  // dummy value for code evaluation
+  const result = {status: true}
+  const jsonResult = {status: true}
+
+  if (!result.status) {
+    return {
+      status: 'error',
+      message: 'API internal error',
+    }
+  } else if (!jsonResult.status) {
+    return {
+      status: 'error',
+      message: 'Your code did not pass the tests.',
+    }
+  } else if (action === RUN) {
+    return {
+      result: jsonResult.status,
+      actual: [1, 3],
+      expected: [1, 2],
+    }
+  }
+
   const assessmentQuizSubmission = await getAssessmentQuizSubmission({
     assessmentQuizSubmissionId,
   })
@@ -705,10 +734,10 @@ export const recoverPasswordService = async ({
 
 // TODO: update test (startDate checker)
 export const addAssessmentCandidateService = async ({
-  candidateEmails,
+  candidateInfo,
   assessmentId,
 }: {
-  candidateEmails: string[]
+  candidateInfo: string[]
   assessmentId: string
 }) => {
   const isAssessmentStarted = await checkIsAssessmentStarted({assessmentId})
@@ -719,22 +748,26 @@ export const addAssessmentCandidateService = async ({
 
   const assignedCandidatesByEmail = await getAllCandidateEmail({assessmentId})
   const existingUsersObj: {[key: string]: {email: string; id: string}} = {}
-  const existingUsers = await getManyUserByEmail({emails: candidateEmails})
+  const existingUsers = await getManyUserByEmail({
+    emails: candidateInfo.map((email) => email.split(',')[1]),
+  })
   existingUsers.forEach((c) => (existingUsersObj[c.email] = c))
 
-  for (let i = 0; i < candidateEmails.length; i++) {
-    const email = candidateEmails[i]
+  for (let i = 0; i < candidateInfo.length; i++) {
+    const info = candidateInfo[i]
+    const [name, email, remarks] = info.split(',')
+
     let candidateId: string | undefined = existingUsersObj[email]?.id
     if (assignedCandidatesByEmail[email]) {
       break
     } else if (!existingUsersObj[email]) {
-      const name = email.split('@')[0]
-      const password = faker.lorem.word({strategy: 'longest'})
+      const password = faker.lorem.word({ strategy: 'longest' })
       const hashedPassword = await bcrypt.hash(password, 10)
       const newCandidate = await createUser({
         hashedPassword,
         email,
         name,
+        remarks,
       })
       await sendUserCredential({recipient: email, password})
       candidateId = newCandidate.id
