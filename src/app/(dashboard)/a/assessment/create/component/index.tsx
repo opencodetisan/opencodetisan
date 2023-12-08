@@ -372,7 +372,7 @@ export function AddCandidateDialog({
             />
           </form>
         </Form>
-        <DialogDescription>*Remarks : Should not contains commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there are no remarks.</DialogDescription>
+        <DialogDescription>*Reminder: Name, email address, and remarks should not contain commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there is no remarks.</DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
             <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
