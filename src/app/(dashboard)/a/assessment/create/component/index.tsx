@@ -334,13 +334,13 @@ export function AddCandidateDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className='sm:max-w-[30rem] h-5/6'>
+      <DialogContent className='sm:max-w-[35rem] h-full'>
         <DialogHeader className='mb-2'>
           <DialogTitle>Add Candidates</DialogTitle>
           <DialogDescription>
             <p>
               Each line represent one candidate. <br />Use comma (,) to separate name, email address, remarks
-              <br />*Remarks : Should not contains commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there are no remarks.
+              <br />*Remarks : Should not contains commas(&apos;,&apos;). Use a dash(&apos;-&apos;) if there are no remarks. <br />Example: <br />Name1,email1@gmail.com,- <br />Name2,email2@gmail.com,111
             </p>
           </DialogDescription>
         </DialogHeader>
@@ -357,11 +357,16 @@ export function AddCandidateDialog({
                       onFocus={() => {
                         form.clearErrors()
                       }}
-                      className='h-[55vh] max-h-[55vh]'
+                      className='h-[45vh] max-h-[45vh]'
                       placeholder='Type candidate details here...'
                       {...field}
                     />
                   </FormControl>
+                  {form.formState.errors.email && (
+                    <div className='text-red-500'>
+                      {form.formState.errors.email.message}
+                    </div>
+                  )}
                 </FormItem>
               )}
             />
@@ -389,6 +394,11 @@ function QuizTableDialog({
   setRowSelection,
   columns,
 }: any) {
+  const [isLoading, setIsLoading] = useState(false)
+  const onSubmit = async () => {
+    setIsLoading(false)
+  }
+
   const isData = data && data[0]
   return (
     <Dialog>
@@ -397,9 +407,9 @@ function QuizTableDialog({
       </DialogTrigger>
       <DialogContent className='sm:max-w-[90rem]'>
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Edit quizzes</DialogTitle>
           <DialogDescription>
-            {`Make changes to your profile here. Click save when you're done.`}
+            {`Make changes to your quizzes here. Click save when you're done.`}
           </DialogDescription>
         </DialogHeader>
         <DataTable
@@ -408,7 +418,16 @@ function QuizTableDialog({
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
         />
-        <DialogFooter></DialogFooter>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button disabled={isLoading} onClick={onSubmit}>
+              {isLoading && (
+                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              )}
+              Save
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
