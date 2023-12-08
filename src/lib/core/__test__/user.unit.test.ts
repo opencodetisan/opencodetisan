@@ -18,6 +18,7 @@ const text = faker.lorem.text()
 const date = faker.date.anytime()
 const number = faker.number.int()
 const email_1 = faker.internet.email()
+const remarks = faker.lorem.text()
 
 const user = {
   id: uuid,
@@ -25,6 +26,7 @@ const user = {
   email: text,
   emailVerified: null,
   image: null,
+  remarks: text,
   role: UserRole.Recruiter,
 }
 
