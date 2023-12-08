@@ -39,6 +39,7 @@ export default function SettingsCard() {
       })
     }
   }
+  
   const parseBoolean = (value: string) => {
     if (value === 'true') {
       return true

@@ -35,10 +35,13 @@ export async function POST(request: any) {
     }
 }
 
-let smtpDetails: any
 export async function GET() {
     try {
-        smtpDetails = await prisma.mailSetting.findFirst()
+        const smtpDetails = await prisma.mailSetting.findUnique({
+            where: {
+                id: 1,
+            },
+        })
         return NextResponse.json(smtpDetails)
     } catch (error) {
         console.error('Error retrieving SMTP details:', error)
