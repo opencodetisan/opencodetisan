@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import Cryptr from 'cryptr'
 import prisma from '@/lib/db/client'
 
-
 export async function POST(request: any) {
     try {
         const { from, host, port, secure, username, password } = await request.json()
