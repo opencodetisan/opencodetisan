@@ -1,35 +1,81 @@
 import nodemailer from 'nodemailer'
+import prisma from './db/client'
 
-const transporter = nodemailer.createTransport({
-  host: process.env.NODEMAILER_TRANSPORTER_HOST,
-  port: parseInt(process.env.NODEMAILER_TRANSPORTER_PORT!),
-  secure: process.env.NODEMAILER_TRANSPORTER_SECURE === 'true',
-  auth: {
-    user: process.env.NODEMAILER_USERNAME,
-    pass: process.env.NODEMAILER_PASSWORD,
-  },
-})
+export async function getSmtpDetails() {
+  try {
+    const smtpDetails = await prisma.mailSetting.findUnique({
+      where: {
+          id: 1,
+      },
+  })
+    return smtpDetails
+  } catch (error) {
+    console.error('Error retrieving SMTP details:', error)
+    throw error
+  }
+}
 
-export const sendPassRecoveryMail = async ({recipient, token}: any) => {
+export async function getDbSmtpDetails() {
+    const dbSmtpDetails = await getSmtpDetails()
+    return dbSmtpDetails
+}
+
+export function generateTransporter(dbSmtpDetails: any) {
+  if (dbSmtpDetails) {
+    const transporter = nodemailer.createTransport({
+      debug: true,
+      logger: true,
+      from: dbSmtpDetails.from,
+      host: dbSmtpDetails.host,
+      port: dbSmtpDetails.port,
+      secure: dbSmtpDetails.secure,
+      auth: {
+        user: dbSmtpDetails.username,
+        pass: dbSmtpDetails.password,
+      }
+    })
+    return transporter
+  } 
+  else {
+    throw new Error('No SMTP details available. Unable to create transporter.')
+  }
+}
+
+export const sendPassRecoveryMail = async ({ recipient, token }: any) => {
   const link = `${process.env.NEXTAUTH_URL}/recover-password?token=${token}`
   const html = `
-      <p>You have requasted an password reovery. Follow the link below to recover your password</p>
+      <p>You have requested a password recovery. Follow the link below to recover your password</p>
       <div>
         <a href="${link}">Click here</a> to recover your password.
       </div>
       <p>Password recovery session will be closed in 5 minutes.</p>
   `
+  try {
+    const dbSmtpDetails = await getDbSmtpDetails()
 
-  const message = {
-    from: process.env.NODEMAILER_USERNAME,
-    to: recipient,
-    subject: 'OpenCodetisan password recovery',
-    text: 'message',
-    html,
+    if (!dbSmtpDetails) {
+      throw new Error('SMTP details not found')
+    }
+
+    const message = {
+      from: dbSmtpDetails.from,
+      to: recipient,
+      subject: 'OpenCodetisan password recovery',
+      text: 'message',
+      html,
+    }
+
+    const transporter = generateTransporter(dbSmtpDetails)
+    if (transporter) {
+      const result = await transporter.sendMail(message);
+      return result
+    } else {
+      throw new Error('SMTP transporter not found')
+    }
+  } catch (error) {
+    console.error('Error sending password recovery email:', error)
+    throw error
   }
-
-  const result = await transporter.sendMail(message)
-  return result
 }
 
 export const sendAssessmentInvitation = async ({
@@ -40,24 +86,38 @@ export const sendAssessmentInvitation = async ({
   aid: string
 }) => {
   const link = `${process.env.NEXTAUTH_URL}/c/assessment/${aid}`
-  // TODO: html
   const html = `
       <p>You have received an assessment invitation.</p>
       <div>
         Click <a href="${link}">here</a> to view your assessment.
       </div>
   `
+  try {
+    const dbSmtpDetails = await getDbSmtpDetails()
 
-  const message = {
-    from: process.env.NODEMAILER_USERNAME,
-    to: recipient,
-    subject: 'OpenCodetisan assessment invitation',
-    text: 'message',
-    html,
+    if (!dbSmtpDetails) {
+      throw new Error('SMTP details not found')
+    }
+
+    const message = {
+      from: dbSmtpDetails.from,
+      to: recipient,
+      subject: 'OpenCodetisan password recovery',
+      text: 'message',
+      html,
+    }
+
+    const transporter = generateTransporter(dbSmtpDetails)
+    if (transporter) {
+      const result = await transporter.sendMail(message);
+      return result
+    } else {
+      throw new Error('SMTP transporter not found')
+    }
+  } catch (error) {
+    console.error('Error sending password recovery email:', error)
+    throw error
   }
-
-  const result = await transporter.sendMail(message)
-  return result
 }
 
 export const sendUserCredential = async ({
@@ -68,7 +128,6 @@ export const sendUserCredential = async ({
   password: string
 }) => {
   const link = `${process.env.NEXTAUTH_URL}/signin`
-  // TODO: html
   const html = `
       <div>
         <p>Your account has been automatically created in OpenCodetisan.</p>
@@ -78,15 +137,30 @@ export const sendUserCredential = async ({
         <p>Remember to change the password.</p>
       </div>
   `
+  try {
+    const dbSmtpDetails = await getDbSmtpDetails()
 
-  const message = {
-    from: process.env.NODEMAILER_USERNAME,
-    to: recipient,
-    subject: 'Account created in OpenCodetisan',
-    text: 'message',
-    html,
+    if (!dbSmtpDetails) {
+      throw new Error('SMTP details not found')
+    }
+
+    const message = {
+      from: dbSmtpDetails.from,
+      to: recipient,
+      subject: 'OpenCodetisan password recovery',
+      text: 'message',
+      html,
+    }
+
+    const transporter = generateTransporter(dbSmtpDetails)
+    if (transporter) {
+      const result = await transporter.sendMail(message);
+      return result
+    } else {
+      throw new Error('SMTP transporter not found')
+    }
+  } catch (error) {
+    console.error('Error sending password recovery email:', error)
+    throw error
   }
-
-  const result = await transporter.sendMail(message)
-  return result
 }

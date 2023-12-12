@@ -13,7 +13,7 @@ export function MainNav({
     {name: 'Assessments', href: '/a/assessments'},
     {name: 'Quizzes', href: '/a/quizzes'},
     {name: 'Users', href: ''},
-    {name: 'Settings', href: ''},
+    {name: 'Settings', href: '/a/settings'},
   ]
 
   const components = navLinks.map((link) => {
