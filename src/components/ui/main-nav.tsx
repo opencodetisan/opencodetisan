@@ -9,11 +9,13 @@ export function MainNav({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname()
+  const userRoleURLSegment = pathname.split('/')[1]
+  
   const navLinks = [
-    {name: 'Assessments', href: '/a/assessments'},
-    {name: 'Quizzes', href: '/a/quizzes'},
-    {name: 'Users', href: ''},
-    {name: 'Settings', href: ''},
+    {name: 'Assessments', href: `/${userRoleURLSegment}/assessments/`},
+    {name: 'Quizzes', href: `/${userRoleURLSegment}/quizzes/`},
+    {name: 'Users', href: `/${userRoleURLSegment}/users/`},
+    {name: 'Settings', href: `/${userRoleURLSegment}/settings/`},
   ]
 
   const components = navLinks.map((link) => {

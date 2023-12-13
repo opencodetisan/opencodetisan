@@ -32,6 +32,7 @@ import {
   updateAssessmentAcceptance,
   updateAssessmentCandidateStatus,
   updateAssessmentResult,
+  getCandidateAssessments
 } from './assessment'
 import {
   createAssessmentQuizSubmission,
@@ -854,4 +855,12 @@ export const getCandidateAssessmentService = async ({
   })
 
   return candidateAssessment
+}
+
+export const getManyCandidateAssessmentService = async ({userId}: {userId: string}) => {
+  if (!userId) {
+    throw Error('missing userId')
+  }
+  const assessments = await getCandidateAssessments({userId})
+  return assessments
 }
