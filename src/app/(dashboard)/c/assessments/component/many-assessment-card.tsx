@@ -8,11 +8,11 @@ export function ManyAssessmentCard({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const { data, error } = useSWR(
+    `/api/candidate/assessment`,
+    fetcher,
+  )
   try {
-    const { data, error } = useSWR(
-      `/api/candidate/assessment`,
-      fetcher,
-    )
 
     if (error) {
       throw Error('Internal Server Error')

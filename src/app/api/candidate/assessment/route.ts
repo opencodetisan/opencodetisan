@@ -6,8 +6,7 @@ import {getManyCandidateAssessmentService} from '@/lib/core/service'
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
-    //const userId = session?.user.id!
-    const userId = null
+    const userId = session?.user.id!
     if (!userId) {
       throw Error('UserID not found')
     }
