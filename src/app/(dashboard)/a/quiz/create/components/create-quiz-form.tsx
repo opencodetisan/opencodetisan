@@ -22,7 +22,7 @@ const formSchema = z.object({
     .min(4, {message: 'Title must contain at least 4 character(s)'}),
   codeLanguageId: z.string({required_error: 'Please select a coding language'}),
   difficultyLevelId: z.string({
-    required_error: 'Please select a coding language',
+    required_error: 'Please select a difficulty level',
   }),
   input1: z.string().min(1, {message: 'Please type in the input'}),
   input2: z.string().min(1, {message: 'Please type in the input'}),

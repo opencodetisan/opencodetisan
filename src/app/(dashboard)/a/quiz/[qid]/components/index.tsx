@@ -239,7 +239,7 @@ export default function MainComponent({
           <TabsContent value='testcase'>
             <Card
               className='flex justify-center items-center h-[50vh]'
-              style={{height: '50vh'}}
+              style={{height: '60vh'}}
             >
               <CardHeader className='space-y-6 w-2/3'>
                 {testCaseContent}

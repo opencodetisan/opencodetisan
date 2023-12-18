@@ -7,6 +7,7 @@ import {
   getActivityLogs,
   getCandidate,
   getCandidateResult,
+  getManyCandidateAssessment,
 } from '../candidate'
 import {createCandidatePoint} from '../analytic'
 
@@ -55,6 +56,42 @@ const assessmentCandidateMock = {
   status: 'PENDING',
   token: uuid,
 }
+
+const mockAssessment = {
+  id: uuid,
+  ownerId: uuid,
+  title: text,
+  description: text,
+  createdAt: date,
+  startAt: date,
+  endAt: date,
+  assessmentResults: [{id: uuid}],
+  assessmentCandidateEmail: [],
+  assessmentCandidates: [
+    {
+      status: true,
+      candidate: {
+        id: uuid,
+        name:text,
+        email:faker.internet.email(),
+        remarks:text,
+        assessmentResults: [],
+      },
+    },
+  ],
+  assessmentQuizzes: [
+    {
+      quiz: {
+        id: uuid,
+        title: uuid,
+        instruction: text,
+        difficultyLevelId: number,
+        difficultyLevel: {name: text},
+      },
+    },
+  ],
+}
+const mockAssessments = Array(2).fill(mockAssessment)
 
 describe('Candidate module', () => {
   test('createCandidateQuizSubmission fn should save and return the submission data', async () => {
@@ -320,6 +357,23 @@ describe('Candidate module', () => {
     }
     expect(async () => await createCandidatePoint(param)).rejects.toThrow(
       /^missing submissionPoint$/,
+    )
+  })
+
+  test('getAssessments fn should return the assessments', async () => {
+    const data: any = {
+      userId: uuid,
+    }
+    prismaMock.assessment.findMany.mockResolvedValue(mockAssessments)
+    expect(await getManyCandidateAssessment(data)).toEqual(mockAssessments)
+  })
+
+  test('missing userId parameter should return a missing userId error', async () => {
+    const data: any = {
+      userId: undefined,
+    }
+    expect(async () => await getManyCandidateAssessment(data)).rejects.toThrow(
+      /^missing userId$/,
     )
   })
 })
