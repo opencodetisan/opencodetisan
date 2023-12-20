@@ -2,7 +2,7 @@
 
 import {z} from 'zod'
 import {QuizDetails} from './quiz-details'
-import {useForm} from 'react-hook-form'
+import {useController, useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {toast} from '@/components/ui/use-toast'
 import {Form} from '@/components/ui/form'
@@ -24,6 +24,8 @@ const formSchema = z.object({
   difficultyLevelId: z.string({
     required_error: 'Please select a difficulty level',
   }),
+  solution: z.string().min(1, {message: 'Please type in the solution'}),
+  testRunner: z.string().min(1, {message: 'Please type in the test runner'}),
   input1: z.string().min(1, {message: 'Please type in the input'}),
   input2: z.string().min(1, {message: 'Please type in the input'}),
   output1: z.string().min(1, {message: 'Please type in the output'}),
@@ -58,12 +60,35 @@ export function CreateQuizForm({
   })
   const codeLanguage = form.watch('codeLanguageId')
 
+  const {field: solutionField, fieldState: solutionFieldState} = useController({
+    name: 'solution',
+    control: form.control,
+    defaultValue: '',
+  })
+
+  const {field: testRunnerField, fieldState: testRunnerFieldState} = useController({
+    name: 'testRunner',
+    control: form.control,
+    defaultValue: '',
+  })
+
   function onSubmitError(errors: Object) {
     setHasTabChanged(false)
   }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
+
+    const isSolutionEmpty = !solution.trim()
+    const isTestRunnerEmpty = !testRunner.trim()
+    if (isSolutionEmpty || isTestRunnerEmpty) {
+      setIsLoading(false);
+      return toast({
+        title: 'Failed to submit',
+        description: 'Solution and test runner must not be empty.',
+        variant: 'destructive',
+      });
+    }
 
     try {
       const response = await fetch('/api/quiz', {
@@ -141,6 +166,10 @@ export function CreateQuizForm({
               codeLanguage={codeLanguage}
               hasTabChanged={hasTabChanged}
               setHasTabChanged={setHasTabChanged}
+              solutionField={solutionField}
+              testRunnerField={testRunnerField}
+              solutionFieldState={solutionFieldState}
+              testRunnerFieldState={testRunnerFieldState}
             />
           </Form>
         </CodeEditorContext.Provider>

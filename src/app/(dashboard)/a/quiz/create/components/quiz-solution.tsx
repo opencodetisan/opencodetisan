@@ -4,7 +4,7 @@ import {useContext, useEffect, useState} from 'react'
 import {ReflexContainer, ReflexElement, ReflexSplitter} from 'react-reflex'
 import 'react-reflex/styles.css'
 import {CodeEditorContext} from './context'
-import {useFormContext} from 'react-hook-form'
+import {Controller, useFormContext} from 'react-hook-form'
 import {Card, CardHeader} from '@/components/ui/card'
 import {
   FormControl,
@@ -24,17 +24,24 @@ export function QuizSolution({
   setTestRunner,
   hasTabChanged,
   setHasTabChanged,
+  solutionField,
+  testRunnerField,
+  solutionFieldState,
+  testRunnerFieldState,
   ...props // TODO: type
 }: any) {
   const {codeLanguage} = useContext(CodeEditorContext)
   const form = useFormContext()
   const [tabValue, setTabValue] = useState<'solution' | 'testcase'>('solution')
-  const solutionValues = form.watch(['input1', 'input2', 'output1', 'output1'])
+  const solutionValues = form.watch(['input1', 'input2', 'output1', 'output2'])
 
   useEffect(() => {
     const isValidSolutions = solutionValues.some((v) => v.trim() === '')
-    if (isValidSolutions && !hasTabChanged) {
+    if (isValidSolutions && !hasTabChanged) {   
       setTabValue('testcase')
+      setHasTabChanged(true)
+    } else if ((solutionFieldState?.error || testRunnerFieldState?.error) && !hasTabChanged) {
+      setTabValue('solution')
       setHasTabChanged(true)
     }
   }, [solutionValues])
@@ -52,34 +59,62 @@ export function QuizSolution({
       <TabsContent
         value='solution'
         className='bg-white p-1 border rounded-md shadow-sm'
-        style={{height: '55vh'}}
+        style={{height: '70vh'}}
       >
         <ReflexContainer orientation='vertical'>
           <ReflexElement className='left-pane'>
             <div className='pane-content'>
-              <p className='text-xs'>Solution</p>
-              <CodeEditor
+              <p className='text-sm text-muted-foreground'>Test Runner</p>
+              <Controller
+              name="solution"
+              control={form.control}
+              render={({field}) => (
+                <CodeEditor
                 value={solution}
-                onChange={setSolution}
+                onChange={(value: string) => {
+                  field.onChange(value)
+                  setSolution(value)
+                }}
                 codeLanguageId={codeLanguage}
+                />
+              )}
               />
+              <FormMessage>
+                {solutionFieldState?.error && (
+                  <span className='text-red-500'>{solutionFieldState.error.message}</span>
+                )}
+              </FormMessage>
             </div>
           </ReflexElement>
           <ReflexSplitter className='mx-1' />
           <ReflexElement className='right-pane'>
-            <p className='text-xs'>Test runner</p>
             <div className='pane-content'>
-              <CodeEditor
+              <p className='text-sm text-muted-foreground'>Test Runner</p>
+              <Controller
+              name="testRunner"
+              control={form.control}
+              render={({field,fieldState}) => (
+                <CodeEditor
                 value={testRunner}
-                onChange={setTestRunner}
+                onChange={(value: string) => {
+                  field.onChange(value)
+                  setTestRunner(value)
+                }}
                 codeLanguageId={codeLanguage}
+                />
+              )}
               />
+              <FormMessage>
+                {testRunnerFieldState?.error && (
+                  <span className='text-red-500'>{testRunnerFieldState.error.message}</span>
+                )}
+              </FormMessage>
             </div>
           </ReflexElement>
         </ReflexContainer>
       </TabsContent>
       <TabsContent value='testcase'>
-        <Card className='flex justify-center items-center h-[55vh] overflow-y-auto'>
+        <Card className='flex justify-center items-center h-[70vh] overflow-y-auto'>
           <CardHeader className='space-y-6 w-2/3'>
             <FormField
               control={form.control}

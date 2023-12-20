@@ -15,7 +15,7 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
         <nav className='ml-2 px-5 pt-4'>
           <MainHeader />
         </nav>
-        <div className='sticky top-0 bg-white border-b px-5 shadow-md'>
+        <div className='sticky top-0 bg-white border-b px-5 shadow-md z-50'>
           <MainNav />
         </div>
         {children}

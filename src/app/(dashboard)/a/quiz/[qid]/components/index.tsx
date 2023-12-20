@@ -385,7 +385,7 @@ function QuizInstructionDialog({children, defaultValue, mutate}: any) {
         </DialogHeader>
         <MDEditor
           className='border-white'
-          height={700}
+          height={600}
           data-color-mode='light'
           value={instruction}
           onChange={setInstruction}
