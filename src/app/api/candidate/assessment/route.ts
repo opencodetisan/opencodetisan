@@ -6,7 +6,8 @@ import {getManyCandidateAssessmentService} from '@/lib/core/service'
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions)
-    const userId = session?.user.id!
+    //const userId = session?.user.id!
+    const userId = null
     if (!userId) {
       throw Error('UserID not found')
     }
@@ -15,6 +16,6 @@ export async function GET(request: Request) {
     return NextResponse.json(assessments)
   } catch (e) {
       console.log(e)
-      return NextResponse.error()
+      return NextResponse.json({error: 'Internal Server Error'}, {status: 500})
   }
 }
