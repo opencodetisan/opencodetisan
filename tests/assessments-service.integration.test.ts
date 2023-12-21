@@ -18,6 +18,7 @@ import {
   getManyAssessmentService,
   updateAssessmentDataService,
   updateCandidateSubmissionService,
+  getManyCandidateAssessmentService,
 } from '@/lib/core/service'
 import {deleteUser} from '@/lib/core/user'
 import prisma from '@/lib/db/client'

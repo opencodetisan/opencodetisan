@@ -15,7 +15,6 @@ export function ManyAssessmentCard({
   try {
 
     if (data.error) {
-      console.log('Error: Internal Server Error')
       return <div></div>
     }
 
@@ -45,7 +44,6 @@ export function ManyAssessmentCard({
       </div>
     )
   } catch (e) {
-    console.log('Error: Internal Server Error')
     return <div></div>
   }
 }
