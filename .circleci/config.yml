@@ -30,7 +30,7 @@ jobs:
       - run:
           command: npx prisma migrate dev --schema=./src/prisma/schema.prisma && npm run build
           environment:
-            DATABASE_URL: 'postgresql://arina%40codetisan.com:cI8ED0eGAlFf@ep-floral-cake-05404845.ap-southeast-1.aws.neon.tech/neondb'
+            DATABASE_URL: 'postgresql://ivan:8GcExmuThl7W@ep-noisy-glade-96604341.ap-southeast-1.aws.neon.tech/tests?sslmode=require'
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts

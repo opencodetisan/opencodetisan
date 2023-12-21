@@ -59,12 +59,18 @@ export default function CandidateAssessment() {
   const startAt = dateFormatter(assessmentDetails.startAt)
   const endAt = dateFormatter(assessmentDetails.endAt)
 
+  const now = DateTime.now()
+  const isAssessmentEnded = now > DateTime.fromISO(assessmentDetails.endAt)
+  const isAssessmentStarted = now > DateTime.fromISO(assessmentDetails.startAt)
+
   // TODO
   // @ts-ignore
   const codingQuizRow = codingQuizzes?.map((e) => {
     const now = DateTime.now()
     const endAt = DateTime.fromISO(assessmentDetails.endAt)
+    const startAt = DateTime.fromISO(assessmentDetails.startAt)
     const isAssessmentEnded = now > endAt
+    const isAssessmentStarted = now > startAt
 
     const quiz = e.quiz
 
@@ -81,7 +87,7 @@ export default function CandidateAssessment() {
             quizId={quiz.id}
             assessmentResultId={e.id}
           >
-            <Button disabled={isAssessmentEnded}>Start</Button>
+            <Button disabled={isAssessmentEnded || !isAssessmentStarted}>Start</Button>
           </StartQuizDialog>
         </TableCell>
       </TableRow>
@@ -108,7 +114,9 @@ export default function CandidateAssessment() {
               <CardContent className='space-y-6 text-sm'>
                 <div className='font-medium flex items-center text-gray-500'>
                   <AlertCircle className='mr-3' />
-                  <p className='text-lg'>This assessment has ended.</p>
+                  {isAssessmentEnded && (<p className='text-lg'>This assessment has ended.</p>)}
+                  {isAssessmentStarted && !isAssessmentEnded && (<p className='text-lg'>This assessment has started.</p>)}
+                  {!isAssessmentStarted && (<p className='text-lg'>This assessment will start soon.</p>)}
                 </div>
                 <div className='space-y-2'>
                   <RowData name={'Title'} value={assessmentDetails.title} />
