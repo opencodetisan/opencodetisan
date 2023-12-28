@@ -64,7 +64,7 @@ export function QuizSolution({
         <ReflexContainer orientation='vertical'>
           <ReflexElement className='left-pane'>
             <div className='pane-content'>
-              <p className='text-sm text-muted-foreground'>Test Runner</p>
+              <p className='text-sm text-muted-foreground'>Solution</p>
               <Controller
               name="solution"
               control={form.control}
