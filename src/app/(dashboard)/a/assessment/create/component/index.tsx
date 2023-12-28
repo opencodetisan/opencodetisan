@@ -52,6 +52,10 @@ const formSchema = z.object({
   description: z.string(),
   startAt: z.string({required_error: 'Date cannot be empty'}),
   endAt: z.string({required_error: 'Date cannot be empty'}),
+  info: z
+    .number()
+    .int()
+    .refine((value) => value >= 1, { message: 'Candidate info cannot be empty' }),
 })
 
 type IQuiz = {
@@ -135,12 +139,14 @@ export function CreateAssessmentMain({
     [],
   )
   const userRoleURLSegment = pathname.split('/')[1]
+  const [infoInputNum, setInfoInputNum] = useState(0)
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO: type
     resolver: zodResolver(formSchema as any),
     defaultValues: {
       title: '',
       description: '',
+      info: 0,
     },
   })
 
@@ -152,7 +158,9 @@ export function CreateAssessmentMain({
       newSelectedQuizzes.push(data[index])
     }
     setSelectedQuizzes(newSelectedQuizzes)
-  }, [rowSelection, data, setSelectedQuizzes])
+
+    form.setValue('info', infoInputNum)
+  }, [rowSelection, data, setSelectedQuizzes, infoInputNum, form])
 
   if (!data) {
     return <></>
@@ -209,6 +217,18 @@ export function CreateAssessmentMain({
           <Separator className='my-6' />
           <AssessmentDetails isLoading={isLoading} />
         </form>
+        <FormField
+          control={form.control}
+          name='info'
+          disabled={isLoading}
+          render={({field}) => (
+            <FormItem>
+              <FormControl>
+                <input type='hidden' value={infoInputNum} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
       </Form>
       <div>
         <div className='flex justify-between items-center'>
@@ -237,7 +257,9 @@ export function CreateAssessmentMain({
           <AddCandidateDialog
             data={data}
             candidateInfo={candidateInfo}
+            infoInputNum={infoInputNum}
             setCandidateInfo={setCandidateInfo}
+            setInfoInputNum={setInfoInputNum}
           >
             <Button variant={'outline'}>Add</Button>
           </AddCandidateDialog>
@@ -247,8 +269,13 @@ export function CreateAssessmentMain({
           <CandidateEmailTable
             candidateInfo={candidateInfo}
             setCandidateInfo={setCandidateInfo}
+            infoInputNum={infoInputNum}
+            setInfoInputNum={setInfoInputNum}
           />
         </Card>
+        {form.formState.errors.info && (
+        <div className='text-red-500'>{form.formState.errors.info.message}</div>
+        )}
       </div>
       <div className='flex justify-end'>
         <Button
@@ -297,6 +324,8 @@ export function AddCandidateDialog({
   candidateInfo,
   setCandidateInfo,
   addCandidates, // TODO: type
+  infoInputNum,
+  setInfoInputNum,
   disabled,
 }: any) {
   const [open, setOpen] = useState(false)
@@ -316,6 +345,7 @@ export function AddCandidateDialog({
   const onSubmit = async (value: z.infer<typeof candidateFormSchema>) => {
     setIsLoading(true)
     setCandidateInfo(value.email)
+    setInfoInputNum(value.email.length)
     if (addCandidates) {
       await addCandidates(value.email)
     }

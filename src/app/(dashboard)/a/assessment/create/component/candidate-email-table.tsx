@@ -16,12 +16,16 @@ export default function CandidateEmailTable({
   title,
   candidateInfo,
   setCandidateInfo,
+  infoInputNum,
+  setInfoInputNum,
   ...props
 }: {
   className?: React.HTMLAttributes<HTMLElement>
   title?: string
   candidateInfo: string[]
   setCandidateInfo: (value: SetStateAction<string[]>) => void
+  infoInputNum: number
+  setInfoInputNum: (value: SetStateAction<number>) => void
 }) {
   const tableRowContent = candidateInfo.map(
     (info: string, index: number) => {
@@ -31,6 +35,8 @@ export default function CandidateEmailTable({
         const newCandidateInfo = [...candidateInfo]
         newCandidateInfo.splice(index, 1)
         setCandidateInfo(newCandidateInfo)
+        setInfoInputNum(infoInputNum - 1)
+        console.log(infoInputNum -1)
       }
       
       return (
@@ -57,7 +63,7 @@ export default function CandidateEmailTable({
           </TableCaption>
         )}
         {!candidateInfo[0] && (
-          <TableCaption className='mb-3'>{`Click 'Add' button to insert candidate email addresses.`}</TableCaption>
+          <TableCaption className='mb-3'>{`Click 'Add' button to insert candidate details.`}</TableCaption>
         )}
         <TableHeader>
           <TableRow>

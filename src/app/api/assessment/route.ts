@@ -27,15 +27,12 @@ export async function POST(request: Request) {
       ...details,
       quizIds,
       userId,
-    })
-
-    const assessmentCandidate = await addAssessmentCandidateService({
       candidateInfo,
-      assessmentId: assessment.id,
     })
-
+    console.log(assessment)
     return NextResponse.json({})
   } catch (error) {
     console.log(error)
+    return NextResponse.json({}, {status: 500})
   }
 }

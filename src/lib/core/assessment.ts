@@ -26,6 +26,7 @@ export const createAssessment = async ({
   quizIds,
   startAt,
   endAt,
+  candidateInfo,
 }: ICreateAssessmentProps) => {
   if (!userId) {
     throw Error('missing userId')
