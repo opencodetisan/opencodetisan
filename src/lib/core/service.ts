@@ -306,18 +306,32 @@ export const createCandidateSubmissionService = async ({
   quizId: string
   userId: string
 }) => {
-  const assessment = await getCandidateResult({userId, quizId, assessmentId})
+  try {
+    const assessmentDetails = await getAssessmentDetails({assessmentId})
+    const startAt = DateTime.fromISO(assessmentDetails?.startAt?.toISOString() ?? '')
+    const now = DateTime.now()
+    if (!assessmentDetails || !quizId || !userId) {
+      throw Error ('No assessment details') 
+    } else if (now < startAt) {
+      throw Error ('Not a valid date')
+    }
 
-  const assessmentResult = assessment?.assessmentResults[0]
+    const assessment = await getCandidateResult({userId, quizId, assessmentId})
 
-  if (!assessmentResult) {
-    return null
+    const assessmentResult = assessment?.assessmentResults[0]
+
+    if (!assessmentResult) {
+      return null
+    }
+
+    const updatedAssessmentResult = await createAssessmentQuizSubmission({
+      assessmentResultId: assessmentResult.id,
+    })
+    return {assessment, updatedAssessmentResult}
+  } catch (e) {
+      console.log(e)
+      throw e 
   }
-
-  const updatedAssessmentResult = await createAssessmentQuizSubmission({
-    assessmentResultId: assessmentResult.id,
-  })
-  return {assessment, updatedAssessmentResult}
 }
 
 export const updateCandidateSubmissionService = async ({
@@ -439,9 +453,7 @@ export const updateCandidateSubmissionService = async ({
     candidateId: userId,
   })
 
-  const allCompleted = assessmentResults.every((r: IAssessmentResultProps) => {
-    r.status === 'COMPLETED'
-  })
+  const allCompleted = assessmentResults.every((r: IAssessmentResultProps) => r.status === 'COMPLETED')
 
   if (allCompleted) {
     updateAssessmentCandidateStatus({
@@ -475,16 +487,33 @@ export const createAssessmentService = async ({
   quizIds,
   startAt,
   endAt,
+  candidateInfo,
 }: ICreateAssessmentServiceProps) => {
-  const assessment = await createAssessment({
-    userId,
-    title,
-    description,
-    quizIds,
-    startAt,
-    endAt,
-  })
-  return assessment
+  try {
+    if (candidateInfo.length == 0) {
+      throw Error('Missing Candidate Info')
+    }
+
+    const assessment = await createAssessment({
+      userId,
+      title,
+      description,
+      quizIds,
+      startAt,
+      endAt,
+      candidateInfo,
+    })
+    
+    const assessmentCandidate = await addAssessmentCandidateService({
+      candidateInfo,
+      assessmentId: assessment.id,
+    })
+
+    return assessment
+  } catch (e) {
+    console.log(e)
+    throw e
+  }
 }
 
 type TAssessmentResultFields = {

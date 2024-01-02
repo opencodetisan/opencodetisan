@@ -151,6 +151,7 @@ export interface ICreateAssessmentProps {
   quizIds: string[]
   startAt: string
   endAt: string
+  candidateInfo: string[]
 }
 
 export interface ICreateAssessmentServiceProps extends ICreateAssessmentProps {}
