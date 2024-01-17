@@ -347,6 +347,11 @@ export const updateCandidateSubmissionService = async ({
   assessmentQuizSubmissionId: string
   action: typeof RUN | typeof SUBMIT
 }) => {
+  // edit the codeRunnerUrl according to ur origin
+  const codeRunnerUrl = 'http://localhost:3001/api/test'
+  
+  const quizInfo = await getQuiz({quizId})
+
   // dummy value for code evaluation
   const result = {status: true}
   const jsonResult = {status: true}
@@ -362,10 +367,42 @@ export const updateCandidateSubmissionService = async ({
       message: 'Your code did not pass the tests.',
     }
   } else if (action === RUN) {
-    return {
-      result: jsonResult.status,
-      actual: [1, 3],
-      expected: [1, 2],
+
+    const fetch = require("node-fetch")
+    const getRunResult = await fetch(
+      codeRunnerUrl,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code, 
+          testRunner : quizInfo.quizSolution[0].testRunner,
+          language: quizInfo.quizData.codeLanguage.name
+        }),
+      },
+    )
+    const runResult = await getRunResult.json()
+    try {
+      const parsedRunResult = JSON.parse(runResult.data)
+      const status:boolean[] = []
+    
+      for(let i = 0; i < parsedRunResult.expected.length; i++) {
+        status.push(parsedRunResult.expected[i] === parsedRunResult.actual[i])
+      }
+      const result = status.every((value) => value === true)
+
+      return {
+        result: result,
+        status: status,
+        actual: parsedRunResult.actual,
+        expected: parsedRunResult.expected,
+      }  
+    } catch (e) {
+      return {
+        message: runResult.data
+      }
     }
   }
 

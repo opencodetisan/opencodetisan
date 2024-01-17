@@ -512,7 +512,7 @@ function QuizSolutionDialog({
           </TabsList>
           <TabsContent
             value='solution'
-            className='bg-white p-1 border rounded-md shadow-sm'
+            className='bg-white p-1 border rounded-md shadow-sm max-w-[97vw]'
             style={{height: '55vh'}}
           >
             <ReflexContainer orientation='vertical'>

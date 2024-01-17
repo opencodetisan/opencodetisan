@@ -1,6 +1,7 @@
 import {UserRole} from '@/enums'
 import {getAssessment} from '@/lib/core/assessment'
 import {getCandidate} from '@/lib/core/candidate'
+import {createQuizSolution} from '@/lib/core/quiz'
 import {
   acceptAssessmentService,
   addAssessmentCandidateService,
@@ -117,6 +118,25 @@ const createFakeQuizzes = async ({
       difficultyLevelId,
     },
   })
+}
+
+const createFakeSolution = async ({
+  quizId, 
+  code,
+  testRunner,
+}: {
+  quizId: string
+  code: string
+  testRunner: string
+}) => {
+  const solution = await createQuizSolution({
+    quizId: quizId,
+    code,
+    sequence: 0,
+    importDirectives: 'im',
+    testRunner,
+  })
+  return solution
 }
 
 const createManyFakeDifficultyLevel = async (
@@ -546,12 +566,16 @@ describe('Integration test: Assessment', () => {
     const text = faker.lorem.text()
     const users = [{id: faker.string.uuid()}]
     const codeLanguages = [
-      {id: faker.number.int({min: 1, max: 100}), name: text},
+      {id: faker.number.int({min: 1, max: 100}), name: 'javascript'},
     ]
     const quizzes = [{id: faker.string.uuid()}]
+    let solutionId: string 
     const userIds = users.map((u) => u.id)
     const codeLanguageIds = codeLanguages.map((l) => l.id)
     const quizIds = quizzes.map((q) => q.id)
+    const candidateInfo = [
+      `${faker.lorem.text},${email},${faker.lorem.text}`,
+    ]
 
     let createdAssessment: Record<string, any>
     let assessmentQuizSubmissionId: string
@@ -567,6 +591,12 @@ describe('Integration test: Assessment', () => {
           difficultyLevelId: difficultyLevels[0].id,
         })
       }
+      const solution = await createFakeSolution({
+        quizId: quizzes[0].id,
+        code: text,
+        testRunner: text,
+      })
+      solutionId = solution.id
       createdAssessment = await createAssessmentService({
         userId: users[0].id,
         title: words,
@@ -598,6 +628,7 @@ describe('Integration test: Assessment', () => {
       await prisma.submissionPoint.deleteMany({
         where: {userId: {in: userIds}},
       })
+      await prisma.solution.delete({where: {id: solutionId}})
       await prisma.submission.deleteMany({where: {quizId: {in: quizIds}}})
       await prisma.quiz.deleteMany({where: {id: {in: quizIds}}})
       await prisma.codeLanguage.deleteMany({where: {id: {in: codeLanguageIds}}})

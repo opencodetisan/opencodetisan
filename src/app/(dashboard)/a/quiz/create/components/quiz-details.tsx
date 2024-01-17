@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {useEffect, useState} from 'react'
 import {useFormContext} from 'react-hook-form'
 
 export function QuizDetails({
@@ -25,6 +26,22 @@ export function QuizDetails({
   isLoading: boolean
 }) {
   const form = useFormContext()
+  // const [codeLanguages, setCodeLanguages] = useState([])
+
+  // useEffect(() => {
+  //   const fetchCodeLanguages = async () => {
+  //     try {
+  //       const response = await fetch('your-api-endpoint-for-code-languages')
+  //       const data = await response.json()
+  //       setCodeLanguages(data)
+  //     } catch (error) {
+  //       console.error('Error fetching code languages')
+  //     }
+  //   }
+  //   fetchCodeLanguages()
+  // }, [])
+  
+  // let selectLanguageContent = <></>
 
   return (
     <Card>
@@ -60,6 +77,14 @@ export function QuizDetails({
                   <SelectItem value='1'>Javascript</SelectItem>
                   <SelectItem value='2'>Python</SelectItem>
                   <SelectItem value='3'>C#</SelectItem>
+                  <SelectItem value='5'>C</SelectItem>
+                  <SelectItem value='6'>C++</SelectItem>
+                  <SelectItem value='7'>Java</SelectItem>
+                  {/* {codeLanguages.map((language) => (
+                    <SelectItem key={language.id} value={language.id}>
+                      {language.prettyName}
+                    </SelectItem>
+                  ))} */}
                 </SelectContent>
               </Select>
               <FormMessage />
