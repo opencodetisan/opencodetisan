@@ -378,7 +378,11 @@ export const updateCandidateSubmissionService = async ({
         },
         body: JSON.stringify({
           code, 
+          // TODO
+          // @ts-ignore
           testRunner : quizInfo.quizSolution[0].testRunner,
+          // TODO
+          // @ts-ignore
           language: quizInfo.quizData.codeLanguage.name
         }),
       },
