@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const {quizId, code, assessmentQuizSubmissionId, action} =
       await request.json()
 
-    const result = await updateCandidateSubmissionService({
+    const solutionResult = await updateCandidateSubmissionService({
       assessmentQuizSubmissionId,
       userId,
       code,
@@ -19,12 +19,16 @@ export async function POST(request: Request) {
       action,
     })
 
-    if (action === RUN) {
-      return NextResponse.json(result)
-    }
+    // TODO
+    // @ts-ignore
+    if (action === RUN || solutionResult.result === false || solutionResult.message) {
+      return NextResponse.json(solutionResult)
+    } 
 
     return NextResponse.json({
-      assessmentId: result.assessmentResult?.assessmentId,
+      // TODO
+      // @ts-ignore
+      assessmentId: solutionResult.assessmentResult?.assessmentId,
     })
   } catch (error) {
     console.log(error)

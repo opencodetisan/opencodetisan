@@ -175,6 +175,15 @@ export default function CandidateAssessment() {
       }
 
       const res = await response.json()
+      if (!res.assessmentId) {
+        setOutput(res)
+        setIsLoading(false)
+        return toast({
+          title: 'Fail To Submit Your Solution',
+          description: 'Please Double Check Your Code Before Submit.',
+          variant: 'destructive',
+        })
+      }
       const assessmentId = res.assessmentId
 
       if (events.length > 0 && stopRrwebRecord) {

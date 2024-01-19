@@ -50,6 +50,7 @@ import {
   deleteQuiz,
   deleteQuizSolution,
   deleteQuizTestCases,
+  getCodeRunnerResult,
   getQuiz,
   getQuizTestCases,
   getSolutionAndTestId,
@@ -347,10 +348,11 @@ export const updateCandidateSubmissionService = async ({
   assessmentQuizSubmissionId: string
   action: typeof RUN | typeof SUBMIT
 }) => {
-  // edit the codeRunnerUrl according to ur origin
-  const codeRunnerUrl = 'http://localhost:3001/api/test'
-  
   const quizInfo = await getQuiz({quizId})
+
+  // TODO
+  // @ts-ignore
+  const codeRunnerResult = await getCodeRunnerResult({code,testRunner : quizInfo.quizSolution[0].testRunner,language: quizInfo.quizData.codeLanguage.name})
 
   // dummy value for code evaluation
   const result = {status: true}
@@ -366,48 +368,8 @@ export const updateCandidateSubmissionService = async ({
       status: 'error',
       message: 'Your code did not pass the tests.',
     }
-  } else if (action === RUN) {
-
-    const fetch = require("node-fetch")
-    const getRunResult = await fetch(
-      codeRunnerUrl,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code, 
-          // TODO
-          // @ts-ignore
-          testRunner : quizInfo.quizSolution[0].testRunner,
-          // TODO
-          // @ts-ignore
-          language: quizInfo.quizData.codeLanguage.name
-        }),
-      },
-    )
-    const runResult = await getRunResult.json()
-    try {
-      const parsedRunResult = JSON.parse(runResult.data)
-      const status:boolean[] = []
-    
-      for(let i = 0; i < parsedRunResult.expected.length; i++) {
-        status.push(parsedRunResult.expected[i] === parsedRunResult.actual[i])
-      }
-      const result = status.every((value) => value === true)
-
-      return {
-        result: result,
-        status: status,
-        actual: parsedRunResult.actual,
-        expected: parsedRunResult.expected,
-      }  
-    } catch (e) {
-      return {
-        message: runResult.data
-      }
-    }
+  } else if (action === RUN || codeRunnerResult.result === false || codeRunnerResult.message) {
+    return codeRunnerResult
   }
 
   const assessmentQuizSubmission = await getAssessmentQuizSubmission({
@@ -933,4 +895,18 @@ export const getManyCandidateAssessmentService = async ({userId}: {userId: strin
   }
   const assessments = await getManyCandidateAssessment({userId})
   return assessments
+}
+
+export const getCodeRunnerResultService = async ({
+  code,
+  testRunner,
+  language,
+}: {
+  code: string
+  testRunner: string
+  language: 'javascript' | 'python' | 'c' | 'cpp' | 'java'
+}) => {
+  const codeRunnerResult = await getCodeRunnerResult({code,testRunner,language})
+
+  return codeRunnerResult
 }
