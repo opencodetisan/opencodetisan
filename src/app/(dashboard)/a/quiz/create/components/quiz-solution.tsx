@@ -101,7 +101,6 @@ export function QuizSolution({
       }
 
       const json = await response.json()
-      console.log(json)
       setOutput(json)
       setIsLoading(false)
     } catch (error) {
@@ -109,13 +108,13 @@ export function QuizSolution({
     }
   }
 
-  let outputContent = <><div className='flex items-center space-x-2'>Result:</div></>
+  let outputContent = <><div className='flex items-center space-x-2'><p className=''>Result:</p></div></>
 
   if (output?.actual) {
     outputContent = (
       <>
         <div className='flex items-center space-x-2'>
-          <p>Result:</p>
+          <p className='pl-4'>Result:</p>
           {output.result === true && (
             <Badge className='bg-green-600'>Success</Badge>
           )}
@@ -165,7 +164,7 @@ export function QuizSolution({
     outputContent = (
       <>
         <div className='flex items-center space-x-2'>
-          <p className=''>Result:</p>
+          <p>Result:</p>
           <Badge className='bg-red-600'>Fail</Badge>
         </div>
         <pre className='text-red-500'>{output?.message}</pre>
@@ -241,14 +240,14 @@ export function QuizSolution({
           </ReflexElement>
         </ReflexContainer>
         <ReflexContainer orientation='horizontal'>
-          <ReflexSplitter className='mb-2' style={{ pointerEvents: 'none' }}/>
+          <ReflexSplitter className='mb-4' style={{ pointerEvents: 'none' }}/>
           <ReflexElement className='left-pane px-2'>
             <div className='h-[200px]'>
               {outputContent}
             </div>
           </ReflexElement>
           <ReflexSplitter className='mb-2' style={{ pointerEvents: 'none' }}/>
-          <ReflexElement className='right-pane p-2' style={{display: 'flex', justifyContent: 'flex-end'}}>
+          <ReflexElement className='right-pane px-2' style={{display: 'flex', justifyContent: 'flex-end'}}>
             <Button onClick={runCode} disabled={isLoading}>
               {isLoading && (
                 <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
