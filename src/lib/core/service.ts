@@ -50,6 +50,7 @@ import {
   deleteQuiz,
   deleteQuizSolution,
   deleteQuizTestCases,
+  getCodeRunnerResult,
   getQuiz,
   getQuizTestCases,
   getSolutionAndTestId,
@@ -347,6 +348,12 @@ export const updateCandidateSubmissionService = async ({
   assessmentQuizSubmissionId: string
   action: typeof RUN | typeof SUBMIT
 }) => {
+  const quizInfo = await getQuiz({quizId})
+
+  // TODO
+  // @ts-ignore
+  const codeRunnerResult = await getCodeRunnerResult({code,testRunner : quizInfo.quizSolution[0].testRunner,language: quizInfo.quizData.codeLanguage.name})
+
   // dummy value for code evaluation
   const result = {status: true}
   const jsonResult = {status: true}
@@ -361,12 +368,8 @@ export const updateCandidateSubmissionService = async ({
       status: 'error',
       message: 'Your code did not pass the tests.',
     }
-  } else if (action === RUN) {
-    return {
-      result: jsonResult.status,
-      actual: [1, 3],
-      expected: [1, 2],
-    }
+  } else if (action === RUN || codeRunnerResult.result === false || codeRunnerResult.message) {
+    return codeRunnerResult
   }
 
   const assessmentQuizSubmission = await getAssessmentQuizSubmission({
@@ -892,4 +895,18 @@ export const getManyCandidateAssessmentService = async ({userId}: {userId: strin
   }
   const assessments = await getManyCandidateAssessment({userId})
   return assessments
+}
+
+export const getCodeRunnerResultService = async ({
+  code,
+  testRunner,
+  language,
+}: {
+  code: string
+  testRunner: string
+  language: 'javascript' | 'python' | 'c' | 'cpp' | 'java'
+}) => {
+  const codeRunnerResult = await getCodeRunnerResult({code,testRunner,language})
+
+  return codeRunnerResult
 }

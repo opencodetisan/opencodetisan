@@ -6,7 +6,7 @@ import {
 } from '@/enums'
 import {type ClassValue, clsx} from 'clsx'
 import {twMerge} from 'tailwind-merge'
-import {SiJavascript, SiPython, SiCsharp} from 'react-icons/si'
+import {SiJavascript, SiPython, SiCsharp, SiCplusplus, SiC} from 'react-icons/si'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -105,6 +105,30 @@ export const getCodeLanguage = (codeLanguageId: number = 1) => {
         lang: 'csharp',
         indentUnit: 4,
         icon: SiCsharp,
+      }
+    case 5:
+      return {
+        pretty: 'C',
+        mode: 'text/x-csrc',
+        lang: 'c',
+        indentUnit: 4,
+        icon: SiC,
+      }
+    case 6:
+      return {
+        pretty: 'C++',
+        mode: 'text/x-c++src',
+        lang: 'cpp',
+        indentUnit: 2,
+        icon: SiCplusplus,
+      }
+    case 7:
+      return {
+        pretty: 'Java',
+        mode: 'text/x-java',
+        lang: 'java',
+        indentUnit: 4,
+        icon: SiJavascript,
       }
     default:
       return {

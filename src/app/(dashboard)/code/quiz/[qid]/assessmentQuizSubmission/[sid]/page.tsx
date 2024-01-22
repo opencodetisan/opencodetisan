@@ -175,6 +175,15 @@ export default function CandidateAssessment() {
       }
 
       const res = await response.json()
+      if (!res.assessmentId) {
+        setOutput(res)
+        setIsLoading(false)
+        return toast({
+          title: 'Fail To Submit Your Solution',
+          description: 'Please Double Check Your Code Before Submit.',
+          variant: 'destructive',
+        })
+      }
       const assessmentId = res.assessmentId
 
       if (events.length > 0 && stopRrwebRecord) {
@@ -238,7 +247,7 @@ export default function CandidateAssessment() {
               <TableCell>{output.expected[0]}</TableCell>
               <TableCell>{output.actual[0]}</TableCell>
               <TableCell>
-                {output.expected[0] === output.actual[0] ? (
+                {output.status[0] ? (
                   <CheckCircle2 color='#2ec27e' />
                 ) : (
                   <XCircle color='#c01c28' />
@@ -250,7 +259,7 @@ export default function CandidateAssessment() {
               <TableCell>{output.expected[1]}</TableCell>
               <TableCell>{output.actual[1]}</TableCell>
               <TableCell>
-                {output.expected[1] === output.actual[1] ? (
+                {output.status[1] ? (
                   <CheckCircle2 color='#2ec27e' />
                 ) : (
                   <XCircle color='#c01c28' />
@@ -262,7 +271,7 @@ export default function CandidateAssessment() {
       </>
     )
   } else if (output?.message) {
-    outputContent = <p className='text-red-500'>{output?.message}</p>
+    outputContent = <pre className='text-red-500'>{output?.message}</pre>
   } else if (output === LOADING) {
     outputContent = <p>Running...</p>
   }

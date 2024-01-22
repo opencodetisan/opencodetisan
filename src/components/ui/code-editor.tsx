@@ -27,7 +27,7 @@ export const CodeEditor = memo(
 
     return (
       <CodeMirror
-        height='62vh'
+        height='60vh'
         value={value}
         // theme={githubDark}
         extensions={extension}

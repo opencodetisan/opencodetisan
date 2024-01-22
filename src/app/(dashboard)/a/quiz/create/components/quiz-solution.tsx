@@ -14,6 +14,23 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import {Input} from '@/components/ui/input'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import {CheckCircle2, XCircle} from 'lucide-react'
+import {toast} from '@/components/ui/use-toast'
+import {Icons} from '@/components/ui/icons'
+import {Button} from '@/components/ui/button'
+import {LOADING, RUN} from '@/lib/constant'
+import {Badge} from '@/components/ui/badge'
+
+import {getCodeLanguage} from '@/lib/utils'
 
 export function QuizSolution({
   className,
@@ -28,6 +45,10 @@ export function QuizSolution({
   testRunnerField,
   solutionFieldState,
   testRunnerFieldState,
+  isLoading,
+  setIsLoading,
+  output,
+  setOutput,
   ...props // TODO: type
 }: any) {
   const {codeLanguage} = useContext(CodeEditorContext)
@@ -46,6 +67,113 @@ export function QuizSolution({
     }
   }, [solutionValues])
 
+  useEffect(() => {
+    setOutput(undefined);
+  }, [testRunner, solution]);
+
+  async function runCode() {
+    setIsLoading(true)
+    setOutput(LOADING)
+
+    try {
+      const response = await fetch(
+        '/api/test',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            solution,
+            testRunner,
+            language: getCodeLanguage(parseInt(codeLanguage, 10)).lang,
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        setIsLoading(false)
+        return toast({
+          title: 'Server error',
+          description: 'Failed to run your solution.',
+          variant: 'destructive',
+        })
+      }
+
+      const json = await response.json()
+      setOutput(json)
+      setIsLoading(false)
+    } catch (error) {
+      console.log('Unexpected error', error)
+    }
+  }
+
+  let outputContent = <><div className='flex items-center space-x-2'><p className=''>Result:</p></div></>
+
+  if (output?.actual) {
+    outputContent = (
+      <>
+        <div className='flex items-center space-x-2'>
+          <p className='pl-4'>Result:</p>
+          {output.result === true && (
+            <Badge className='bg-green-600'>Success</Badge>
+          )}
+          {output.result === false && (
+            <Badge className='bg-red-600'>Fail</Badge>
+          )}
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Test</TableHead>
+              <TableHead>Expected Output</TableHead>
+              <TableHead>Actual Output</TableHead>
+              <TableHead>Result</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>Test 1</TableCell>
+              <TableCell>{output.expected[0]}</TableCell>
+              <TableCell>{output.actual[0]}</TableCell>
+              <TableCell>
+                {output.status[0] ? (
+                  <CheckCircle2 color='#2ec27e' />
+                ) : (
+                  <XCircle color='#c01c28' />
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Test 2</TableCell>
+              <TableCell>{output.expected[1]}</TableCell>
+              <TableCell>{output.actual[1]}</TableCell>
+              <TableCell>
+                {output.status[1] ? (
+                  <CheckCircle2 color='#2ec27e' />
+                ) : (
+                  <XCircle color='#c01c28' />
+                )}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </>
+    )
+  } else if (output?.message) {
+    outputContent = (
+      <>
+        <div className='flex items-center space-x-2'>
+          <p>Result:</p>
+          <Badge className='bg-red-600'>Fail</Badge>
+        </div>
+        <pre className='text-red-500'>{output?.message}</pre>
+      </>
+    )
+  } else if (output === LOADING) {
+    outputContent = <p>Running...<Icons.spinner className='mr-2 h-4 w-4 animate-spin' /></p>
+  }
+
   return (
     <Tabs defaultValue='solution' value={tabValue}>
       <TabsList className='grid w-full grid-cols-2'>
@@ -58,8 +186,7 @@ export function QuizSolution({
       </TabsList>
       <TabsContent
         value='solution'
-        className='bg-white p-1 border rounded-md shadow-sm'
-        style={{height: '70vh'}}
+        className='bg-white p-1 border rounded-md shadow-sm h-fit'
       >
         <ReflexContainer orientation='vertical'>
           <ReflexElement className='left-pane'>
@@ -110,6 +237,23 @@ export function QuizSolution({
                 )}
               </FormMessage>
             </div>
+          </ReflexElement>
+        </ReflexContainer>
+        <ReflexContainer orientation='horizontal'>
+          <ReflexSplitter className='mb-4' style={{ pointerEvents: 'none' }}/>
+          <ReflexElement className='left-pane px-2'>
+            <div className='h-[200px]'>
+              {outputContent}
+            </div>
+          </ReflexElement>
+          <ReflexSplitter className='mb-2' style={{ pointerEvents: 'none' }}/>
+          <ReflexElement className='right-pane px-2' style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Button onClick={runCode} disabled={isLoading}>
+              {isLoading && (
+                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              )}
+              Run
+            </Button>
           </ReflexElement>
         </ReflexContainer>
       </TabsContent>

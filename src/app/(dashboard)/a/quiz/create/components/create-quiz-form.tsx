@@ -47,6 +47,7 @@ export function CreateQuizForm({
   const [testRunner, setTestRunner] = useState('')
   const [hasTabChanged, setHasTabChanged] = useState(false)
   const deferredTestRunner = useDeferredValue(testRunner)
+  const [output, setOutput] = useState<any>()
   const form = useForm<z.infer<typeof formSchema>>({
     // TODO: type
     resolver: zodResolver(formSchema as any),
@@ -78,17 +79,6 @@ export function CreateQuizForm({
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
-
-    const isSolutionEmpty = !solution.trim()
-    const isTestRunnerEmpty = !testRunner.trim()
-    if (isSolutionEmpty || isTestRunnerEmpty) {
-      setIsLoading(false);
-      return toast({
-        title: 'Failed to submit',
-        description: 'Solution and test runner must not be empty.',
-        variant: 'destructive',
-      });
-    }
 
     try {
       const response = await fetch('/api/quiz', {
@@ -170,13 +160,17 @@ export function CreateQuizForm({
               testRunnerField={testRunnerField}
               solutionFieldState={solutionFieldState}
               testRunnerFieldState={testRunnerFieldState}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              output={output}
+              setOutput={setOutput}
             />
           </Form>
         </CodeEditorContext.Provider>
       </div>
       <div className='flex justify-end'>
         <Button
-          disabled={isLoading}
+          disabled={!output?.result ?? true}
           onClick={() => {
             form.handleSubmit(onSubmit, onSubmitError)()
           }}
