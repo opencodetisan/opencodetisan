@@ -54,6 +54,36 @@ const candidateInfo = [
   `${faker.lorem.text},${faker.internet.email()},${faker.lorem.text}`,
 ]
 
+const sampleSolution = 
+'function nameCase(str) {\n' +
+"  const [first, last] = str.split(' ')\n" +
+"  return [first.toLowerCase(), last.toUpperCase()].join(' ')\n" +
+'}\n'
+
+const sampleTestRunner = 
+'function TestRunner() {\n' +
+"  const inp1 = 'Tom Cat'\n" +
+"  const inp2 = 'Jerry Mouse'\n" +
+'\n' +
+"  const out1 = 'tom CAT'\n" +
+"  const out2 = 'jerry MOUSE'\n" +
+'\n' +
+'  let input = [inp1, inp2];\n' +
+'\n' +
+'  let expected = [out1, out2];\n' +
+'\n' +
+'  let actual = [];\n' +
+'\n' +
+'  for (let i of input) {\n' +
+'    actual.push(nameCase(i));\n' +
+'  }\n' +
+'\n' +
+'  return {\n' +
+'    actual,\n' +
+'    expected,\n' +
+'  };\n' +
+'}\n'
+
 const inspectItem = (item: any) => {
   console.log(
     inspect(item, {
@@ -390,7 +420,7 @@ describe('Integration test: Assessment', () => {
       `${text},${email_2},${text}`,
     ]
     const codeLanguages = [
-      {id: faker.number.int({min: 1, max: 100}), name: text},
+      {id: faker.number.int({min: 1, max: 100}), name: 'javascript'},
     ]
     const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
     const userIds = users.map((u) => u.id)
@@ -400,6 +430,7 @@ describe('Integration test: Assessment', () => {
       'This is the first attempt',
       'This is the most recent attempt',
     ]
+    const solutionId: string[] = []
     let createdAssessment: any
     let assessmentPoints: Record<string, any>[]
 
@@ -414,6 +445,14 @@ describe('Integration test: Assessment', () => {
           codeLanguageId: codeLanguages[0].id,
           difficultyLevelId: difficultyLevels[0].id,
         })
+      }
+      for (let i = 0; i < quizzes.length; i++) {
+        const solution = await createFakeSolution({
+          quizId: quizzes[i].id,
+          code: sampleSolution,
+          testRunner: sampleTestRunner,
+        })
+        solutionId.push(solution.id)
       }
       createdAssessment = await createAssessmentService({
         userId: users[0].id,
@@ -431,20 +470,18 @@ describe('Integration test: Assessment', () => {
           userId: users[i].id,
         })
       }
-      for (let i = 0; i < codes.length; i++) {
-        await createFakeCandidateSubmission({
-          assessmentId: createdAssessment.id,
-          quizId: quizzes[0].id,
-          userId: users[0].id,
-          code: codes[i],
-        })
-        await createFakeCandidateSubmission({
-          assessmentId: createdAssessment.id,
-          quizId: quizzes[1].id,
-          userId: users[0].id,
-          code: codes[i],
-        })
-      }
+      await createFakeCandidateSubmission({
+        assessmentId: createdAssessment.id,
+        quizId: quizzes[0].id,
+        userId: users[0].id,
+        code: sampleSolution,
+      })
+      await createFakeCandidateSubmission({
+        assessmentId: createdAssessment.id,
+        quizId: quizzes[1].id,
+        userId: users[0].id,
+        code: sampleSolution,
+      })
     })
 
     afterAll(async () => {
@@ -455,6 +492,7 @@ describe('Integration test: Assessment', () => {
       await prisma.submissionPoint.deleteMany({
         where: {userId: {in: userIds}},
       })
+      await prisma.solution.deleteMany({where: {id: {in:solutionId}}})
       await prisma.submission.deleteMany({where: {quizId: {in: quizIds}}})
       await prisma.quiz.deleteMany({where: {id: {in: quizIds}}})
       await prisma.codeLanguage.deleteMany({where: {id: {in: codeLanguageIds}}})
@@ -486,7 +524,7 @@ describe('Integration test: Assessment', () => {
       const candidates = await Promise.all(candidatePromises)
 
       expect(receivedAssessment?.data).toEqual(createdAssessment)
-      expect(assessmentQuizSubmissions[0].submission.code).toBe(codes[1])
+      expect(assessmentQuizSubmissions[0].submission.code).toBe(sampleSolution)
       expect(receivedAssessment?.quizzes).toMatchObject(quizzes)
       expect(receivedAssessment?.candidates).toMatchObject(users)
       expect(
@@ -593,8 +631,8 @@ describe('Integration test: Assessment', () => {
       }
       const solution = await createFakeSolution({
         quizId: quizzes[0].id,
-        code: text,
-        testRunner: text,
+        code: sampleSolution,
+        testRunner: sampleTestRunner,
       })
       solutionId = solution.id
       createdAssessment = await createAssessmentService({
@@ -655,7 +693,7 @@ describe('Integration test: Assessment', () => {
     test('it should update candidate submission', async () => {
       await updateCandidateSubmissionService({
         assessmentQuizSubmissionId,
-        code: words,
+        code: sampleSolution,
         userId: users[0].id,
         quizId: quizIds[0],
         action: 'submit',
@@ -915,7 +953,7 @@ describe('Integration test: Assessment', () => {
       `${text},${email_2},${text}`,
     ]
     const codeLanguages = [
-      {id: faker.number.int({min: 1, max: 100}), name: text},
+      {id: faker.number.int({min: 1, max: 100}), name: 'javascript'},
     ]
     const quizzes = [{id: faker.string.uuid()}, {id: faker.string.uuid()}]
     const userIds = users.map((u) => u.id)
@@ -925,6 +963,7 @@ describe('Integration test: Assessment', () => {
       'This is the first attempt',
       'This is the most recent attempt',
     ]
+    const solutionId: string[] = []
     let createdAssessment: any
 
     beforeEach(async () => {
@@ -942,6 +981,14 @@ describe('Integration test: Assessment', () => {
           codeLanguageId: codeLanguages[0].id,
           difficultyLevelId: difficultyLevels[0].id,
         })
+      }
+      for (let i = 0; i < quizzes.length; i++) {
+        const solution = await createFakeSolution({
+          quizId: quizzes[i].id,
+          code: sampleSolution,
+          testRunner: sampleTestRunner,
+        })
+        solutionId.push(solution.id)
       }
       createdAssessment = await createAssessmentService({
         userId: users[0].id,
@@ -983,6 +1030,7 @@ describe('Integration test: Assessment', () => {
       await prisma.submissionPoint.deleteMany({
         where: {userId: {in: userIds}},
       })
+      await prisma.solution.deleteMany({where: {id: {in:solutionId}}})
       await prisma.submission.deleteMany({where: {quizId: {in: quizIds}}})
       await prisma.quiz.deleteMany({where: {id: {in: quizIds}}})
       await prisma.codeLanguage.deleteMany({where: {id: {in: codeLanguageIds}}})
