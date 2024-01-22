@@ -14,6 +14,7 @@ import {
   IUpdateQuizTestCaseProps,
 } from '@/types/index'
 import prisma from '@/lib/db/client'
+import fetch from 'node-fetch'
 
 export const createQuiz = async (quizData: ICreateQuizProps) => {
   if (!quizData.title) {
@@ -397,41 +398,40 @@ export const getCodeRunnerResult = async ({
   // edit the codeRunnerUrl according to ur origin
   const codeRunnerUrl = 'http://localhost:3001/api/test'
 
-  const fetch = require("node-fetch")
-    const getRunResult = await fetch(
-      codeRunnerUrl,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code, 
-          testRunner,
-          language,
-        }),
+  const getRunResult = await fetch(
+    codeRunnerUrl,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+      body: JSON.stringify({
+        code, 
+        testRunner,
+        language,
+      }),
+    },
+  )
 
-    const runResult = await getRunResult.json()
-    try {
-      const parsedRunResult = JSON.parse(runResult.data)
-      const status:boolean[] = []
+  const runResult = await getRunResult.json()
+  try {
+    const parsedRunResult = JSON.parse(runResult.data)
+    const status:boolean[] = []
     
-      for(let i = 0; i < parsedRunResult.expected.length; i++) {
-        status.push(parsedRunResult.expected[i] === parsedRunResult.actual[i])
-      }
-      const result = status.every((value) => value === true)
-
-      return {
-        result: result,
-        status: status,
-        actual: parsedRunResult.actual,
-        expected: parsedRunResult.expected,
-      }  
-    } catch (e) {
-      return {
-        message: runResult.data
-      }
+    for(let i = 0; i < parsedRunResult.expected.length; i++) {
+      status.push(parsedRunResult.expected[i] === parsedRunResult.actual[i])
     }
+    const result = status.every((value) => value === true)
+
+    return {
+      result: result,
+      status: status,
+      actual: parsedRunResult.actual,
+      expected: parsedRunResult.expected,
+    }  
+  } catch (e) {
+    return {
+      message: runResult.data
+    }
+  }
 }
