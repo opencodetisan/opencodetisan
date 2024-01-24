@@ -48,6 +48,7 @@ const dateFormatter = (ISOString: string) => {
 export default function Assessment() {
   const param = useParams()
   const [isLoading, setIsLoading] = useState(false)
+  const [infoInputNum, setInfoInputNum] = useState(0)
   const {data, mutate} = useSWR(
     `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/assessment/${param.aid}`,
     fetcher,
@@ -364,6 +365,8 @@ export default function Assessment() {
                 setCandidateInfo={() => {}}
                 addCandidates={addCandidates}
                 disabled={isAssessmentStarted}
+                infoInputNum={infoInputNum}
+                setInfoInputNum={setInfoInputNum}
               >
                 <Button variant={'outline'} disabled={isAssessmentStarted}>
                   Edit
