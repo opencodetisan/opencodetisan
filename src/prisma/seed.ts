@@ -156,16 +156,12 @@ function TestRunner() {
     {
       id: 'ckq2bc89q00005kc89jxy2jvh',
       name: 'Admin1',
-      email: 'admin1@ocadmin.com',
-      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},
-      //password:adminpass
+      email: 'johndoe@blablabla.com',
     },
     {
       id: 'ckq2bc89q00015kc89bnw6qqv',
       name: 'Admin2',
-      email: 'admin2@ocadmin.com',
-      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},
-      //password:adminpass2
+      email: 'alice@blablabla.com',
     },
   ]
 
@@ -181,11 +177,6 @@ function TestRunner() {
         id: users[i].id,
         name: users[i].name,
         email: users[i].email,
-        userKey: {
-          create: {
-            password: users[i].userKey.password
-          }
-        },
       },
     })
     console.log(`Added User: ${JSON.stringify(user)}`)
@@ -293,6 +284,47 @@ function TestRunner() {
       },
     })
     console.log(`Added Assessment Points: ${JSON.stringify(assessmentPoint)}`)
+  }
+
+  //insert some admin users
+  const adminUsers = [
+    {
+      id: 'ckq2bc89q00005kc89jxy2jvh',
+      name: 'Admin1',
+      email: 'admin1@ocadmin.com',
+      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},
+      //password:adminpass
+    },
+    {
+      id: 'ckq2bc89q00015kc89bnw6qqv',
+      name: 'Admin2',
+      email: 'admin2@ocadmin.com',
+      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},
+      //password:adminpass2
+    },
+  ]
+
+  console.log('Seeding Admin User...')
+  for (let i = 0; i < adminUsers.length; i++) {
+    const adminUser = await prisma.user.upsert({
+      where: {
+        id: adminUsers[i].id,
+        //email: adminUsers[i].email
+      },
+      update: {},
+      create: {
+        id: adminUsers[i].id,
+        name: adminUsers[i].name,
+        email: adminUsers[i].email,
+        role: 'ADMIN',
+        userKey: {
+          create: {
+            password: adminUsers[i].userKey.password
+          }
+        },
+      },
+    })
+    console.log(`Added Admin User: ${JSON.stringify(adminUser)}`)
   }
   console.log('Done seeding Assessment Points...')
 }
