@@ -112,6 +112,9 @@ function TestRunner() {
     {id: 2, name: 'python', prettyName: 'Python'},
     {id: 3, name: 'php', prettyName: 'PHP'},
     {id: 4, name: 'csharp', prettyName: 'C#'},
+    {id: 5, name: 'c', prettyName: 'C'},
+    {id: 6, name: 'cpp', prettyName: 'C++'},
+    {id: 7, name: 'java', prettyName: 'Java'},
   ]
 
   console.log('Seeding CodeLanguange...')
@@ -152,13 +155,15 @@ function TestRunner() {
   const users = [
     {
       id: 'ckq2bc89q00005kc89jxy2jvh',
-      name: 'John Doe',
-      email: 'johndoe@blablabla.com',
+      name: 'Admin1',
+      email: 'admin1@bla.com',
+      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},//pass:adminpass
     },
     {
       id: 'ckq2bc89q00015kc89bnw6qqv',
-      name: '张三',
-      email: 'alice@blablabla.com',
+      name: 'Admin2',
+      email: 'admin2@blablabla.com',
+      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},//pass:adminpass2
     },
   ]
 
@@ -174,6 +179,11 @@ function TestRunner() {
         id: users[i].id,
         name: users[i].name,
         email: users[i].email,
+        userKey: {
+          create: {
+            password: users[i].userKey.password
+          }
+        },
       },
     })
     console.log(`Added User: ${JSON.stringify(user)}`)
