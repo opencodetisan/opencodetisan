@@ -157,13 +157,15 @@ function TestRunner() {
       id: 'ckq2bc89q00005kc89jxy2jvh',
       name: 'Admin1',
       email: 'admin1@bla.com',
-      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},//pass:adminpass
+      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},
+      //password:adminpass
     },
     {
       id: 'ckq2bc89q00015kc89bnw6qqv',
       name: 'Admin2',
       email: 'admin2@blablabla.com',
-      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},//pass:adminpass2
+      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},
+      //password:adminpass2
     },
   ]
 
