@@ -86,13 +86,9 @@ function TestRunner() {
   const quizIds = [
     'ckps9y6qc0028emc805po1294',
     'ckq2bc89y00025kc8diutaxtd',
-    'ckpsa1f580031gzc8j2j9eo4o',
-    'ckpsercpl0034e6c8cwjhkkds',
   ]
 
   const quizTitles = [
-    'Divide Two Integers',
-    'Merge Two Sorted Lists',
     'Find First and Last Position of Element in Sorted Array',
     'Scramble String',
   ]
@@ -154,14 +150,18 @@ function TestRunner() {
   //insert some users
   const users = [
     {
-      id: 'ckq2bc89q00005kc89jxy2jvh',
+      id: 'ckq2bc89q00005kc89jxy2jvi',
       name: 'Admin1',
-      email: 'johndoe@blablabla.com',
+      email: 'admin1@ocadmin.com',
+      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},
+      //password:adminpass
     },
     {
-      id: 'ckq2bc89q00015kc89bnw6qqv',
+      id: 'ckq2bc89q00015kc89bnw6qqW',
       name: 'Admin2',
-      email: 'alice@blablabla.com',
+      email: 'admin2@ocadmin.com',
+      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},
+      //password:adminpass2
     },
   ]
 
@@ -177,6 +177,12 @@ function TestRunner() {
         id: users[i].id,
         name: users[i].name,
         email: users[i].email,
+        role: 'ADMIN',
+        userKey: {
+          create: {
+            password: users[i].userKey.password,
+          }
+        },
       },
     })
     console.log(`Added User: ${JSON.stringify(user)}`)
@@ -192,18 +198,6 @@ function TestRunner() {
         submissionCachedCount: Math.floor(Math.random() * 100),
         defaultCode: 'async function () {}',
         difficultyLevelId: 1,
-        instruction: 'instruction goes here',
-        answer: 'answer goes here',
-        locale: 'en',
-      },
-      {
-        id: quizIds.pop(),
-        title: quizTitles.pop(),
-        userId: user.id,
-        codeLanguageId: codeLang[3].id,
-        submissionCachedCount: Math.floor(Math.random() * 100),
-        defaultCode: 'async function () {}',
-        difficultyLevelId: 2,
         instruction: 'instruction goes here',
         answer: 'answer goes here',
         locale: 'en',
@@ -284,47 +278,6 @@ function TestRunner() {
       },
     })
     console.log(`Added Assessment Points: ${JSON.stringify(assessmentPoint)}`)
-  }
-
-  //insert some admin users
-  const adminUsers = [
-    {
-      id: 'ckq2bc89q00005kc89jxy2jvh',
-      name: 'Admin1',
-      email: 'admin1@ocadmin.com',
-      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},
-      //password:adminpass
-    },
-    {
-      id: 'ckq2bc89q00015kc89bnw6qqv',
-      name: 'Admin2',
-      email: 'admin2@ocadmin.com',
-      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},
-      //password:adminpass2
-    },
-  ]
-
-  console.log('Seeding Admin User...')
-  for (let i = 0; i < adminUsers.length; i++) {
-    const adminUser = await prisma.user.upsert({
-      where: {
-        id: adminUsers[i].id,
-        //email: adminUsers[i].email
-      },
-      update: {},
-      create: {
-        id: adminUsers[i].id,
-        name: adminUsers[i].name,
-        email: adminUsers[i].email,
-        role: 'ADMIN',
-        userKey: {
-          create: {
-            password: adminUsers[i].userKey.password
-          }
-        },
-      },
-    })
-    console.log(`Added Admin User: ${JSON.stringify(adminUser)}`)
   }
   console.log('Done seeding Assessment Points...')
 }
