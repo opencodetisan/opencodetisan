@@ -112,6 +112,9 @@ function TestRunner() {
     {id: 2, name: 'python', prettyName: 'Python'},
     {id: 3, name: 'php', prettyName: 'PHP'},
     {id: 4, name: 'csharp', prettyName: 'C#'},
+    {id: 5, name: 'c', prettyName: 'C'},
+    {id: 6, name: 'cpp', prettyName: 'C++'},
+    {id: 7, name: 'java', prettyName: 'Java'},
   ]
 
   console.log('Seeding CodeLanguange...')
@@ -152,12 +155,12 @@ function TestRunner() {
   const users = [
     {
       id: 'ckq2bc89q00005kc89jxy2jvh',
-      name: 'John Doe',
+      name: 'Admin1',
       email: 'johndoe@blablabla.com',
     },
     {
       id: 'ckq2bc89q00015kc89bnw6qqv',
-      name: '张三',
+      name: 'Admin2',
       email: 'alice@blablabla.com',
     },
   ]
@@ -281,6 +284,47 @@ function TestRunner() {
       },
     })
     console.log(`Added Assessment Points: ${JSON.stringify(assessmentPoint)}`)
+  }
+
+  //insert some admin users
+  const adminUsers = [
+    {
+      id: 'ckq2bc89q00005kc89jxy2jvh',
+      name: 'Admin1',
+      email: 'admin1@ocadmin.com',
+      userKey: {password: '$2b$10$jU9CTK/ubAgWNh5rZgvAZOxTqoqsoMcGFGZ/HpZzPVlAjsbLbICNq',},
+      //password:adminpass
+    },
+    {
+      id: 'ckq2bc89q00015kc89bnw6qqv',
+      name: 'Admin2',
+      email: 'admin2@ocadmin.com',
+      userKey: {password: '$2b$10$h3PBdUUxHsXm2yUDv/gy7uaPiPJMhC5yvt4w9THP3/Do0NFmMJ8S6',},
+      //password:adminpass2
+    },
+  ]
+
+  console.log('Seeding Admin User...')
+  for (let i = 0; i < adminUsers.length; i++) {
+    const adminUser = await prisma.user.upsert({
+      where: {
+        id: adminUsers[i].id,
+        //email: adminUsers[i].email
+      },
+      update: {},
+      create: {
+        id: adminUsers[i].id,
+        name: adminUsers[i].name,
+        email: adminUsers[i].email,
+        role: 'ADMIN',
+        userKey: {
+          create: {
+            password: adminUsers[i].userKey.password
+          }
+        },
+      },
+    })
+    console.log(`Added Admin User: ${JSON.stringify(adminUser)}`)
   }
   console.log('Done seeding Assessment Points...')
 }
