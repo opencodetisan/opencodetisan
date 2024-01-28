@@ -395,7 +395,7 @@ export const getCodeRunnerResult = async ({
   testRunner: string
   language: 'javascript' | 'python' | 'c' | 'cpp' | 'java'
 }) => {
-  // Edit the codeRunnerUrl according to ur origin
+  // Edit the codeRunner url according to ur origin
   const codeRunnerUrl = 'http://localhost:3001/api/test'
 
   const getRunResult = await fetch(
