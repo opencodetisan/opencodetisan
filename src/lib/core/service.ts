@@ -805,7 +805,7 @@ export const addAssessmentCandidateService = async ({
       await sendUserCredential({recipient: email, password})
       candidateId = newCandidate.id
     }
-    //await sendAssessmentInvitation({recipient: email, aid: assessmentId})
+    await sendAssessmentInvitation({recipient: email, aid: assessmentId})
     await acceptAssessmentService({
       assessmentId: assessmentId,
       userId: candidateId,
